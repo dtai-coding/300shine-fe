@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
 
 import { _posts } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard';
+import { HomeContent } from 'src/layouts/home';
 
 import { Iconify } from 'src/components/iconify';
 
@@ -25,7 +25,7 @@ export function BlogView() {
   }, []);
 
   return (
-    <DashboardContent>
+    <HomeContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
           Blog
@@ -66,6 +66,6 @@ export function BlogView() {
       </Grid>
 
       <Pagination count={10} color="primary" sx={{ mt: 8, mx: 'auto' }} />
-    </DashboardContent>
+    </HomeContent>
   );
 }

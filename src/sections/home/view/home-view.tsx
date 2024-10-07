@@ -6,7 +6,7 @@ import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 
 import { _products } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard'; 
+import { HomeContent } from 'src/layouts/home';  
 
 import { ProductItem } from '../product-item';
 import { ProductSort } from '../product-sort';
@@ -85,9 +85,9 @@ export function ProductsView() {
   );
 
   return (
-    <DashboardContent>
+    <HomeContent>
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Products
+        Services
       </Typography>
 
       <CartIcon totalItems={8} />
@@ -139,6 +139,6 @@ export function ProductsView() {
       </Grid>
 
       <Pagination count={10} color="primary" sx={{ mt: 8, mx: 'auto' }} />
-    </DashboardContent>
+    </HomeContent>
   );
 }

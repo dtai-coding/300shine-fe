@@ -12,7 +12,7 @@ import { Iconify } from 'src/components/iconify';
 
 import { Main } from './main';
 import { layoutClasses } from '../classes';
-import { NavMobile, NavDesktop } from './nav';
+import { NavMobile, NavDesktop } from './nav'; 
 import { navData } from '../config-nav-dashboard';
 import { Searchbar } from '../components/searchbar';
 import { _workspaces } from '../config-nav-workspace';
@@ -25,7 +25,7 @@ import { NotificationsPopover } from '../components/notifications-popover';
 
 // ----------------------------------------------------------------------
 
-export type DashboardLayoutProps = {
+export type HomeLayoutProps = {
   sx?: SxProps<Theme>;
   children: React.ReactNode;
   header?: {
@@ -33,7 +33,7 @@ export type DashboardLayoutProps = {
   };
 };
 
-export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) {
+export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
   const theme = useTheme();
 
   const [navOpen, setNavOpen] = useState(false);
@@ -110,9 +110,9 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
       /** **************************************
        * Sidebar
        *************************************** */
-      sidebarSection={
-        <NavDesktop data={navData} layoutQuery={layoutQuery} workspaces={_workspaces} />
-      }
+      // sidebarSection={
+      //   <NavDesktop data={navData} layoutQuery={layoutQuery} workspaces={_workspaces} />
+      // }
       /** **************************************
        * Footer
        *************************************** */
@@ -120,12 +120,12 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
       /** **************************************
        * Style
        *************************************** */
-      cssVars={{
-        '--layout-nav-vertical-width': '300px',
-        '--layout-dashboard-content-pt': theme.spacing(1),
-        '--layout-dashboard-content-pb': theme.spacing(8),
-        '--layout-dashboard-content-px': theme.spacing(5),
-      }}
+      // cssVars={{
+      //   '--layout-nav-vertical-width': '300px',
+      //   '--layout-dashboard-content-pt': theme.spacing(1),
+      //   '--layout-dashboard-content-pb': theme.spacing(8),
+      //   '--layout-dashboard-content-px': theme.spacing(5),
+      // }}
       sx={{
         [`& .${layoutClasses.hasSidebar}`]: {
           [theme.breakpoints.up(layoutQuery)]: {
@@ -139,4 +139,3 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
     </LayoutSection>
   );
 }
-
