@@ -1,24 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import serviceApi from 'src/api/serviceApi';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 
+import { _products } from 'src/_mock';
 import { HomeContent } from 'src/layouts/home';
-import { Iconify } from 'src/components/iconify';
 
-import { ProductItem } from "../product-item";
-import { ProductSort } from "../product-sort";
-import { ProductFilters } from "../product-filters";
+import { StylistItem } from '../stylist-item';
+import { StylistSort } from '../stylist-sort';
+import { StylistFilters } from '../stylist-filters';
 
-
-import type { FiltersProps } from "../product-filters";
-import type { ProductItemProps } from "../product-item"; // Import type for ProductItemProps
+import type { FiltersProps } from '../../product/product-filters';
 
 // ----------------------------------------------------------------------
 
@@ -62,28 +56,12 @@ const defaultFilters = {
   category: CATEGORY_OPTIONS[0].value,
 };
 
-export function ProductsView() {
+export function StylistsView() {
   const [sortBy, setSortBy] = useState('featured');
+
   const [openFilter, setOpenFilter] = useState(false);
+
   const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
-  const [products, setProducts] = useState<ProductItemProps[]>([]); // State to store products
-  const navigate = useNavigate(); // Initialize useNavigate
-
-  // Fetch products from API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await serviceApi.getServices(); // Call API
-        const productData = response?.data.value.data; // Extract the product data from response.value.data
-        setProducts(productData); // Update the products state with data from API
-        console.log('Successfully fetched products:', productData);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
-    };
-
-    fetchProducts(); // Trigger the API call
-  }, []);
 
   const handleOpenFilter = useCallback(() => {
     setOpenFilter(true);
@@ -105,25 +83,13 @@ export function ProductsView() {
     (key) => filters[key as keyof FiltersProps] !== defaultFilters[key as keyof FiltersProps]
   );
 
-  const handleRedirect = () => {
-    navigate('/appointment'); 
-  };
-
   return (
     <HomeContent>
-      <Box display="flex" alignItems="center" mb={5}>
-        <Typography variant="h2" flexGrow={1}>
-          Services
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={handleRedirect} 
-        >
-          Make Appointment
-        </Button>
-      </Box>
+      <Typography variant="h2" sx={{ mb: 5 }}>
+        Stylists
+      </Typography>
+
+      {/* <CartIcon totalItems={8} /> */}
 
       <Box
         display="flex"
@@ -133,7 +99,7 @@ export function ProductsView() {
         sx={{ mb: 5 }}
       >
         <Box gap={1} display="flex" flexShrink={0} sx={{ my: 1 }}>
-          <ProductFilters
+          <StylistFilters
             canReset={canReset}
             filters={filters}
             onSetFilters={handleSetFilters}
@@ -150,7 +116,7 @@ export function ProductsView() {
             }}
           />
 
-          <ProductSort
+          <StylistSort
             sortBy={sortBy}
             onSort={handleSort}
             options={[
@@ -164,9 +130,9 @@ export function ProductsView() {
       </Box>
 
       <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid key={product.id} xs={12} sm={6} md={3}>
-            <ProductItem product={product} />
+        {_products.map((product) => (
+          <Grid key={product.id} xs={12} sm={6} md={2}>
+            <StylistItem product={product} />
           </Grid>
         ))}
       </Grid>

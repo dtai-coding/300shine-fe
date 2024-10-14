@@ -2,8 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { ProductsView } from 'src/sections/product/view';
-import { StylistsView } from 'src/sections/stylist/view';
+import { SelectSalonView } from 'src/sections/select-salon/view'; 
 
 // ----------------------------------------------------------------------
 
@@ -11,11 +10,10 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> {`Products - ${CONFIG.appName}`}</title>
+        <title> {`Users - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <ProductsView />
-      <StylistsView />
+      <SelectSalonView />
     </>
   );
 }
