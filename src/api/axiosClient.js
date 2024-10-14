@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const VITE_API_BASE_URL = 'https://hotpottoyou.azurewebsites.net/api';
+export const VITE_API_BASE_URL = 'https://300shine.azurewebsites.net/api';
 const axiosClient = axios.create({
   baseURL: VITE_API_BASE_URL,
   headers: {

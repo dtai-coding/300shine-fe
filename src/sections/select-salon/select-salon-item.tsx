@@ -11,22 +11,21 @@ import { ColorPreview } from 'src/components/color-utils';
 
 // ----------------------------------------------------------------------
 
-export type ProductItemProps = {
-  id: number;
-  imageUrl: string;
-  price: number;
+export type SalonItemProps = {
+  id: string;
   name: string;
-  description: string;
-  salonId: number;
-  isDeleted: boolean;
-  serviceStyles: { styleId: number }[];
+  price: number;
+  status: string;
+  coverUrl: string;
+  colors: string[];
+  priceSale: number | null;
 };
 
-export function ProductItem({ product }: { product: ProductItemProps }) {
+export function SalonItem({ product }: { product: SalonItemProps }) {
   const renderStatus = (
     <Label
       variant="inverted"
-      // color={(product.status === 'sale' && 'error') || 'info'}
+      color={(product.status === 'sale' && 'error') || 'info'}
       sx={{
         zIndex: 9,
         top: 16,
@@ -35,7 +34,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
         textTransform: 'uppercase',
       }}
     >
-      {/* {product.status} */}
+      {product.status}
     </Label>
   );
 
@@ -43,7 +42,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
     <Box
       component="img"
       alt={product.name}
-      src={product.imageUrl}
+      src={product.coverUrl}
       sx={{
         top: 0,
         width: 1,
@@ -64,7 +63,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
           textDecoration: 'line-through',
         }}
       >
-        {product.price && fCurrency(product.price)}
+        {product.priceSale && fCurrency(product.priceSale)}
       </Typography>
       &nbsp;
       {fCurrency(product.price)}
@@ -74,7 +73,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {/* {product.status && renderStatus} */}
+        {product.status && renderStatus}
 
         {renderImg}
       </Box>
@@ -85,7 +84,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
         </Link>
 
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          {/* <ColorPreview colors={product.colors} /> */}
+          <ColorPreview colors={product.colors} />
           {renderPrice}
         </Box>
       </Stack>
