@@ -11,8 +11,8 @@ import { _langs, _notifications } from 'src/_mock';
 import { Iconify } from 'src/components/iconify';
 
 import { Main } from './main';
-import { layoutClasses } from '../classes';
-import { NavMobile, NavDesktop } from './nav'; 
+import { NavMobile } from './nav';
+import { layoutClasses } from '../classes'; 
 import { navData } from '../config-nav-dashboard';
 import { Searchbar } from '../components/searchbar';
 import { _workspaces } from '../config-nav-workspace';
@@ -120,16 +120,16 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
       /** **************************************
        * Style
        *************************************** */
-      // cssVars={{
-      //   '--layout-nav-vertical-width': '300px',
-      //   '--layout-dashboard-content-pt': theme.spacing(1),
-      //   '--layout-dashboard-content-pb': theme.spacing(8),
-      //   '--layout-dashboard-content-px': theme.spacing(5),
-      // }}
+      cssVars={{
+        '--layout-nav-vertical-width': '100px',
+        '--layout-dashboard-content-pt': theme.spacing(0),
+        '--layout-dashboard-content-pb': theme.spacing(8),
+        '--layout-dashboard-content-px': theme.spacing(20),
+      }}
       sx={{
         [`& .${layoutClasses.hasSidebar}`]: {
           [theme.breakpoints.up(layoutQuery)]: {
-            pl: 'var(--layout-nav-vertical-width)',
+            // pl: 'var(--layout-nav-vertical-width)',
           },
         },
         ...sx,
