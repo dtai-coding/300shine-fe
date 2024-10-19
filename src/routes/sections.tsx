@@ -15,6 +15,7 @@ import ProtectedRoute from '../stores/auth/protected.route'; // Path to your Pro
 const Dashboard = lazy(() => import('src/pages/dashboard'));
 const Staff = lazy(() => import('src/pages/staff'));
 const HomePage = lazy(() => import('src/pages/home'));
+const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const BlogPage = lazy(() => import('src/pages/blog'));
@@ -23,6 +24,7 @@ const SignInPage = lazy(() => import('src/pages/sign-in'));
 const SignUpPage = lazy(() => import('src/pages/sign-up'));
 const ProductsPage = lazy(() => import('src/pages/products'));
 const Page404 = lazy(() => import('src/pages/page-not-found'));
+
 
 const renderFallback = (
   <Box display="flex" alignItems="center" justifyContent="center" flex="1 1 auto">
@@ -55,6 +57,7 @@ export function Router() {
         { element: <HomePage />, index: true },
         { path: 'appointment', element: <AppointmentPage /> },
         { path: 'select-salon', element: <SelectSalonPage /> },
+        { path: 'service-detail/:id', element: <ServiceDetailPage /> },
       ],
     },
     {

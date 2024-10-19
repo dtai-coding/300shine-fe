@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import serviceApi from 'src/api/serviceApi';
 
@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
+
+import type { ServiceItemProps } from 'src/model/response/service';
 
 import { HomeContent } from 'src/layouts/home';
 import { Iconify } from 'src/components/iconify';
@@ -18,7 +20,7 @@ import { ProductFilters } from "../product-filters";
 
 
 import type { FiltersProps } from "../product-filters";
-import type { ProductItemProps } from "../product-item"; // Import type for ProductItemProps
+
 
 // ----------------------------------------------------------------------
 
@@ -66,8 +68,8 @@ export function ProductsView() {
   const [sortBy, setSortBy] = useState('featured');
   const [openFilter, setOpenFilter] = useState(false);
   const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
-  const [products, setProducts] = useState<ProductItemProps[]>([]); // State to store products
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [products, setProducts] = useState<ServiceItemProps[]>([]); 
+  const navigate = useNavigate(); 
 
   // Fetch products from API
   useEffect(() => {
@@ -166,7 +168,9 @@ export function ProductsView() {
       <Grid container spacing={3}>
         {products.map((product) => (
           <Grid key={product.id} xs={12} sm={6} md={3}>
+            <Link to={`/service-detail/${product.id}`}>
             <ProductItem product={product} />
+            </Link>
           </Grid>
         ))}
       </Grid>

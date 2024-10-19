@@ -7,22 +7,15 @@ import Typography from '@mui/material/Typography';
 import { fCurrency } from 'src/utils/format-number';
 
 import { Label } from 'src/components/label';
+
+import { ServiceItemProps } from 'src/model/response/service';
+
 import { ColorPreview } from 'src/components/color-utils';
 
 // ----------------------------------------------------------------------
 
-export type ProductItemProps = {
-  id: number;
-  imageUrl: string;
-  price: number;
-  name: string;
-  description: string;
-  salonId: number;
-  isDeleted: boolean;
-  serviceStyles: { styleId: number }[];
-};
 
-export function ProductItem({ product }: { product: ProductItemProps }) {
+export function ProductItem({ product }: { product: ServiceItemProps }) {
   const renderStatus = (
     <Label
       variant="inverted"
