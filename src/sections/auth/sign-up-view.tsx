@@ -9,40 +9,76 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 import { Iconify } from 'src/components/iconify';
-import { loginAPI } from 'src/api/apis'; 
+import { registerAPI } from 'src/api/apis'; // Import register API
+
 // ----------------------------------------------------------------------
 
-export function SignInView() {
+export function SignUpView() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [phone, setPhone] = useState(''); // State to manage phone input
-  const [password, setPassword] = useState(''); // State to manage password input
-  const [loading, setLoading] = useState(false); // State to manage loading
-  const [error, setError] = useState(''); // State to manage error
+  const [phone, setPhone] = useState(''); // State for phone
+  const [password, setPassword] = useState(''); // State for password
+  const [fullName, setFullName] = useState(''); // State for full name
+  const [dateOfBirth, setDateOfBirth] = useState(''); // State for date of birth
+  const [gender, setGender] = useState(true); // State for gender (true = male, false = female)
+  const [address, setAddress] = useState(''); // State for address
+  const [loading, setLoading] = useState(false); // State for loading
+  const [error, setError] = useState(''); // State for errors
 
-  const handleSignIn = useCallback(async () => {
+  const handleSignUp = useCallback(async () => {
     setLoading(true);
     setError(''); // Reset error before making a new request
 
+    const data = {
+      phone,
+      password,
+      fullName,
+      dateOfBirth,
+      gender,
+      address,
+    };
+
     try {
-      const response = await loginAPI({ phone, password }); // Call the login API
-      console.log('Login successful:', response);
-      // Handle successful login, store token or redirect as needed
-      router.push('/');
+      const response = await registerAPI(data); // Call the register API
+      console.log('Registration successful:', response);
+      // Handle successful registration, redirect to login or home
+      router.push('/login');
     } catch (err) {
-      console.error('Login failed:', err);
-      setError('Login failed. Please check your credentials.');
+      console.error('Registration failed:', err);
+      setError('Registration failed. Please check your input.');
     } finally {
       setLoading(false);
     }
-  }, [phone, password, router]);
+  }, [phone, password, fullName, dateOfBirth, gender, address, router]);
 
-  const handleSignUpClick = () => {
-    router.push('/sign-up'); // This pushes the user to the /sign-up page
+  const handleSignInClick = () => {
+    router.push('/sign-in'); // This pushes the user to the /sign-up page
   };
+
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
+      <TextField
+        fullWidth
+        name="fullName"
+        label="Full Name"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)} // Update full name state
+        InputLabelProps={{ shrink: true }}
+        sx={{ mb: 3 }}
+      />
+
+      <TextField
+        fullWidth
+        name="dateOfBirth"
+        label="Date of Birth"
+        type="date"
+        value={dateOfBirth}
+        onChange={(e) => setDateOfBirth(e.target.value)} // Update date of birth state
+        InputLabelProps={{ shrink: true }}
+        sx={{ mb: 3 }}
+      />
+
       <TextField
         fullWidth
         name="phone"
@@ -53,9 +89,32 @@ export function SignInView() {
         sx={{ mb: 3 }}
       />
 
-      {/* <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
-        Forgot password?
-      </Link> */}
+      <TextField
+        fullWidth
+        name="address"
+        label="Address"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)} // Update address state
+        InputLabelProps={{ shrink: true }}
+        sx={{ mb: 3 }}
+      />
+
+      <TextField
+        fullWidth
+        name="gender"
+        label="Gender"
+        select
+        SelectProps={{
+          native: true,
+        }}
+        value={gender ? 'true' : 'false'}
+        onChange={(e) => setGender(e.target.value === 'true')} // Update gender state
+        InputLabelProps={{ shrink: true }}
+        sx={{ mb: 3 }}
+      >
+        <option value="true">Male</option>
+        <option value="false">Female</option>
+      </TextField>
 
       <TextField
         fullWidth
@@ -89,10 +148,10 @@ export function SignInView() {
         type="submit"
         color="inherit"
         variant="contained"
-        onClick={handleSignIn}
+        onClick={handleSignUp}
         loading={loading}
       >
-        Sign in
+        Sign Up
       </LoadingButton>
     </Box>
   );
@@ -100,11 +159,11 @@ export function SignInView() {
   return (
     <>
       <Box gap={1.5} display="flex" flexDirection="column" alignItems="center" sx={{ mb: 5 }}>
-        <Typography variant="h5">Sign in</Typography>
+        <Typography variant="h5">Sign Up</Typography>
         <Typography variant="body2" color="text.secondary">
-          Don’t have an account?
-          <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={handleSignUpClick}>
-            Get started
+          Already have an account?
+          <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={handleSignInClick}>
+            Sign in
           </Link>
         </Typography>
       </Box>

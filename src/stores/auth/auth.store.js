@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 
-import { loginAPI, registerAPI, getUserByEmailAPI } from 'src/api/apis';
+import { loginAPI, registerAPI, getUserByIdAPI } from 'src/api/apis';
 
 const storeApi = (set) => ({
   auth: {
@@ -21,19 +21,19 @@ const storeApi = (set) => ({
     const accessToken = response; // Ensure response.value contains the accessToken
     const refreshToken = response.value || 'dummyRefreshToken'; // Adjust as necessary
 
-    const userResponse = await getUserByEmailAPI(payload.email);
+    const userResponse = await getUserByIdAPI(payload.id);
     if (!userResponse || !userResponse.value) {
       throw new Error('Invalid user details response');
     }
 
     const userInfo = {
-      email: payload.email,
+      phone: payload.phone,
       ...userResponse.value,
     };
     console.log('userResponse', userResponse.value.role);
-    if (userResponse.value.role === 'customer') {
-      throw new Error('Not Allowed');
-    }
+    // if (userResponse.value.role === 'customer') {
+    //   throw new Error('Not Allowed');
+    // }
     set({ auth: { status: 'authorized', accessToken, refreshToken, user: userInfo } });
   },
   catch(error) {

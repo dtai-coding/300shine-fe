@@ -25,9 +25,10 @@ export type AccountPopoverProps = IconButtonProps & {
     icon?: React.ReactNode;
     info?: React.ReactNode;
   }[];
+  isLoggedIn?: boolean; // Add this prop to determine if the user is logged in
 };
 
-export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
+export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: AccountPopoverProps) {
   const router = useRouter();
 
   const pathname = usePathname();
@@ -64,8 +65,8 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         }}
         {...other}
       >
-        <Avatar src={_myAccount.photoURL} alt={_myAccount.displayName} sx={{ width: 1, height: 1 }}>
-          {_myAccount.displayName.charAt(0).toUpperCase()}
+        <Avatar sx={{ width: 1, height: 1 }}>
+          {isLoggedIn ? _myAccount.displayName.charAt(0).toUpperCase() : '⁝'}
         </Avatar>
       </IconButton>
 
@@ -82,57 +83,79 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         }}
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
-          <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
-          </Typography>
-
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {_myAccount?.email}
-          </Typography>
+          {isLoggedIn ? (
+            <>
+              <Typography variant="subtitle2" noWrap>
+                {_myAccount?.displayName}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+                {_myAccount?.email}
+              </Typography>
+            </>
+          ) : (
+            <Typography variant="subtitle2" noWrap>
+              Guest
+            </Typography>
+          )}
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuList
-          disablePadding
-          sx={{
-            p: 1,
-            gap: 0.5,
-            display: 'flex',
-            flexDirection: 'column',
-            [`& .${menuItemClasses.root}`]: {
-              px: 1,
-              gap: 2,
-              borderRadius: 0.75,
-              color: 'text.secondary',
-              '&:hover': { color: 'text.primary' },
-              [`&.${menuItemClasses.selected}`]: {
-                color: 'text.primary',
-                bgcolor: 'action.selected',
-                fontWeight: 'fontWeightSemiBold',
-              },
-            },
-          }}
-        >
-          {data.map((option) => (
-            <MenuItem
-              key={option.label}
-              selected={option.href === pathname}
-              onClick={() => handleClickItem(option.href)}
+        {isLoggedIn ? (
+          <>
+            <MenuList
+              disablePadding
+              sx={{
+                p: 1,
+                gap: 0.5,
+                display: 'flex',
+                flexDirection: 'column',
+                [`& .${menuItemClasses.root}`]: {
+                  px: 1,
+                  gap: 2,
+                  borderRadius: 0.75,
+                  color: 'text.secondary',
+                  '&:hover': { color: 'text.primary' },
+                  [`&.${menuItemClasses.selected}`]: {
+                    color: 'text.primary',
+                    bgcolor: 'action.selected',
+                    fontWeight: 'fontWeightSemiBold',
+                  },
+                },
+              }}
             >
-              {option.icon}
-              {option.label}
-            </MenuItem>
-          ))}
-        </MenuList>
-
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
-            Logout
-          </Button>
-        </Box>
+              {data.map((option) => (
+                <MenuItem
+                  key={option.label}
+                  selected={option.href === pathname}
+                  onClick={() => handleClickItem(option.href)}
+                >
+                  {option.icon}
+                  {option.label}
+                </MenuItem>
+              ))}
+            </MenuList>
+            <Divider sx={{ borderStyle: 'dashed' }} />
+            <Box sx={{ p: 1 }}>
+              <Button fullWidth color="error" size="medium" variant="text">
+                Logout
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box sx={{ p: 1 }}>
+              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/sign-in')}>
+                Login
+              </Button>
+            </Box>
+            <Box sx={{ p: 1 }}>
+              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/')}>
+                Home
+              </Button>
+            </Box>
+          </>
+        )}
       </Popover>
     </>
   );
