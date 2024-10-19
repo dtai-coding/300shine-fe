@@ -13,6 +13,7 @@ export const Dashboard = lazy(() => import('src/pages/dashboard'));
 export const HomePage = lazy(() => import('src/pages/home'));
 export const AppointmentPage = lazy(() => import('src/pages/appointment'));
 export const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
+export const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
 
 export const BlogPage = lazy(() => import('src/pages/blog'));
 export const UserPage = lazy(() => import('src/pages/user'));
@@ -52,6 +53,7 @@ export function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'appointment', element: <AppointmentPage /> },
         { path: 'select-salon', element: <SelectSalonPage /> },
+        { path: 'service-detail/:id', element: <ServiceDetailPage /> },
       ],
     },
     {
