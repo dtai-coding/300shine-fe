@@ -5,11 +5,11 @@ export function AppointmentServiceStylistSlot() {
   return (
     <Box
       sx={{
-        padding: 3,          // Khoảng cách giữa nội dung và viền (padding)
-        boxShadow: 3,        // Thêm hiệu ứng shadow
-        borderRadius: 2,     // Bo góc nhẹ
-        backgroundColor: '#fff', // Đặt màu nền cho Box
-        maxWidth: 700,       // Giới hạn độ rộng của Box
+        padding: 3,          
+        boxShadow: 3,       
+        borderRadius: 2,     
+        backgroundColor: '#fff', 
+        maxWidth: 700,      
       }}
     >
       <Typography variant="h5" mb={2}>

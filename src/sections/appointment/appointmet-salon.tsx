@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from '@mui/material/Link';
+import { useEffect } from 'react';
 
-export function AppointmentSalon() {
+export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddress: string | null }) {
 
   const navigate = useNavigate();
 
@@ -14,18 +15,19 @@ export function AppointmentSalon() {
   return (
     <Box
       sx={{
-        padding: 3,          // Khoảng cách giữa nội dung và viền (padding)
-        boxShadow: 3,        // Thêm hiệu ứng shadow
-        borderRadius: 2,     // Bo góc nhẹ
-        backgroundColor: '#fff', // Đặt màu nền cho Box
-        maxWidth: 700,       // Giới hạn độ rộng của Box
+        padding: 3,         
+        boxShadow: 3,        
+        borderRadius: 2,   
+        backgroundColor: '#fff', 
+        maxWidth: 700,    
       }}
     >
       <Typography variant="h5" mb={2}>
         Select Salon
       </Typography>
       
-      <Link
+      {selectedSalonAddress ? (
+        <Link
         color="inherit"
         underline="hover"
         variant="subtitle1"
@@ -33,8 +35,20 @@ export function AppointmentSalon() {
         sx={{ cursor: 'pointer' }}
         onClick={handleRedirect}
       >
-        Choose Salon
-      </Link>
+          {selectedSalonAddress}
+          </Link>
+      ) : (
+        <Link
+          color="inherit"
+          underline="hover"
+          variant="subtitle1"
+          noWrap
+          sx={{ cursor: 'pointer' }}
+          onClick={handleRedirect}
+        >
+          Choose Salon
+        </Link>
+      )}
     </Box>
   );
 }

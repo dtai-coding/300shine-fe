@@ -1,3 +1,5 @@
+
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -5,12 +7,26 @@ import { Iconify } from "src/components/iconify";
 import Card from "@mui/material/Card";
 
 import { HomeContent } from 'src/layouts/home';
-import { AppointmentBackground } from "../appointment-background";
 import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
 
 
+
 export function AppointmentView() {
+  const [salonId, setSalonId] = useState<number | null>(null);
+  const [salonAddress, setSalonAddress] = useState<string | null>(null); 
+
+  useEffect(() => {
+    const storedSalonId = localStorage.getItem('selectedSalonId');
+    const storedSalonAddress = localStorage.getItem('selectedSalonAddress');
+    if (storedSalonId) {
+      setSalonId(Number(storedSalonId)); 
+      setSalonAddress(storedSalonAddress); 
+      console.log('Successfully Store:', storedSalonId );
+      console.log('Successfully Store:', storedSalonAddress );
+    }
+  }, []);
+
   return (
     <HomeContent>
       <Box display="flex" alignItems="center" mb={5}>
@@ -30,8 +46,8 @@ export function AppointmentView() {
           }}
         >
           <Box display="flex" flexDirection="column" gap={3}>
-            <AppointmentSalon />
-            <AppointmentServiceStylistSlot />
+            <AppointmentSalon selectedSalonAddress={salonAddress} />
+            {salonId !== 0 && <AppointmentServiceStylistSlot />}
           </Box>
         </Card>
       </Box>
