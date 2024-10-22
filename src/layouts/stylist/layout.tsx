@@ -13,7 +13,7 @@ import { Iconify } from 'src/components/iconify';
 import { Main } from './main';
 import { layoutClasses } from '../classes';
 import { NavMobile, NavDesktop } from './nav';
-import { navData } from '../config-nav-dashboard';
+import { navData } from './stylist-nav-config';
 import { Searchbar } from '../components/searchbar';
 import { _workspaces } from '../config-nav-workspace';
 import { MenuButton } from '../components/menu-button';
@@ -33,7 +33,7 @@ export type DashboardLayoutProps = {
   };
 };
 
-export function StaffLayout({ sx, children, header }: DashboardLayoutProps) {
+export function StylistLayout({ sx, children, header }: DashboardLayoutProps) {
   const theme = useTheme();
 
   const [navOpen, setNavOpen] = useState(false);

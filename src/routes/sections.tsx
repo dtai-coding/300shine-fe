@@ -6,14 +6,16 @@ import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
 import { HomeLayout } from 'src/layouts/home'; 
 import { DashboardLayout } from 'src/layouts/dashboard';
-import { StaffLayout } from 'src/layouts/staff';
+import { StylistLayout } from 'src/layouts/stylist';
+import { ManagerLayout } from 'src/layouts/manager';
 import AxiosInterceptor from 'src/api/axiosInterceptor';
 import ProtectedRoute from '../stores/auth/protected.route'; // Path to your ProtectedRoute component
 
 
 // Lazy imports for pages
 const Dashboard = lazy(() => import('src/pages/dashboard'));
-const Staff = lazy(() => import('src/pages/staff'));
+const Stylist = lazy(() => import('src/pages/stylist'));
+const Manager = lazy(() => import('src/pages/manager'));
 const HomePage = lazy(() => import('src/pages/home'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
@@ -43,81 +45,99 @@ export function Router() {
       path: '',
       element: <AxiosInterceptor />,
       children: [ 
-    {
-      element: (
-        <HomeLayout>
-          <Suspense fallback={renderFallback}>
-            <Outlet />
-          </Suspense>
-        </HomeLayout>
-      ),
-      children: [
-        { element: <HomePage />, index: true },
-        { path: 'appointment', element: <AppointmentPage /> },
-        { path: 'select-salon', element: <SelectSalonPage /> },
+        {
+          element: (
+            <HomeLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </HomeLayout>
+          ),
+          children: [
+            { element: <HomePage />, index: true },
+            { path: 'appointment', element: <AppointmentPage /> },
+            { path: 'select-salon', element: <SelectSalonPage /> },
+          ],
+        },
+        {
+          path: 'sign-in',
+          element: (
+            <AuthLayout>
+              <SignInPage />
+            </AuthLayout>
+          ),
+        },
+        {
+          path: 'sign-up',
+          element: (
+            <AuthLayout>
+              <SignUpPage />
+            </AuthLayout>
+          ),
+        },
+        {
+          path: 'dashboard',
+          element: (
+            // <ProtectedRoute allowedRoles={['admin']}>
+              <DashboardLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </DashboardLayout>
+            // </ProtectedRoute>
+          ),
+          children: [
+            { path: '', element: <Dashboard /> },
+            { path: 'user', element: <UserPage /> },
+            { path: 'products', element: <ProductsPage /> },
+            { path: 'blog', element: <BlogPage /> },
+          ],
+        },
+        {
+          path: 'stylist',
+          element: (
+            // <ProtectedRoute allowedRoles={['staff']}>
+              <StylistLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </StylistLayout>
+            // </ProtectedRoute>
+          ),
+          children: [
+            { path: '', element: <Stylist /> },
+            { path: 'user', element: <UserPage /> },
+            { path: 'products', element: <ProductsPage /> },
+            { path: 'blog', element: <BlogPage /> },
+          ],
+        },
+        {
+          path: 'manager',
+          element: (
+            // <ProtectedRoute allowedRoles={['manager']}>
+              <ManagerLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </ManagerLayout>
+            // </ProtectedRoute>
+          ),
+          children: [
+            { path: '', element: <Manager /> },
+            { path: 'user', element: <UserPage /> },
+            { path: 'products', element: <ProductsPage /> },
+            { path: 'blog', element: <BlogPage /> },
+          ],
+        },
+        {
+          path: '404',
+          element: <Page404 />,
+        },
+        {
+          path: '*',
+          element: <Navigate to="/404" replace />,
+        },
       ],
     },
-    {
-      path: 'sign-in',
-      element: (
-        <AuthLayout>
-          <SignInPage />
-        </AuthLayout>
-      ),
-    },
-    {
-      path: 'sign-up',
-      element: (
-        <AuthLayout>
-          <SignUpPage />
-        </AuthLayout>
-      ),
-    },
-    {
-      path: 'dashboard',
-      element: (
-        <ProtectedRoute allowedRoles={['admin']}>
-          <DashboardLayout>
-            <Suspense fallback={renderFallback}>
-              <Outlet />
-            </Suspense>
-          </DashboardLayout>
-        </ProtectedRoute>
-      ),
-      children: [
-        { path: '', element: <Dashboard /> },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
-      ],
-    },
-    {
-      path: 'staff',
-      element: (
-        <ProtectedRoute allowedRoles={['staff']}>
-          <StaffLayout>
-            <Suspense fallback={renderFallback}>
-              <Outlet />
-            </Suspense>
-          </StaffLayout>
-        </ProtectedRoute>
-      ),
-      children: [
-        { path: '', element: <Staff /> },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
-      ],
-    },
-    {
-      path: '404',
-      element: <Page404 />,
-    },
-    {
-      path: '*',
-      element: <Navigate to="/404" replace />,
-    },
-  ],
-},
-]);
+  ]);
 }
