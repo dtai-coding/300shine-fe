@@ -32,7 +32,15 @@ const AxiosInterceptor = () => {
     // Response Interceptor
     const responseInterceptor = (response) => {
       console.log('Response interceptor triggered:', response);
-      return response?.data || {};
+    
+      // Check if the response has the "value" and "data" properties
+      if (response?.data?.value) {
+        console.log('list', response.data.value);
+        return response.data.value;  // This should return the users array directly
+      }
+    
+      // Fallback in case of different structure
+      return response || {};
     };
 
     const responseErrorInterceptor = async (error) => {

@@ -16,13 +16,20 @@ import { Iconify } from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export type UserProps = {
-  id: string;
-  name: string;
-  role: string;
-  status: string;
-  company: string;
-  avatarUrl: string;
+  id: number;
+  fullName: string;
+  dateOfBirth: string;
+  gender: boolean;
+  phone: string;
+  address: string;
   isVerified: boolean;
+  status: string;
+  salonId: number;
+  roleName: string;
+  imageUrl: string;
+  commission: number;
+  salary: number;
+  salaryPerDay: number;
 };
 
 type UserTableRowProps = {
@@ -51,15 +58,15 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.name} src={row.avatarUrl} />
-            {row.name}
+            <Avatar alt={row.fullName} src={row.imageUrl} />
+            {row.fullName}
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
-
-        <TableCell>{row.role}</TableCell>
-
+        <TableCell>{row.dateOfBirth}</TableCell>
+        <TableCell>{row.gender ? 'Male' : 'Female'}</TableCell>
+        <TableCell>{row.phone}</TableCell>
+        <TableCell>{row.roleName}</TableCell>
         <TableCell align="center">
           {row.isVerified ? (
             <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
@@ -67,7 +74,6 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             '-'
           )}
         </TableCell>
-
         <TableCell>
           <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
         </TableCell>
