@@ -154,6 +154,22 @@ export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: 
                 Home
               </Button>
             </Box>
+            <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }}/>
+            <Box sx={{ p: 1 }}>
+              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/dashboard')}>
+                Admin
+              </Button>
+            </Box>
+            <Box sx={{ p: 1 }}>
+              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/manager')}>
+                Manager
+              </Button>
+            </Box>
+            <Box sx={{ p: 1 }}>
+              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/stylist')}>
+                Stylist
+              </Button>
+            </Box>
           </>
         )}
       </Popover>
