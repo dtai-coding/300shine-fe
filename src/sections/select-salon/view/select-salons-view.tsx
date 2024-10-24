@@ -19,7 +19,7 @@ export function SelectSalonView() {
         const fetchSalons = async () => {
           try {
             const response = await salonApi.getSalons(); // Call API
-            const salonData = response?.data.value.data; // Extract the product data from response.value.data
+            const salonData = response?.data; // Extract the product data from response.value.data
             setSalons(salonData); // Update the products state with data from API
             console.log('Successfully fetched salons:', salonData);
           } catch (error) {

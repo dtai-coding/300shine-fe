@@ -9,23 +9,44 @@ import Card from "@mui/material/Card";
 import { HomeContent } from 'src/layouts/home';
 import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
+import { AppointmentStylistServiceSlot } from "../appoinment-stylist-service-slot";
 
 
 
 export function AppointmentView() {
   const [salonId, setSalonId] = useState<number | null>(null);
-  const [salonAddress, setSalonAddress] = useState<string | null>(null); 
+  const [salonAddress, setSalonAddress] = useState<string | null>(null);
+  const [serviceId, setServiceId] = useState<number | null>(null);
+  const [serviceName, setServiceName] = useState<string | null>(null);
+  const [viewChoice, setViewChoice] = useState<string | null>(null);
 
+  // Khôi phục dữ liệu từ localStorage khi component được mount
   useEffect(() => {
     const storedSalonId = localStorage.getItem('selectedSalonId');
     const storedSalonAddress = localStorage.getItem('selectedSalonAddress');
+    const storedserviceId = localStorage.getItem('selectedServiceId');
+    const storedserviceName = localStorage.getItem('selectedServiceName');
+    const storedViewChoice = localStorage.getItem('viewChoice');
+
     if (storedSalonId) {
-      setSalonId(Number(storedSalonId)); 
-      setSalonAddress(storedSalonAddress); 
-      console.log('Successfully Store:', storedSalonId );
-      console.log('Successfully Store:', storedSalonAddress );
+      setSalonId(Number(storedSalonId));
+      setSalonAddress(storedSalonAddress);
+    }
+
+    if (storedViewChoice) {
+      setViewChoice(storedViewChoice);
+    }
+    if(storedserviceId){
+      setServiceId(Number(storedserviceId));
+      setServiceName(storedserviceName);
     }
   }, []);
+
+  // Lưu lựa chọn của người dùng vào localStorage
+  const handleViewChoice = (choice: string) => {
+    setViewChoice(choice);
+    localStorage.setItem('viewChoice', choice);
+  };
 
   return (
     <HomeContent>
@@ -36,7 +57,7 @@ export function AppointmentView() {
       </Box>
       <Box sx={{
         display: "flex",
-        justifyContent: "center",  
+        justifyContent: "center",
       }}>
         <Card
           sx={{
@@ -47,11 +68,47 @@ export function AppointmentView() {
         >
           <Box display="flex" flexDirection="column" gap={3}>
             <AppointmentSalon selectedSalonAddress={salonAddress} />
-            {salonId !== 0 && <AppointmentServiceStylistSlot />}
+            
+            {salonId !== null && (viewChoice === null || viewChoice === 'back') && (
+              <>
+                <Button onClick={() => handleViewChoice('service')} sx={{
+                  fontSize: '18px',
+                  '&:hover': {
+                    color: '#0755bb',
+                  }
+                }}>
+                  Choose Service
+                </Button>
+                <Button onClick={() => handleViewChoice('stylist')} sx={{
+                  fontSize: '18px',
+                  '&:hover': {
+                    color: '#0755bb',
+                  }
+                }}>
+                  Choose Stylist
+                </Button>
+              </>
+            )}
+
+            {viewChoice === 'service' && salonId !== null && <AppointmentServiceStylistSlot selectedServiceName={serviceName}/>}
+
+            {viewChoice === 'stylist' && salonId !== null && <AppointmentStylistServiceSlot />}
+            {salonId !== null && serviceId === null  &&(viewChoice === 'service' || viewChoice === 'stylist') && (
+              <Button onClick={() => handleViewChoice('back')}
+                sx={{
+                  fontSize: '18px',
+                  color: 'lightgray',            
+                  '&:hover': {
+                    backgroundColor: 'lightgray', 
+                    color: 'black',
+                  }
+                }}>
+                Back 
+              </Button>
+            )}
           </Box>
         </Card>
       </Box>
-
     </HomeContent>
   );
 }
