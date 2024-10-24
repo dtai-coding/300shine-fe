@@ -7,6 +7,8 @@ const serviceApi = {
 
     getServiceById: (id) => axiosClient.get(`/v1/service/service-by-id`, { params: { id } }),
 
+    getServicesBySalonId: (id) => axiosClient.get('/v1/salon/salon-by-id', { params: { id } }),
+
 };
 
 export default serviceApi;
