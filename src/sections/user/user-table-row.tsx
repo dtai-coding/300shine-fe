@@ -17,19 +17,19 @@ import { Iconify } from 'src/components/iconify';
 
 export type UserProps = {
   id: number;
-  fullName: string;
-  dateOfBirth: string;
-  gender: boolean;
-  phone: string;
-  address: string;
-  isVerified: boolean;
-  status: string;
-  salonId: number;
-  roleName: string;
-  imageUrl: string;
-  commission: number;
-  salary: number;
-  salaryPerDay: number;
+  fullName: string | null;
+  dateOfBirth: string | null;
+  gender: boolean | null;
+  phone: string | null;
+  address: string | null;
+  isVerified: boolean | null;
+  status: string | null;
+  salonId: number | null;
+  roleName: string | null;
+  imageUrl: string | null;
+  commission: number | null;
+  salary: number | null;
+  salaryPerDay: number | null;
 };
 
 type UserTableRowProps = {
@@ -49,6 +49,9 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
     setOpenPopover(null);
   }, []);
 
+  // Helper function to display fallback value for missing data
+  const getDisplayValue = (value: any) => value !== null && value !== undefined ? value : '-';
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -58,25 +61,36 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.fullName} src={row.imageUrl} />
-            {row.fullName}
+            <Avatar alt={row.fullName || '-'} src={row.imageUrl || ''} />
+            {getDisplayValue(row.fullName)}
           </Box>
         </TableCell>
 
-        <TableCell>{row.dateOfBirth}</TableCell>
-        <TableCell>{row.gender ? 'Male' : 'Female'}</TableCell>
-        <TableCell>{row.phone}</TableCell>
-        <TableCell>{row.roleName}</TableCell>
+        <TableCell>{getDisplayValue(row.dateOfBirth)}</TableCell>
+        <TableCell>{getDisplayValue(row.gender !== null ? (row.gender ? 'Male' : 'Female') : '-')}</TableCell>
+        <TableCell>{getDisplayValue(row.phone)}</TableCell>
         <TableCell align="center">
           {row.isVerified ? (
             <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
           ) : (
             '-'
           )}
+          </TableCell>
+          <TableCell>
+          <Label color={(row.status === 'banned' && 'error') || 'success'}>
+            {getDisplayValue(row.status)}
+          </Label>
+
         </TableCell>
-        <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
-        </TableCell>
+        <TableCell>{getDisplayValue(row.salonId)}</TableCell>
+        <TableCell>{getDisplayValue(row.roleName)}</TableCell>
+
+        
+
+        
+        <TableCell>{getDisplayValue(row.commission)}</TableCell>
+        <TableCell>{getDisplayValue(row.salary)}</TableCell>
+        <TableCell>{getDisplayValue(row.salaryPerDay)}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>

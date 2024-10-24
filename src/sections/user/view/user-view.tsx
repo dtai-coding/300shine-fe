@@ -8,6 +8,7 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { DashboardContent } from 'src/layouts/dashboard'; 
 
@@ -87,71 +88,86 @@ export function UserView() {
           }}
         />
 
-        <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
-                order={table.order}
-                orderBy={table.orderBy}
-                rowCount={users.length}
-                numSelected={table.selected.length}
-                onSort={table.onSort}
-                onSelectAllRows={(checked) =>
-                  table.onSelectAllRows(
-                    checked,
-                    users.map((user) => user.id.toString())
-                  )
-                }
-                headLabel={[
-                  { id: 'fullName', label: 'FullName' },
-                  { id: 'dateOfBirth', label: 'DoB' },
-                  { id: 'gender', label: 'Gender' },
-                  { id: 'phone', label: 'Phone' },
-                  { id: 'isVerified', label: 'Verify', align: 'center' },
-                  { id: 'status', label: 'Status', align: 'center' },
-                  { id: 'salonId', label: 'Salon' },
-                  { id: 'roleName', label: 'Role' },
-                  { id: 'commission', label: 'Commission' },
-                  { id: 'salary', label: 'Salary' },
-                  { id: 'salaryPerDay', label: 'Daily salary' },
-                  { id: '' },
-                ]}
-              />
-              <TableBody>
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      row={row}
-                      selected={table.selected.includes(row.id.toString())}
-                      onSelectRow={() => table.onSelectRow(row.id.toString())}
+        {/* Loading Spinner */}
+        {loading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="400px" // Adjust height to center spinner
+          >
+            <CircularProgress /> {/* Loading indicator */}
+          </Box>
+        ) : (
+          // Display table content once data has been loaded
+          <>
+            <Scrollbar>
+              <TableContainer sx={{ overflow: 'unset' }}>
+                <Table sx={{ minWidth: 800 }}>
+                  <UserTableHead
+                    order={table.order}
+                    orderBy={table.orderBy}
+                    rowCount={users.length}
+                    numSelected={table.selected.length}
+                    onSort={table.onSort}
+                    onSelectAllRows={(checked) =>
+                      table.onSelectAllRows(
+                        checked,
+                        users.map((user) => user.id.toString())
+                      )
+                    }
+                    headLabel={[
+                      { id: 'fullName', label: 'FullName' },
+                      { id: 'dateOfBirth', label: 'DoB' },
+                      { id: 'gender', label: 'Gender' },
+                      { id: 'phone', label: 'Phone' },
+                      { id: 'isVerified', label: 'Verify', align: 'center' },
+                      { id: 'status', label: 'Status', align: 'center' },
+                      { id: 'salonId', label: 'Salon' },
+                      { id: 'roleName', label: 'Role' },
+                      { id: 'commission', label: 'Commission' },
+                      { id: 'salary', label: 'Salary' },
+                      { id: 'salaryPerDay', label: 'Daily salary' },
+                      { id: '' },
+                    ]}
+                  />
+                  <TableBody>
+                    {dataFiltered
+                      .slice(
+                        table.page * table.rowsPerPage,
+                        table.page * table.rowsPerPage + table.rowsPerPage
+                      )
+                      .map((row) => (
+                        <UserTableRow
+                          key={row.id}
+                          row={row}
+                          selected={table.selected.includes(row.id.toString())}
+                          onSelectRow={() => table.onSelectRow(row.id.toString())}
+                        />
+                      ))}
+
+                    <TableEmptyRows
+                      height={68}
+                      emptyRows={emptyRows(table.page, table.rowsPerPage, users.length)}
                     />
-                  ))}
 
-                <TableEmptyRows
-                  height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, users.length)}
-                />
+                    {notFound && <TableNoData searchQuery={filterName} />}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Scrollbar>
 
-                {notFound && <TableNoData searchQuery={filterName} />}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Scrollbar>
-
-        <TablePagination
-          component="div"
-          page={table.page}
-          count={users.length}
-          rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          rowsPerPageOptions={[5, 10, 25]}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
-        />
+            <TablePagination
+              component="div"
+              page={table.page}
+              count={users.length}
+              rowsPerPage={table.rowsPerPage}
+              onPageChange={table.onChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={table.onChangeRowsPerPage}
+            />
+          </>
+        )}
       </Card>
     </DashboardContent>
   );

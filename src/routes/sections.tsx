@@ -89,8 +89,8 @@ export function Router() {
           children: [
             { path: '', element: <Dashboard /> },
             { path: 'user', element: <UserPage /> },
-            { path: 'products', element: <ProductsPage /> },
-            { path: 'blog', element: <BlogPage /> },
+            // { path: 'products', element: <ProductsPage /> },
+            // { path: 'blog', element: <BlogPage /> },
           ],
         },
         {
@@ -107,8 +107,8 @@ export function Router() {
           children: [
             { path: '', element: <Stylist /> },
             { path: 'user', element: <UserPage /> },
-            { path: 'products', element: <ProductsPage /> },
-            { path: 'blog', element: <BlogPage /> },
+            // { path: 'products', element: <ProductsPage /> },
+            // { path: 'blog', element: <BlogPage /> },
           ],
         },
         {
@@ -125,8 +125,8 @@ export function Router() {
           children: [
             { path: '', element: <Manager /> },
             { path: 'user', element: <UserPage /> },
-            { path: 'products', element: <ProductsPage /> },
-            { path: 'blog', element: <BlogPage /> },
+            // { path: 'products', element: <ProductsPage /> },
+            // { path: 'blog', element: <BlogPage /> },
           ],
         },
         {
