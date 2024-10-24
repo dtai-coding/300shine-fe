@@ -17,7 +17,7 @@ export function ServiceDetailView() {
       const fetchProduct = async () => {
         try {
           const response = await serviceApi.getServiceById(id); // Gọi API với id
-          const productData = response?.data.value.data; // Lấy dữ liệu từ API
+          const productData = response?.data; // Lấy dữ liệu từ API
           setProducts(productData); // Cập nhật state
           console.log('Successfully fetched product:', productData);
         } catch (error) {

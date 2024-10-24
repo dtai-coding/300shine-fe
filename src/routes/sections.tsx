@@ -20,6 +20,7 @@ const HomePage = lazy(() => import('src/pages/home'));
 const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
+const SelectServicePage = lazy(() => import('src/pages/select-service'));
 const BlogPage = lazy(() => import('src/pages/blog'));
 const UserPage = lazy(() => import('src/pages/user'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
@@ -59,6 +60,7 @@ export function Router() {
             { element: <HomePage />, index: true },
             { path: 'appointment', element: <AppointmentPage /> },
             { path: 'select-salon', element: <SelectSalonPage /> },
+            { path: 'select-service', element: <SelectServicePage /> },
             { path: 'service-detail/:id', element: <ServiceDetailPage /> },
           ],
         },
