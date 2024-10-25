@@ -17,14 +17,17 @@ const Dashboard = lazy(() => import('src/pages/dashboard'));
 const Stylist = lazy(() => import('src/pages/stylist'));
 const Manager = lazy(() => import('src/pages/manager'));
 const HomePage = lazy(() => import('src/pages/home'));
+const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
+const SelectServicePage = lazy(() => import('src/pages/select-service'));
 const BlogPage = lazy(() => import('src/pages/blog'));
 const UserPage = lazy(() => import('src/pages/user'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
 const SignUpPage = lazy(() => import('src/pages/sign-up'));
 const ProductsPage = lazy(() => import('src/pages/products'));
 const Page404 = lazy(() => import('src/pages/page-not-found'));
+
 
 const renderFallback = (
   <Box display="flex" alignItems="center" justifyContent="center" flex="1 1 auto">
@@ -57,6 +60,8 @@ export function Router() {
             { element: <HomePage />, index: true },
             { path: 'appointment', element: <AppointmentPage /> },
             { path: 'select-salon', element: <SelectSalonPage /> },
+            { path: 'select-service', element: <SelectServicePage /> },
+            { path: 'service-detail/:id', element: <ServiceDetailPage /> },
           ],
         },
         {

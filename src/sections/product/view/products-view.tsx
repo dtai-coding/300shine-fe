@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import serviceApi from 'src/api/serviceApi';
 
@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
+
+import type { ServiceItemProps } from 'src/model/response/service';
 
 import { HomeContent } from 'src/layouts/home';
 import { Iconify } from 'src/components/iconify';
@@ -18,7 +20,7 @@ import { ProductFilters } from "../product-filters";
 
 
 import type { FiltersProps } from "../product-filters";
-import type { ProductItemProps } from "../product-item"; // Import type for ProductItemProps
+
 
 // ----------------------------------------------------------------------
 
@@ -66,15 +68,15 @@ export function ProductsView() {
   const [sortBy, setSortBy] = useState('featured');
   const [openFilter, setOpenFilter] = useState(false);
   const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
-  const [products, setProducts] = useState<ProductItemProps[]>([]); // State to store products
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [products, setProducts] = useState<ServiceItemProps[]>([]);
+  const navigate = useNavigate();
 
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await serviceApi.getServices(); // Call API
-        const productData = response?.data.value.data; // Extract the product data from response.value.data
+        const productData = response?.data; // Extract the product data from response.value.data
         setProducts(productData); // Update the products state with data from API
         console.log('Successfully fetched products:', productData);
       } catch (error) {
@@ -106,7 +108,7 @@ export function ProductsView() {
   );
 
   const handleRedirect = () => {
-    navigate('/appointment'); 
+    navigate('/appointment');
   };
 
   return (
@@ -119,7 +121,7 @@ export function ProductsView() {
           variant="contained"
           color="primary"
           startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={handleRedirect} 
+          onClick={handleRedirect}
         >
           Make Appointment
         </Button>
@@ -166,10 +168,13 @@ export function ProductsView() {
       <Grid container spacing={3}>
         {products.map((product) => (
           <Grid key={product.id} xs={12} sm={6} md={3}>
-            <ProductItem product={product} />
+            <Link to={`/service-detail/${product.id}`} style={{ textDecoration: 'none' }}>
+              <ProductItem product={product} />
+            </Link>
           </Grid>
         ))}
       </Grid>
+
 
       <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />
     </HomeContent>
