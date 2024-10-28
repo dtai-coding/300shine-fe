@@ -10,23 +10,22 @@ const APIs_URL = {
 export const loginAPI = async (data) => {
   const response = await axiosClient.post(APIs_URL.LOGIN, data);
   console.log('Login response:', response);
-  return response; // Return the data from the response
+  return response;
 };
 
 export const registerAPI = async (data) => {
   const response = await axiosClient.post(APIs_URL.REGISTER, data);
-  return response.data; // Return response data instead of full response
+  console.log('Login response:', response);
+  return response;
 };
 
 export const getUserByPhoneAPI = async (phone) => {
   try {
     console.log('Fetching customer details for phone:', phone);
-    const encodedPhone = encodeURIComponent(phone); // Encode email parameter
-    const response = await axiosClient.get(
-      `${APIs_URL.GET_USER_BY_PHONE}/${encodedPhone}`
-    );
+    const encodedPhone = encodeURIComponent(phone);
+    const response = await axiosClient.get(`${APIs_URL.GET_USER_BY_PHONE}/${encodedPhone}`);
     console.log('Customer details response:', response);
-    return response; // Return response data instead of full response
+    return response;
   } catch (error) {
     console.error('Get customer by email API error:', error.response || error.message);
     throw error;
@@ -36,11 +35,9 @@ export const getUserByPhoneAPI = async (phone) => {
 export const getUserByIdAPI = async (id) => {
   try {
     console.log('Fetching customer details for id:', id);
-    const response = await axiosClient.get(
-      `${APIs_URL.GET_USER_BY_ID}/${id}`
-    );
+    const response = await axiosClient.get(`${APIs_URL.GET_USER_BY_ID}/${id}`);
     console.log('Customer details response:', response);
-    return response; // Return response data instead of full response
+    return response;
   } catch (error) {
     console.error('Get customer by Id API error:', error.response || error.message);
     throw error;

@@ -1,7 +1,5 @@
-import type { IconButtonProps } from '@mui/material/IconButton';
-
-import { useState, useCallback } from 'react';
-
+import React, { useState, useCallback, useMemo } from 'react';
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -9,14 +7,10 @@ import Popover from '@mui/material/Popover';
 import Divider from '@mui/material/Divider';
 import MenuList from '@mui/material/MenuList';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
-
 import { useRouter, usePathname } from 'src/routes/hooks';
-
-import { _myAccount } from 'src/_mock';
-
-// ----------------------------------------------------------------------
+import { useAuthStore } from 'src/stores/auth/auth.store';
 
 export type AccountPopoverProps = IconButtonProps & {
   data?: {
@@ -25,13 +19,15 @@ export type AccountPopoverProps = IconButtonProps & {
     icon?: React.ReactNode;
     info?: React.ReactNode;
   }[];
-  isLoggedIn?: boolean; // Add this prop to determine if the user is logged in
 };
 
-export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: AccountPopoverProps) {
+export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
   const router = useRouter();
-
   const pathname = usePathname();
+  const status = useAuthStore((state) => state.auth.status);
+  const user = useAuthStore((state) => state.auth.user);
+  const logoutUser = useAuthStore((state) => state.logoutUser);
+  const isLoggedIn = status === 'authorized';
 
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
@@ -51,6 +47,12 @@ export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: 
     [handleClosePopover, router]
   );
 
+  const handleLogout = useCallback(() => {
+    logoutUser();
+    handleClosePopover();
+    router.push('/sign-in');
+  }, [logoutUser, handleClosePopover, router]);
+
   return (
     <>
       <IconButton
@@ -65,8 +67,11 @@ export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: 
         }}
         {...other}
       >
-        <Avatar sx={{ width: 1, height: 1 }}>
-          {isLoggedIn ? _myAccount.displayName.charAt(0).toUpperCase() : '⁝'}
+        <Avatar
+          sx={{ width: 1, height: 1 }}
+          src={isLoggedIn && user?.imageUrl ? user.imageUrl : undefined}
+        >
+          {!isLoggedIn && '⁝'}
         </Avatar>
       </IconButton>
 
@@ -86,10 +91,10 @@ export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: 
           {isLoggedIn ? (
             <>
               <Typography variant="subtitle2" noWrap>
-                {_myAccount?.displayName}
+                {user?.fullName}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                {_myAccount?.email}
+                {user?.phone}
               </Typography>
             </>
           ) : (
@@ -137,7 +142,7 @@ export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: 
             </MenuList>
             <Divider sx={{ borderStyle: 'dashed' }} />
             <Box sx={{ p: 1 }}>
-              <Button fullWidth color="error" size="medium" variant="text">
+              <Button fullWidth color="error" size="medium" variant="text" onClick={handleLogout}>
                 Logout
               </Button>
             </Box>
@@ -145,28 +150,48 @@ export function AccountPopover({ data = [], isLoggedIn = false, sx, ...other }: 
         ) : (
           <>
             <Box sx={{ p: 1 }}>
-              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/sign-in')}>
-                Login
-              </Button>
-            </Box>
-            <Box sx={{ p: 1 }}>
               <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/')}>
                 Home
               </Button>
             </Box>
-            <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }}/>
             <Box sx={{ p: 1 }}>
-              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/dashboard')}>
+              <Button
+                fullWidth
+                size="medium"
+                variant="text"
+                onClick={() => handleClickItem('/sign-in')}
+              >
+                Login
+              </Button>
+            </Box>
+            <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }} />
+            <Box sx={{ p: 1 }}>
+              <Button
+                fullWidth
+                size="medium"
+                variant="text"
+                onClick={() => handleClickItem('/dashboard')}
+              >
                 Admin
               </Button>
             </Box>
             <Box sx={{ p: 1 }}>
-              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/manager')}>
+              <Button
+                fullWidth
+                size="medium"
+                variant="text"
+                onClick={() => handleClickItem('/manager')}
+              >
                 Manager
               </Button>
             </Box>
             <Box sx={{ p: 1 }}>
-              <Button fullWidth size="medium" variant="text" onClick={() => handleClickItem('/stylist')}>
+              <Button
+                fullWidth
+                size="medium"
+                variant="text"
+                onClick={() => handleClickItem('/stylist')}
+              >
                 Stylist
               </Button>
             </Box>
