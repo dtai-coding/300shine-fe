@@ -19,18 +19,18 @@ export const navData = [
     icon: icon('ic-user'),
   },
   {
-    title: 'Product',
-    path: '/dashboard/products',
+    title: 'Salon',
+    path: '/dashboard/salon',
     icon: icon('ic-cart'),
-    info: (
-      <Label color="error" variant="inverted">
-        +3
-      </Label>
-    ),
+    // info: (
+    //   <Label color="error" variant="inverted">
+    //     +3
+    //   </Label>
+    // ),
   },
   {
-    title: 'Blog',
-    path: '/dashboard/blog',
+    title: 'Revenue',
+    path: '/dashboard/revenue',
     icon: icon('ic-blog'),
   },
 ];

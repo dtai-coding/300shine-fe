@@ -1,4 +1,4 @@
-import { UserProps } from 'src/model/response/User';
+import type { SalonProps } from './salon-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: UserProps[];
+  inputData: SalonProps[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };

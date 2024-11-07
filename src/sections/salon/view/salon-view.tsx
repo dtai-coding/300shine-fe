@@ -1,54 +1,39 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  CircularProgress,
-  Typography,
-  Table,
-  TableBody,
-  TableContainer,
-  TablePagination,
-} from '@mui/material';
+import { useState, useEffect, useCallback } from 'react';
+
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Table from '@mui/material/Table';
+import Button from '@mui/material/Button';
+import TableBody from '@mui/material/TableBody';
+import Typography from '@mui/material/Typography';
+import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
+
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { UserProps, UserCreateProps } from 'src/model/response/User';
 import userApi from '../../../api/userApi';
+
 import { TableNoData } from '../table-no-data';
-import { UserTableRow } from '../user-table-row';
-import { UserTableHead } from '../user-table-head';
+import { SalonTableRow } from '../salon-table-row';
+import { SalonTableHead } from '../salon-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
-import { UserTableToolbar } from '../user-table-toolbar';
+import { SalonTableToolbar } from '../salon-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import { UserDialog } from '../UserDialog';
+
+import type { SalonProps } from '../salon-table-row';
+
+// ----------------------------------------------------------------------
 
 export function UserView() {
   const table = useTable();
 
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserProps | null>(null);
   const [filterName, setFilterName] = useState('');
-  const [users, setUsers] = useState<UserProps[]>([]);
+  const [users, setUsers] = useState<SalonProps[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
-
-  const userToEdit: UserCreateProps = {
-    phone: currentUser?.phone ?? null,
-    password: isEditMode ? null : '',
-    fullName: currentUser?.fullName ?? null,
-    dateOfBirth: currentUser?.dateOfBirth ?? null,
-    gender: currentUser?.gender ?? null,
-    address: currentUser?.address ?? null,
-    isVerified: currentUser?.isVerified ?? null,
-    status: currentUser?.status ?? null,
-    salonId: currentUser?.salonId ?? null,
-    imageUrl: currentUser?.imageUrl ?? null,
-    commission: currentUser?.commission ?? null,
-    salary: currentUser?.salary ?? null,
-    salaryPerDay: currentUser?.salaryPerDay ?? null,
-  };
 
   useEffect(() => {
     fetchData();
@@ -56,39 +41,22 @@ export function UserView() {
 
   const fetchData = async () => {
     setLoading(true);
-    try {
-      const response = await userApi.getUsers();
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
+
+    const fetchUsers = async () => {
+      try {
+        const response = await userApi.getUsers();
+        console.log('API response:', response.data);
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+    await Promise.all([fetchUsers()]);
+
     setLoading(false);
   };
 
-  const handleEditUser = (user: UserProps) => {
-    setCurrentUser(user);
-    setIsEditMode(true);
-    setOpenAddUserDialog(true);
-  };
-
-  const handleSaveUser = async (user: UserCreateProps) => {
-    if (isEditMode && currentUser) {
-      await userApi.updateUser(currentUser.id, user);
-    } else {
-      await userApi.addManager({ ...user, password: user.password || '' });
-    }
-    setOpenAddUserDialog(false);
-    setIsEditMode(false);
-    setCurrentUser(null);
-    fetchData();
-  };
-
-  const handleDeleteUser = async (userId: number) => {
-    await userApi.deleteUser(userId);
-    fetchData();
-  };
-
-  const dataFiltered: UserProps[] = applyFilter({
+  const dataFiltered: SalonProps[] = applyFilter({
     inputData: users,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
@@ -106,40 +74,38 @@ export function UserView() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={() => setOpenAddUserDialog(true)}
         >
           New user
         </Button>
       </Box>
 
-      <UserDialog
-        open={openAddUserDialog}
-        onClose={() => setOpenAddUserDialog(false)}
-        isEditMode={isEditMode}
-        user={userToEdit}
-        onSave={handleSaveUser}
-      />
-
       <Card>
-        <UserTableToolbar
+        <SalonTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
-          onFilterName={(event) => {
+          onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);
             table.onResetPage();
           }}
         />
 
+        {/* Loading Spinner */}
         {loading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-            <CircularProgress />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="400px" // Adjust height to center spinner
+          >
+            <CircularProgress /> {/* Loading indicator */}
           </Box>
         ) : (
+          // Display table content once data has been loaded
           <>
             <Scrollbar>
               <TableContainer sx={{ overflow: 'unset' }}>
                 <Table sx={{ minWidth: 800 }}>
-                  <UserTableHead
+                  <SalonTableHead
                     order={table.order}
                     orderBy={table.orderBy}
                     rowCount={users.length}
@@ -153,16 +119,16 @@ export function UserView() {
                     }
                     headLabel={[
                       { id: 'fullName', label: 'FullName' },
-                      { id: 'dateOfBirth', label: 'DateOfBirth' },
+                      { id: 'dateOfBirth', label: 'DoB' },
                       { id: 'gender', label: 'Gender' },
                       { id: 'phone', label: 'Phone' },
-                      { id: 'isVerified', label: 'Verified', align: 'center' },
-                      { id: 'status', label: 'Status' },
-                      { id: 'salonId', label: 'SalonId' },
+                      { id: 'isVerified', label: 'Verify', align: 'center' },
+                      { id: 'status', label: 'Status', align: 'center' },
+                      { id: 'salonId', label: 'Salon' },
                       { id: 'roleName', label: 'Role' },
                       { id: 'commission', label: 'Commission' },
                       { id: 'salary', label: 'Salary' },
-                      { id: 'salaryPerDay', label: 'SalaryPerDay' },
+                      { id: 'salaryPerDay', label: 'Daily salary' },
                       { id: '' },
                     ]}
                   />
@@ -172,22 +138,21 @@ export function UserView() {
                         table.page * table.rowsPerPage,
                         table.page * table.rowsPerPage + table.rowsPerPage
                       )
-                      .map((user) => (
-                        <UserTableRow
-                          key={user.id}
-                          row={user}
-                          selected={table.selected.includes(user.id.toString())}
-                          onSelectRow={() => table.onSelectRow(user.id.toString())}
-                          onEditUser={handleEditUser}
-                          onDeleteUser={handleDeleteUser}
+                      .map((row) => (
+                        <SalonTableRow
+                          key={row.id}
+                          row={row}
+                          selected={table.selected.includes(row.id.toString())}
+                          onSelectRow={() => table.onSelectRow(row.id.toString())}
                         />
                       ))}
 
                     <TableEmptyRows
+                      height={68}
                       emptyRows={emptyRows(table.page, table.rowsPerPage, users.length)}
                     />
 
-                    <TableNoData searchQuery={filterName} />
+                    {notFound && <TableNoData searchQuery={filterName} />}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -195,12 +160,12 @@ export function UserView() {
 
             <TablePagination
               component="div"
-              count={users.length}
               page={table.page}
-              onPageChange={table.onChangePage}
+              count={users.length}
               rowsPerPage={table.rowsPerPage}
-              onRowsPerPageChange={table.onChangeRowsPerPage}
+              onPageChange={table.onChangePage}
               rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={table.onChangeRowsPerPage}
             />
           </>
         )}
@@ -208,6 +173,8 @@ export function UserView() {
     </DashboardContent>
   );
 }
+
+// ----------------------------------------------------------------------
 
 export function useTable() {
   const [page, setPage] = useState(0);
