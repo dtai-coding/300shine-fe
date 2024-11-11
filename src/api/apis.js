@@ -3,31 +3,29 @@ import axiosClient from './axiosClient';
 const APIs_URL = {
   LOGIN: '/v1/login',
   REGISTER: '/v1/register',
-  GET_USER_BY_PHONE: '/v1/User/get-user-by-phone',
-  GET_USER_BY_ID: '/v1/User',
+  GET_USER_BY_PHONE: '/User',
+  GET_USER_BY_ID: '/User',
 };
 
 export const loginAPI = async (data) => {
-  console.log('Sending login request with payload:', data);
   const response = await axiosClient.post(APIs_URL.LOGIN, data);
   console.log('Login response:', response);
-  return response; // Return the data from the response
+  return response;
 };
 
 export const registerAPI = async (data) => {
   const response = await axiosClient.post(APIs_URL.REGISTER, data);
-  return response.data; // Return response data instead of full response
+  console.log('Login response:', response);
+  return response;
 };
 
 export const getUserByPhoneAPI = async (phone) => {
   try {
     console.log('Fetching customer details for phone:', phone);
-    const encodedPhone = encodeURIComponent(phone); // Encode email parameter
-    const response = await axiosClient.get(
-      `${APIs_URL.GET_USER_BY_PHONE}?email=${encodedPhone}`
-    );
+    const encodedPhone = encodeURIComponent(phone);
+    const response = await axiosClient.get(`${APIs_URL.GET_USER_BY_PHONE}/${encodedPhone}`);
     console.log('Customer details response:', response);
-    return response; // Return response data instead of full response
+    return response;
   } catch (error) {
     console.error('Get customer by email API error:', error.response || error.message);
     throw error;
@@ -37,11 +35,9 @@ export const getUserByPhoneAPI = async (phone) => {
 export const getUserByIdAPI = async (id) => {
   try {
     console.log('Fetching customer details for id:', id);
-    const response = await axiosClient.get(
-      `${APIs_URL.GET_USER_BY_ID}/${id}`
-    );
+    const response = await axiosClient.get(`${APIs_URL.GET_USER_BY_ID}/${id}`);
     console.log('Customer details response:', response);
-    return response; // Return response data instead of full response
+    return response;
   } catch (error) {
     console.error('Get customer by Id API error:', error.response || error.message);
     throw error;

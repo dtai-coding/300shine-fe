@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -9,93 +8,35 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 import { Iconify } from 'src/components/iconify';
-import { loginAPI } from 'src/api/apis'; 
-// ----------------------------------------------------------------------
+import { useAuthStore } from 'src/stores/auth/auth.store'; 
 
 export function SignInView() {
   const router = useRouter();
+  const { loginUser } = useAuthStore(); // Get loginUser action from Zustand store
   const [showPassword, setShowPassword] = useState(false);
-  const [phone, setPhone] = useState(''); // State to manage phone input
-  const [password, setPassword] = useState(''); // State to manage password input
-  const [loading, setLoading] = useState(false); // State to manage loading
-  const [error, setError] = useState(''); // State to manage error
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSignIn = useCallback(async () => {
     setLoading(true);
-    setError(''); // Reset error before making a new request
+    setError(''); // Reset error
 
     try {
-      const response = await loginAPI({ phone, password }); // Call the login API
-      console.log('Login successful:', response);
-      // Handle successful login, store token or redirect as needed
-      router.push('/');
+      await loginUser({ phone, password }); // Call Zustand store's loginUser function
+      router.push('/'); // Redirect to homepage on successful login
     } catch (err) {
       console.error('Login failed:', err);
-      setError('Login failed. Please check your credentials.');
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
-  }, [phone, password, router]);
+  }, [loginUser, phone, password, router]);
 
   const handleSignUpClick = () => {
-    router.push('/sign-up'); // This pushes the user to the /sign-up page
+    router.push('/sign-up');
   };
-
-  const renderForm = (
-    <Box display="flex" flexDirection="column" alignItems="flex-end">
-      <TextField
-        fullWidth
-        name="phone"
-        label="Phone Number"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)} // Update phone state
-        InputLabelProps={{ shrink: true }}
-        sx={{ mb: 3 }}
-      />
-
-      {/* <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
-        Forgot password?
-      </Link> */}
-
-      <TextField
-        fullWidth
-        name="password"
-        label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)} // Update password state
-        InputLabelProps={{ shrink: true }}
-        type={showPassword ? 'text' : 'password'}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                <Iconify icon={showPassword ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-        sx={{ mb: 3 }}
-      />
-
-      {error && (
-        <Typography variant="body2" color="error" sx={{ mb: 2 }}>
-          {error}
-        </Typography>
-      )}
-
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        color="inherit"
-        variant="contained"
-        onClick={handleSignIn}
-        loading={loading}
-      >
-        Sign in
-      </LoadingButton>
-    </Box>
-  );
 
   return (
     <>
@@ -109,25 +50,55 @@ export function SignInView() {
         </Typography>
       </Box>
 
-      {renderForm}
+      <Box display="flex" flexDirection="column" alignItems="flex-end">
+        <TextField
+          fullWidth
+          name="phone"
+          label="Phone Number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          sx={{ mb: 3 }}
+        />
 
-      {/* <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }}>
-        <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 'fontWeightMedium' }}>
-          OR
-        </Typography>
-      </Divider>
+        <TextField
+          fullWidth
+          name="password"
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                  <Iconify icon={showPassword ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          sx={{ mb: 3 }}
+        />
 
-      <Box gap={1} display="flex" justifyContent="center">
-        <IconButton color="inherit">
-          <Iconify icon="logos:google-icon" />
-        </IconButton>
-        <IconButton color="inherit">
-          <Iconify icon="eva:github-fill" />
-        </IconButton>
-        <IconButton color="inherit">
-          <Iconify icon="ri:twitter-x-fill" />
-        </IconButton>
-      </Box> */}
+        {error && (
+          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
+
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          color="inherit"
+          variant="contained"
+          onClick={handleSignIn}
+          loading={loading}
+        >
+          Sign in
+        </LoadingButton>
+      </Box>
     </>
   );
 }

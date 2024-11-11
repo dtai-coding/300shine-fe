@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -9,25 +8,29 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 import { Iconify } from 'src/components/iconify';
-import { registerAPI } from 'src/api/apis'; // Import register API
-
-// ----------------------------------------------------------------------
+import { registerAPI } from 'src/api/apis';
+import FileUploader from 'src/components/firebase/FileUploader';
 
 export function SignUpView() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [phone, setPhone] = useState(''); // State for phone
-  const [password, setPassword] = useState(''); // State for password
-  const [fullName, setFullName] = useState(''); // State for full name
-  const [dateOfBirth, setDateOfBirth] = useState(''); // State for date of birth
-  const [gender, setGender] = useState(true); // State for gender (true = male, false = female)
-  const [address, setAddress] = useState(''); // State for address
-  const [loading, setLoading] = useState(false); // State for loading
-  const [error, setError] = useState(''); // State for errors
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [gender, setGender] = useState(true);
+  const [address, setAddress] = useState('');
+  const [imageUrl, setImageUrl] = useState(''); // State for image URL
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSignUp = useCallback(async () => {
+    if (!imageUrl) {
+      setError('Please upload a profile picture.');
+      return;
+    }
     setLoading(true);
-    setError(''); // Reset error before making a new request
+    setError('');
 
     const data = {
       phone,
@@ -36,12 +39,12 @@ export function SignUpView() {
       dateOfBirth,
       gender,
       address,
+      imageUrl, // Include imageUrl in registration data
     };
 
     try {
-      const response = await registerAPI(data); // Call the register API
+      const response = await registerAPI(data);
       console.log('Registration successful:', response);
-      // Handle successful registration, redirect to login or home
       router.push('/login');
     } catch (err) {
       console.error('Registration failed:', err);
@@ -49,12 +52,15 @@ export function SignUpView() {
     } finally {
       setLoading(false);
     }
-  }, [phone, password, fullName, dateOfBirth, gender, address, router]);
+  }, [phone, password, fullName, dateOfBirth, gender, address, imageUrl, router]);
 
-  const handleSignInClick = () => {
-    router.push('/sign-in'); // This pushes the user to the /sign-up page
+  const handleUploadSuccess = (url: string) => {
+    setImageUrl(url);
   };
 
+  const handleSignInClick = () => {
+    router.push('/sign-in');
+  };
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
@@ -63,42 +69,38 @@ export function SignUpView() {
         name="fullName"
         label="Full Name"
         value={fullName}
-        onChange={(e) => setFullName(e.target.value)} // Update full name state
+        onChange={(e) => setFullName(e.target.value)}
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-
       <TextField
         fullWidth
         name="dateOfBirth"
         label="Date of Birth"
         type="date"
         value={dateOfBirth}
-        onChange={(e) => setDateOfBirth(e.target.value)} // Update date of birth state
+        onChange={(e) => setDateOfBirth(e.target.value)}
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-
       <TextField
         fullWidth
         name="phone"
         label="Phone Number"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)} // Update phone state
+        onChange={(e) => setPhone(e.target.value)}
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-
       <TextField
         fullWidth
         name="address"
         label="Address"
         value={address}
-        onChange={(e) => setAddress(e.target.value)} // Update address state
+        onChange={(e) => setAddress(e.target.value)}
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-
       <TextField
         fullWidth
         name="gender"
@@ -108,20 +110,19 @@ export function SignUpView() {
           native: true,
         }}
         value={gender ? 'true' : 'false'}
-        onChange={(e) => setGender(e.target.value === 'true')} // Update gender state
+        onChange={(e) => setGender(e.target.value === 'true')}
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       >
         <option value="true">Male</option>
         <option value="false">Female</option>
       </TextField>
-
       <TextField
         fullWidth
         name="password"
         label="Password"
         value={password}
-        onChange={(e) => setPassword(e.target.value)} // Update password state
+        onChange={(e) => setPassword(e.target.value)}
         InputLabelProps={{ shrink: true }}
         type={showPassword ? 'text' : 'password'}
         InputProps={{
@@ -135,6 +136,8 @@ export function SignUpView() {
         }}
         sx={{ mb: 3 }}
       />
+
+      <FileUploader onUploadSuccess={handleUploadSuccess} />
 
       {error && (
         <Typography variant="body2" color="error" sx={{ mb: 2 }}>
@@ -169,24 +172,6 @@ export function SignUpView() {
       </Box>
 
       {renderForm}
-
-      {/* <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }}>
-        <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 'fontWeightMedium' }}>
-          OR
-        </Typography>
-      </Divider>
-
-      <Box gap={1} display="flex" justifyContent="center">
-        <IconButton color="inherit">
-          <Iconify icon="logos:google-icon" />
-        </IconButton>
-        <IconButton color="inherit">
-          <Iconify icon="eva:github-fill" />
-        </IconButton>
-        <IconButton color="inherit">
-          <Iconify icon="ri:twitter-x-fill" />
-        </IconButton>
-      </Box> */}
     </>
   );
 }

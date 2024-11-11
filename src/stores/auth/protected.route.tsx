@@ -5,9 +5,9 @@ import { useAuthStore } from 'src/stores/auth/auth.store'; // Adjust the path as
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
-  children?: ReactNode; // Add this to support children inside ProtectedRoute
+  children?: ReactNode; // To support wrapping components
 }
-// eslint-disable-next-line react/prop-types
+
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children }) => {
   const { auth } = useAuthStore();
 
@@ -18,10 +18,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children 
 
   if (!allowedRoles.includes(auth.user.role)) {
     // If the user role is not allowed, redirect to a forbidden page or homepage
-    return <Navigate to="/" replace />;
+    return <Navigate to="/forbidden" replace />; // Or some other "forbidden" page
   }
 
-  return <Outlet />;
+  // If children exist, render them; otherwise, render Outlet for nested routes
+  return children ? <>{children}</> : <Outlet />;
 };
 
 export default ProtectedRoute;
