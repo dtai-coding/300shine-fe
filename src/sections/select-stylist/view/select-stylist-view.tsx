@@ -18,12 +18,11 @@ export function SelectStylistView() {
   const [stylists, setStylists] = useState<StylistItemProps[]>([]);
   const [serviceId, setServiceId] = useState<number | null>(null);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const storedSalonId = localStorage.getItem('selectedSalonId');
     const storedServiceId = localStorage.getItem('selectedServiceId');
     setServiceId(Number(storedServiceId));
+    console.log(storedSalonId, serviceId);
 
     const fetchStylists = async () => {
       
@@ -39,7 +38,7 @@ export function SelectStylistView() {
     };
 
     fetchStylists();
-  }, [serviceId]); // Dependency on selected serviceId
+  }, [serviceId]); 
 
 
   return (

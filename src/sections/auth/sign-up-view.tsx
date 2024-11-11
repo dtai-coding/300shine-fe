@@ -9,8 +9,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
-import { Iconify } from 'src/components/iconify';
+
 import { registerAPI } from 'src/api/apis';
+
+import { Iconify } from 'src/components/iconify';
 import FileUploader from 'src/components/firebase/FileUploader';
 
 

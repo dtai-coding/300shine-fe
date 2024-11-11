@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+
 import { storage } from '../../../firebaseConfig';
 
 const FileUploader = ({ onUploadSuccess }) => {
