@@ -1,13 +1,15 @@
 
-import { useEffect, useState } from 'react';
+import type { ServiceItemProps } from 'src/model/response/service';
+
+import { useState, useEffect } from 'react';
+
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
 
+import serviceApi from 'src/api/serviceApi';
 import { HomeContent } from 'src/layouts/home';
 
-import serviceApi from 'src/api/serviceApi';
-import { ServiceItemProps } from 'src/model/response/service';
 import { SelectServiceItem } from '../select-service-item'; 
 
 

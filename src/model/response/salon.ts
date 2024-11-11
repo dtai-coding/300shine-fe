@@ -1,5 +1,5 @@
 export type SalonItemProps = {
-    id: string;
+    id: number;
     address: string;
     phone: number;
     district: string;

@@ -12,8 +12,8 @@ import { Iconify } from 'src/components/iconify';
 
 import { Main } from './main';
 import { layoutClasses } from '../classes';
-import { NavMobile, NavDesktop } from './nav';
 import { navData } from './admin-nav-config';
+import { NavMobile, NavDesktop } from './nav';
 import { Searchbar } from '../components/searchbar';
 import { _workspaces } from '../config-nav-workspace';
 import { MenuButton } from '../components/menu-button';

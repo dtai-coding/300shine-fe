@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import type { ServiceItemProps } from 'src/model/response/service';
 
-import serviceApi from 'src/api/serviceApi';
+import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -9,15 +9,14 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 
-import type { ServiceItemProps } from 'src/model/response/service';
-
+import serviceApi from 'src/api/serviceApi';
 import { HomeContent } from 'src/layouts/home';
+
 import { Iconify } from 'src/components/iconify';
 
 import { ProductItem } from "../product-item";
 import { ProductSort } from "../product-sort";
 import { ProductFilters } from "../product-filters";
-
 
 import type { FiltersProps } from "../product-filters";
 
