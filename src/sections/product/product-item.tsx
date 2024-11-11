@@ -1,13 +1,11 @@
+import type { ServiceItemProps } from 'src/model/response/service';
+
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { fCurrency } from 'src/utils/format-number';
-
-
-import { ServiceItemProps } from 'src/model/response/service';
 
 
 // ----------------------------------------------------------------------
