@@ -1,28 +1,32 @@
+import type { UserProps, UserCreateProps } from 'src/model/response/User';
+
 import React, { useState, useEffect, useCallback } from 'react';
+
 import {
   Box,
-  Button,
   Card,
-  CircularProgress,
-  Typography,
   Table,
+  Button,
   TableBody,
+  Typography,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from '@mui/material';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { UserProps, UserCreateProps } from 'src/model/response/User';
+
 import userApi from '../../../api/userApi';
+import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
 import { UserTableRow } from '../user-table-row';
 import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import { UserDialog } from '../UserDialog';
 
 export function UserView() {
   const table = useTable();

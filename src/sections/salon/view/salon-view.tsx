@@ -8,15 +8,14 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import userApi from '../../../api/userApi';
 
+import userApi from '../../../api/userApi';
 import { TableNoData } from '../table-no-data';
 import { SalonTableRow } from '../salon-table-row';
 import { SalonTableHead } from '../salon-table-head';

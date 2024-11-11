@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -13,6 +13,13 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 
+import slotApi from "src/api/slot";
+
+import { SlotItemProps } from "src/model/response/slot";
+
+import { SelectSlotItem } from "./appointment-slot-item";
+
+
 export function AppointmentServiceStylistSlot({
   selectedServiceName,
   selectedStylistName,
@@ -26,6 +33,30 @@ export function AppointmentServiceStylistSlot({
   const [stylistName, setStylistName] = useState(selectedStylistName);
   const navigate = useNavigate();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [slots, setSlots] = useState<SlotItemProps[]>([]);
+
+  useEffect(() => {
+    if (stylistName) { // Only fetch slots if stylistName is not null
+      const storedStylistId = localStorage.getItem('selectedStylistId');
+      const storedSalonId = localStorage.getItem('selectedSalonId');
+      const storedServiceId = localStorage.getItem('selectedServiceId');
+      const date = '11-11-2024';
+  
+      const fetchSlots = async () => {  
+        try {
+          const response = await slotApi.getSlotByStylistIdSalonIdServiceIdDate(storedStylistId, storedSalonId, storedServiceId, date);
+          const slotData = response?.data; 
+          setSlots(slotData); 
+          console.log('Successfully fetched slot:', slotData);
+        } catch (error) {
+          console.error('Failed to fetch slot:', error);
+        }
+      };
+  
+      fetchSlots();
+    }
+  }, [stylistName]);
+  
 
   const handleRedirectService = () => {
     navigate('/select-service');
@@ -44,12 +75,12 @@ export function AppointmentServiceStylistSlot({
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
     localStorage.removeItem('selectedStylistName');
-    
+
     setServiceName(null);
     setStylistName(null);
     setOpenDeleteDialog(false);
 
-    onClear(); // Call the onClear callback here to update the parent state
+    onClear();
   };
 
   const handleCancelDelete = () => {
@@ -136,8 +167,18 @@ export function AppointmentServiceStylistSlot({
           </Typography>
         </>
       )}
-
-      {/* Delete confirmation dialog */}
+      {stylistName !== null && (
+        <>
+          <Typography variant="h5" mb={2}>
+            3. Available Slots
+          </Typography>
+          <Box display="flex" flexWrap="wrap">
+            {slots.map((slot) => (
+              <SelectSlotItem key={slot.id} slot={slot} />
+            ))}
+          </Box>
+        </>
+      )}
       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>

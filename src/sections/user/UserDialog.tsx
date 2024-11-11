@@ -1,13 +1,15 @@
+import type { UserCreateProps } from 'src/model/response/User';
+
 import React, { useState, useEffect } from 'react';
+
 import {
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Button,
   TextField,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
 } from '@mui/material';
-import { UserCreateProps } from 'src/model/response/User';
 
 interface UserDialogProps {
   open: boolean;
