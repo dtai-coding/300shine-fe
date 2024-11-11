@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import serviceApi from 'src/api/serviceApi';
-
 import type { ServiceItemProps } from 'src/model/response/service';
 
+import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+
+import serviceApi from 'src/api/serviceApi';
 import { HomeContent } from 'src/layouts/home';
 
 import { ServiceDetailItem } from '../service-detail-card';

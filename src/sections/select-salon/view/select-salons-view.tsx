@@ -1,13 +1,15 @@
 
-import { useEffect, useState } from 'react';
+import type { SalonItemProps } from 'src/model/response/salon';
+
+import { useState, useEffect } from 'react';
+
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
 
+import salonApi from 'src/api/salonApi';
 import { HomeContent } from 'src/layouts/home';
 
-import salonApi from 'src/api/salon';
-import { SalonItemProps } from 'src/model/response/salon';
 import { SalonItem } from '../select-salon-item';
 
 
