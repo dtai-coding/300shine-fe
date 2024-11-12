@@ -19,12 +19,15 @@ const Stylist = lazy(() => import('src/pages/stylist'));
 const Manager = lazy(() => import('src/pages/manager'));
 const HomePage = lazy(() => import('src/pages/home'));
 const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
+const StylistDetailPage = lazy(() => import('src/pages/stylist-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
 const SalonPage = lazy(() => import('src/pages/salon'));
 const RevenuePage = lazy(() => import('src/pages/revenue'));
 const SelectStylistPage = lazy(() => import('src/pages/select-stylist'));
+const PaymentSuccessfullyPage = lazy(() => import('src/pages/payment-successfully'));
+const PaymentCancelPage = lazy(() => import('src/pages/payment-cancel'));
 const BlogPage = lazy(() => import('src/pages/blog'));
 const UserPage = lazy(() => import('src/pages/user'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
@@ -66,6 +69,10 @@ export function Router() {
             { path: 'select-service', element: <SelectServicePage /> },
             { path: 'select-stylist', element: <SelectStylistPage /> },
             { path: 'service-detail/:id', element: <ServiceDetailPage /> },
+            { path: 'stylist-detail/:id', element: <StylistDetailPage /> },
+            {path: 'payment-successfully', element: <PaymentSuccessfullyPage />},
+            {path: 'payment-cancel', element: <PaymentCancelPage />},
+
           ],
         },
         {

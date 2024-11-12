@@ -1,37 +1,34 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
-import { Box, Link, Dialog, Button, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@mui/material';
+import { Box, Link, Card, Dialog, Button, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 
 export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddress: string | null }) {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [hasSelectedService, setHasSelectedService] = useState(false);
 
-  // Check if the user has already selected a service
   useEffect(() => {
     const storedServiceId = localStorage.getItem('selectedServiceId');
     if (storedServiceId) {
-      setHasSelectedService(true); // Set flag to true if service is selected
+      setHasSelectedService(true); 
     }
   }, []);
 
   const handleRedirect = () => {
     if (selectedSalonAddress && hasSelectedService) {
-      setOpenDialog(true); // Show dialog only if a salon is selected and service is also selected
+      setOpenDialog(true); 
     } else {
-      navigate('/select-salon'); // If no service is selected, go directly to salon selection
+      navigate('/select-salon'); 
     }
   };
 
   const handleConfirmChangeSalon = () => {
-    // Clear the selected service and stylist in localStorage
     localStorage.removeItem('selectedServiceId');
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
     localStorage.removeItem('selectedStylistName');
 
-    // Navigate to salon selection page
     navigate('/select-salon');
   };
 
@@ -50,16 +47,31 @@ export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddres
       </Typography>
 
       {selectedSalonAddress ? (
+        <Card
+        onClick={handleRedirect}        
+        sx={{
+          cursor:'pointer',
+          height: '30px',
+          margin: '18px',
+          backgroundColor:'#b3e5fc' ,
+          color:  'black',
+          transition: '0.3s',
+          '&:hover': {
+            backgroundColor:  'palegoldenrod ' ,
+          },
+        }}
+        >
         <Link
           color="inherit"
+          marginLeft='20px'
           underline="hover"
           variant="subtitle1"
           noWrap
           sx={{ cursor: 'pointer' }}
-          onClick={handleRedirect}
         >
           {selectedSalonAddress}
         </Link>
+        </Card>
       ) : (
         <Link
           color="inherit"
