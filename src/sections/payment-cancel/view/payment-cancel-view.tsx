@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { Cancel } from '@mui/icons-material';
-import { Box, Typography, Button, Card, CardContent, CardActions } from '@mui/material';
+import { Box, Card, Button, Typography, CardContent, CardActions } from '@mui/material';
 
 export const PaymentCanceledView: React.FC = () => {
     const navigate = useNavigate();

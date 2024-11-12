@@ -25,12 +25,16 @@ export function AppointmentView() {
   const [serviceName, setServiceName] = useState<string | null>(null);
   const [serviceDuration, setServiceDuration] = useState<number | null>(null);
 
-  const [styistId, setStylistId] = useState<number | null>(null);
+  const [stylistId, setStylistId] = useState<number | null>(null);
   const [stylistName, setStylistName] = useState<string | null>(null);
-  const [slotIds, setSlotId] =  useState<number[]>([]);
+
+  const [date, setDate] = useState<string | null>(null);
+
+  const [slotIds, setSlotId] = useState<number[]>([]);
 
   const [viewChoice, setViewChoice] = useState<string | null>(null);
   const [openBackDialog, setOpenBackDialog] = useState<boolean>(false);
+  const [viewDone, setViewDone] = useState<boolean>(false);
 
   useEffect(() => {
     const storedSalonId = localStorage.getItem('selectedSalonId');
@@ -43,8 +47,9 @@ export function AppointmentView() {
     const storedStylistId = localStorage.getItem('selectedStylistId');
     const storedStylistName = localStorage.getItem('selectedStylistName');
 
+    const storedDate = localStorage.getItem('selectedDate');
+
     const storedSlotIds = localStorage.getItem('selectedSlotIds');
-    // const storedSlotIds = JSON.parse(localStorage.getItem('selectedSlotIds') || '[]');  // Parse the stored data
 
     const storedViewChoice = localStorage.getItem('viewChoice');
 
@@ -65,10 +70,17 @@ export function AppointmentView() {
       setStylistId(Number(storedStylistId));
       setStylistName(storedStylistName);
     }
-    if (storedSlotIds) {
-      setSlotId([Number(storedSlotIds)]);  
+    if (storedDate) {
+      setDate(storedDate);
     }
-    console.log(storedSalonId, storedServiceId, storedServiceDuration, storedSlotIds);
+    if (storedSlotIds) {
+      setSlotId([Number(storedSlotIds)]);
+    }
+    console.log(`salon ${storedSalonId}`);
+    console.log(`service ${storedServiceId}`);
+    console.log(`stylist ${storedStylistId}`);
+    console.log(`date ${storedDate}`);
+    console.log(`slot ${storedSlotIds}`);
   }, []);
 
   const handleViewChoice = (choice: string) => {
@@ -89,14 +101,20 @@ export function AppointmentView() {
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
     localStorage.removeItem('selectedStylistName');
+    localStorage.removeItem('selectedDate');
     localStorage.removeItem('selectedSlotIds');
     localStorage.removeItem('selectedStylistDuration');
     setServiceId(null);
     setServiceName(null);
     setStylistId(null);
     setStylistName(null);
+    setDate(null);
+    setSlotId([]);
+    setServiceDuration(null)
+
     setOpenBackDialog(false);
     handleViewChoice('back');
+    handleViewDone(false);
   };
 
   const handleCancelBack = () => {
@@ -104,11 +122,26 @@ export function AppointmentView() {
   };
 
   const clearServiceAndStylist = () => {
+    localStorage.removeItem('selectedServiceId');
+    localStorage.removeItem('selectedServiceName');
+    localStorage.removeItem('selectedStylistId');
+    localStorage.removeItem('selectedStylistName');
+    localStorage.removeItem('selectedDate');
+    localStorage.removeItem('selectedSlotIds');
+    localStorage.removeItem('selectedStylistDuration');
     setServiceId(null);
     setServiceName(null);
     setStylistId(null);
     setStylistName(null);
+    setDate(null);
+    setSlotId([]);
+    setServiceDuration(null)
+    handleViewDone(false);
   };
+
+  const handleViewDone = (done: boolean) => {
+    setViewDone(done);
+};
 
   return (
     <HomeContent>
@@ -120,6 +153,10 @@ export function AppointmentView() {
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Card sx={{ width: 700, padding: 2, boxShadow: 3 }}>
           <Box display="flex" flexDirection="column" gap={3}>
+          <Typography variant="h3" flexGrow={1} textAlign="center" color='seagreen  '>
+          Customize Your Appointment
+        </Typography>
+
             <AppointmentSalon selectedSalonAddress={salonAddress} />
 
             {salonId !== null && (viewChoice === null || viewChoice === 'back') && (
@@ -137,17 +174,32 @@ export function AppointmentView() {
               <AppointmentServiceStylistSlot
                 selectedServiceName={serviceName}
                 selectedStylistName={stylistName}
-                onClear={clearServiceAndStylist} // Pass the callback here
+                onClear={clearServiceAndStylist} 
+                viewdone={handleViewDone}
               />
             )}
 
             {viewChoice === 'stylist' && salonId !== null && <AppointmentStylistServiceSlot />}
-{/* 
+            {/* 
             {serviceName !== null && stylistName !== null && (
               <Link marginLeft={1}>
                 + Choose other service
               </Link>
             )} */}
+
+            { viewDone && (
+              <Button
+                // onClick={handleBack}
+                sx={{
+                  fontSize: '18px',
+                  color: 'white',
+                  backgroundColor: 'mediumseagreen   ',
+                  '&:hover': { backgroundColor: 'lightgray', color: 'black' }
+                }}
+              >
+                Done
+              </Button>
+            )}
 
             {salonId !== null && (viewChoice === 'service' || viewChoice === 'stylist') && (
               <Button
@@ -161,6 +213,7 @@ export function AppointmentView() {
                 Back
               </Button>
             )}
+
           </Box>
         </Card>
       </Box>
