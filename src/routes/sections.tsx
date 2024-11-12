@@ -72,7 +72,9 @@ export function Router() {
           path: 'sign-in',
           element: (
             <AuthLayout>
-              <SignInPage />
+              <Suspense fallback={renderFallback}>
+                <SignInPage />
+              </Suspense>
             </AuthLayout>
           ),
         },
@@ -134,7 +136,7 @@ export function Router() {
           children: [
             { path: '', element: <Manager /> },
             { path: 'user', element: <UserPage /> },
-            // { path: 'products', element: <ProductsPage /> },
+            // { path: 'appointment', element: <ProductsPage /> },
             // { path: 'blog', element: <BlogPage /> },
           ],
         },

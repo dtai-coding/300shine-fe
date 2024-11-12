@@ -1,4 +1,4 @@
-import type { UserCreateProps } from 'src/model/response/User';
+import type { UserCreateProps } from 'src/model/request/User';
 
 import React, { useState, useEffect } from 'react';
 

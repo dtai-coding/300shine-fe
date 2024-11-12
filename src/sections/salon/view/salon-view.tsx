@@ -14,8 +14,9 @@ import {
 import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { SalonViewProps, SalonCreateProps } from 'src/model/response/salon';
-import salonApi from '../../../api/salon';
+import { SalonViewProps } from 'src/model/response/salon';
+import { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
+import salonApi from '../../../api/salonApi';
 import { TableNoData } from '../table-no-data';
 import { SalonTableRow } from '../salon-table-row';
 import { SalonTableHead } from '../salon-table-head';
@@ -34,12 +35,12 @@ export function SalonView() {
   const [loading, setLoading] = useState(true);
   const [openAddSalonDialog, setOpenAddSalonDialog] = useState(false);
 
-  const salonToEdit: SalonCreateProps = {
-    address: currentSalon?.address ?? '',
-    phone: currentSalon?.phone ?? 0,
-    district: currentSalon?.district ?? '',
-    imageUrl: currentSalon?.imageUrl ?? '',
-    // add more fields as needed
+  const salonToEdit: SalonUpdateProps = {
+    id: currentSalon?.id ?? 0,
+    address: currentSalon?.address ?? null,
+    phone: currentSalon?.phone ?? null,
+    district: currentSalon?.district ?? null,
+    imageUrl: currentSalon?.imageUrl ?? null,
   };
 
   useEffect(() => {
@@ -63,16 +64,26 @@ export function SalonView() {
     setOpenAddSalonDialog(true);
   };
 
+  const handleCloseDialog = () => {
+    setOpenAddSalonDialog(false);
+    setTimeout(() => {
+      setIsEditMode(false);
+      setCurrentSalon(null);
+    }, 200);
+  };
+
   const handleSaveSalon = async (salon: SalonCreateProps) => {
     if (isEditMode && currentSalon) {
-      await salonApi.updateSalon(salon);
+      await salonApi.updateSalon({ ...salon, id: currentSalon.id });
     } else {
       await salonApi.addSalon(salon);
     }
-    setOpenAddSalonDialog(false);
-    setIsEditMode(false);
-    setCurrentSalon(null);
+    handleCloseDialog();
     fetchData();
+  };
+
+  const handleDeleteSelected = () => {
+    // Implement deletion logic for selected salons
   };
 
   const handleDeleteSalon = async (salonId: number) => {
@@ -106,7 +117,7 @@ export function SalonView() {
 
       <SalonDialog
         open={openAddSalonDialog}
-        onClose={() => setOpenAddSalonDialog(false)}
+        onClose={() => handleCloseDialog()}
         isEditMode={isEditMode}
         salon={salonToEdit}
         onSave={handleSaveSalon}
@@ -116,10 +127,8 @@ export function SalonView() {
         <SalonTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
-          onFilterName={(event) => {
-            setFilterName(event.target.value);
-            table.onResetPage();
-          }}
+          onFilterName={(event) => setFilterName(event.target.value)}
+          onDeleteSelected={handleDeleteSelected} // Add this line
         />
 
         {loading ? (
@@ -147,7 +156,6 @@ export function SalonView() {
                       { id: 'address', label: 'Address' },
                       { id: 'phone', label: 'Phone' },
                       { id: 'district', label: 'District' },
-                      { id: 'imageUrl', label: 'Image' },
                       { id: '' },
                     ]}
                   />
@@ -172,7 +180,7 @@ export function SalonView() {
                       emptyRows={emptyRows(table.page, table.rowsPerPage, salons.length)}
                     />
 
-                    <TableNoData searchQuery={filterName} />
+                    {notFound && <TableNoData searchQuery={filterName} />}
                   </TableBody>
                 </Table>
               </TableContainer>
