@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
-import { Box, Link, Dialog, Button, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText, Card } from '@mui/material';
+import { Box, Link, Card, Dialog, Button, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 
 export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddress: string | null }) {
   const navigate = useNavigate();
