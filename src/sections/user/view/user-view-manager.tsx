@@ -29,7 +29,7 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-export function UserView() {
+export function UserMangerView() {
   const table = useTable();
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -63,14 +63,22 @@ export function UserView() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await userApi.getUsers();
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-    setLoading(false);
-  };
+      // Fetch both stylists and customers simultaneously
+      const [stylistsResponse, customersResponse] = await Promise.all([
+        userApi.getStylists(),
+        userApi.getCustomers(),
+      ]);
 
+      // Merge the data from both responses
+      const combinedUsers = [...stylistsResponse.data, ...customersResponse.data];
+
+      setUsers(combinedUsers);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleEditUser = (user: UserProps) => {
     setCurrentUser(user);
     setIsEditMode(true);

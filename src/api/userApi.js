@@ -1,6 +1,23 @@
 import axiosClient from './axiosClient';
 
 const userApi = {
+  getStylists: async () => {
+    try {
+      return await axiosClient.get('/users?roleId=4');
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
+  },
+  getCustomers: async () => {
+    try {
+      return await axiosClient.get('/users?roleId=3');
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
+  },
+
   getUsers: async () => {
     try {
       return await axiosClient.get('/users');
@@ -39,7 +56,7 @@ const userApi = {
 
   updateUser: async (userId, data) => {
     try {
-      return await axiosClient.put(`/api/${userId}`, data);
+      return await axiosClient.put(`/${userId}`, data);
     } catch (error) {
       console.error('Error updating user:', error);
       throw error;
@@ -48,7 +65,7 @@ const userApi = {
 
   deleteUser: async (userId) => {
     try {
-      return await axiosClient.delete(`/api/${userId}`);
+      return await axiosClient.delete(`/${userId}`);
     } catch (error) {
       console.error('Error deleting user:', error);
       throw error;

@@ -15,13 +15,13 @@ export type UserCreateProps = {
 };
 
 export type UserUpdateProps = {
-  id: number | null;
   phone: string | null;
-  password: string | null;
   fullName: string | null;
   dateOfBirth: string | null;
   gender: boolean | null;
   address: string | null;
+  role: string | null;
+  isStylist: boolean | null;
   isVerified: boolean | null;
   status: string | null;
   salonId: number | null;
