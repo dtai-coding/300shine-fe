@@ -5,6 +5,7 @@ export type ServiceItemProps = {
     name: string;
     description: string;
     salonId: number;
+    duration : number
     isDeleted: boolean;
     serviceStyles: { styleId: number }[];
 };

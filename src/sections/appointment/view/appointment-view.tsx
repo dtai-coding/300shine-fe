@@ -21,20 +21,32 @@ import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-sl
 export function AppointmentView() {
   const [salonId, setSalonId] = useState<number | null>(null);
   const [salonAddress, setSalonAddress] = useState<string | null>(null);
+
   const [serviceId, setServiceId] = useState<number | null>(null);
   const [serviceName, setServiceName] = useState<string | null>(null);
+  const [serviceDuration, setServiceDuration] = useState<number | null>(null);
+
   const [styistId, setStylistId] = useState<number | null>(null);
   const [stylistName, setStylistName] = useState<string | null>(null);
+  const [slotIds, setSlotId] =  useState<number[]>([]);
+
   const [viewChoice, setViewChoice] = useState<string | null>(null);
   const [openBackDialog, setOpenBackDialog] = useState<boolean>(false);
 
   useEffect(() => {
     const storedSalonId = localStorage.getItem('selectedSalonId');
     const storedSalonAddress = localStorage.getItem('selectedSalonAddress');
+
     const storedServiceId = localStorage.getItem('selectedServiceId');
     const storedServiceName = localStorage.getItem('selectedServiceName');
+    const storedServiceDuration = localStorage.getItem('selectedServiceDuration');
+
     const storedStylistId = localStorage.getItem('selectedStylistId');
     const storedStylistName = localStorage.getItem('selectedStylistName');
+
+    const storedSlotIds = localStorage.getItem('selectedSlotIds');
+    // const storedSlotIds = JSON.parse(localStorage.getItem('selectedSlotIds') || '[]');  // Parse the stored data
+
     const storedViewChoice = localStorage.getItem('viewChoice');
 
     if (storedSalonId) {
@@ -47,12 +59,17 @@ export function AppointmentView() {
     if (storedServiceId) {
       setServiceId(Number(storedServiceId));
       setServiceName(storedServiceName);
+      setServiceDuration(Number(storedServiceDuration));
+
     }
     if (storedStylistId) {
       setStylistId(Number(storedStylistId));
       setStylistName(storedStylistName);
     }
-    console.log(storedSalonId,storedServiceId)
+    if (storedSlotIds) {
+      setSlotId([Number(storedSlotIds)]);  
+    }
+    console.log(storedSalonId, storedServiceId, storedServiceDuration, storedSlotIds);
   }, []);
 
   const handleViewChoice = (choice: string) => {
@@ -73,6 +90,8 @@ export function AppointmentView() {
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
     localStorage.removeItem('selectedStylistName');
+    localStorage.removeItem('selectedSlotIds');
+    localStorage.removeItem('selectedStylistDuration');
     setServiceId(null);
     setServiceName(null);
     setStylistId(null);
@@ -124,12 +143,12 @@ export function AppointmentView() {
             )}
 
             {viewChoice === 'stylist' && salonId !== null && <AppointmentStylistServiceSlot />}
-
+{/* 
             {serviceName !== null && stylistName !== null && (
               <Link marginLeft={1}>
                 + Choose other service
               </Link>
-            )}
+            )} */}
 
             {salonId !== null && (viewChoice === 'service' || viewChoice === 'stylist') && (
               <Button
