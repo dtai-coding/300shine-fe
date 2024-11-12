@@ -4,13 +4,12 @@ import Box from '@mui/material/Box';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
-import { HomeLayout } from 'src/layouts/home'; 
+import { HomeLayout } from 'src/layouts/home';
 import { DashboardLayout } from 'src/layouts/dashboard';
 import { StylistLayout } from 'src/layouts/stylist';
 import { ManagerLayout } from 'src/layouts/manager';
 import AxiosInterceptor from 'src/api/axiosInterceptor';
 import ProtectedRoute from '../stores/auth/protected.route'; // Path to your ProtectedRoute component
-
 
 // Lazy imports for pages
 const Dashboard = lazy(() => import('src/pages/dashboard'));
@@ -21,13 +20,14 @@ const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
+const SalonPage = lazy(() => import('src/pages/salon'));
+const RevenuePage = lazy(() => import('src/pages/revenue'));
 const BlogPage = lazy(() => import('src/pages/blog'));
 const UserPage = lazy(() => import('src/pages/user'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
 const SignUpPage = lazy(() => import('src/pages/sign-up'));
 const ProductsPage = lazy(() => import('src/pages/products'));
 const Page404 = lazy(() => import('src/pages/page-not-found'));
-
 
 const renderFallback = (
   <Box display="flex" alignItems="center" justifyContent="center" flex="1 1 auto">
@@ -47,7 +47,7 @@ export function Router() {
     {
       path: '',
       element: <AxiosInterceptor />,
-      children: [ 
+      children: [
         {
           element: (
             <HomeLayout>
@@ -84,29 +84,29 @@ export function Router() {
           path: 'dashboard',
           element: (
             // <ProtectedRoute allowedRoles={['admin']}>
-              <DashboardLayout>
-                <Suspense fallback={renderFallback}>
-                  <Outlet />
-                </Suspense>
-              </DashboardLayout>
+            <DashboardLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </DashboardLayout>
             // </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Dashboard /> },
             { path: 'user', element: <UserPage /> },
-            // { path: 'products', element: <ProductsPage /> },
-            // { path: 'blog', element: <BlogPage /> },
+            { path: 'salon', element: <SalonPage /> },
+            { path: 'revenue', element: <RevenuePage /> },
           ],
         },
         {
           path: 'stylist',
           element: (
             // <ProtectedRoute allowedRoles={['staff']}>
-              <StylistLayout>
-                <Suspense fallback={renderFallback}>
-                  <Outlet />
-                </Suspense>
-              </StylistLayout>
+            <StylistLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </StylistLayout>
             // </ProtectedRoute>
           ),
           children: [
@@ -120,11 +120,11 @@ export function Router() {
           path: 'manager',
           element: (
             // <ProtectedRoute allowedRoles={['manager']}>
-              <ManagerLayout>
-                <Suspense fallback={renderFallback}>
-                  <Outlet />
-                </Suspense>
-              </ManagerLayout>
+            <ManagerLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </ManagerLayout>
             // </ProtectedRoute>
           ),
           children: [

@@ -1,7 +1,6 @@
-import type { SalonProps } from './salon-table-row';
+import type { SalonViewProps } from 'src/model/response/salon';
 
 // ----------------------------------------------------------------------
-
 export const visuallyHidden = {
   border: 0,
   margin: -1,
@@ -53,7 +52,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: SalonProps[];
+  inputData: SalonViewProps[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };
@@ -71,7 +70,9 @@ export function applyFilter({ inputData, comparator, filterName }: ApplyFilterPr
 
   if (filterName) {
     inputData = inputData.filter(
-      (user) => (user.fullName?.toLowerCase() || '').indexOf(filterName.toLowerCase()) !== -1
+      (salon) =>
+        (salon.address?.toLowerCase() || '').includes(filterName.toLowerCase()) ||
+        (salon.district?.toLowerCase() || '').includes(filterName.toLowerCase())
     );
   }
 

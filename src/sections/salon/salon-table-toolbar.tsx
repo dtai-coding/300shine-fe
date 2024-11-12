@@ -13,12 +13,14 @@ type SalonTableToolbarProps = {
   numSelected: number;
   filterName: string;
   onFilterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onDeleteSelected: () => void; // New prop for handling delete action
 };
 
 export function SalonTableToolbar({
   numSelected,
   filterName,
   onFilterName,
+  onDeleteSelected,
 }: SalonTableToolbarProps) {
   return (
     <Toolbar
@@ -54,7 +56,7 @@ export function SalonTableToolbar({
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDeleteSelected}>
             <Iconify icon="solar:trash-bin-trash-bold" />
           </IconButton>
         </Tooltip>
