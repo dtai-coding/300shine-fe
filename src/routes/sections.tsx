@@ -21,6 +21,7 @@ const Stylist = lazy(() => import('src/pages/stylist'));
 const Manager = lazy(() => import('src/pages/manager'));
 const HomePage = lazy(() => import('src/pages/home'));
 const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
+const StylistDetailPage = lazy(() => import('src/pages/stylist-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
@@ -67,6 +68,8 @@ export function Router() {
             { path: 'select-service', element: <SelectServicePage /> },
             { path: 'select-stylist', element: <SelectStylistPage /> },
             { path: 'service-detail/:id', element: <ServiceDetailPage /> },
+            { path: 'stylist-detail/:id', element: <StylistDetailPage /> },
+
           ],
         },
         {
