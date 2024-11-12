@@ -1,14 +1,10 @@
-
 import type { StylistItemProps } from 'src/model/response/stylist';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 
-
-
 export function StylistDetailItem({ stylist }: { stylist: StylistItemProps }) {
-
   return (
     <Card>
       <Box display="flex" alignItems="center">
@@ -29,11 +25,9 @@ export function StylistDetailItem({ stylist }: { stylist: StylistItemProps }) {
         <Stack spacing={2} sx={{ p: 3, width: '60%' }}>
             {stylist.name}
   
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            {/* <Typography variant="subtitle1">
-              {fCurrency(stylist.price)}
-            </Typography> */}
-          </Box>
+          {/* <Box display="flex" alignItems="center" justifyContent="space-between">
+          
+          </Box> */}
         </Stack>
       </Box>
     </Card>

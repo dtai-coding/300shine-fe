@@ -26,6 +26,8 @@ const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
 const SelectStylistPage = lazy(() => import('src/pages/select-stylist'));
+const PaymentSuccessfullyPage = lazy(() => import('src/pages/payment-successfully'));
+const PaymentCancelPage = lazy(() => import('src/pages/payment-cancel'));
 const BlogPage = lazy(() => import('src/pages/blog'));
 const UserPage = lazy(() => import('src/pages/user'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
@@ -69,6 +71,8 @@ export function Router() {
             { path: 'select-stylist', element: <SelectStylistPage /> },
             { path: 'service-detail/:id', element: <ServiceDetailPage /> },
             { path: 'stylist-detail/:id', element: <StylistDetailPage /> },
+            {path: 'payment-successfully', element: <PaymentSuccessfullyPage />},
+            {path: 'payment-cancel', element: <PaymentCancelPage />},
 
           ],
         },
