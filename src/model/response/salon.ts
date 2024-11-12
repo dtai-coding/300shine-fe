@@ -1,4 +1,5 @@
 export type SalonItemProps = {
+<<<<<<< HEAD
   id: string;
   address: string;
   phone: number;
@@ -20,3 +21,10 @@ export type SalonCreateProps = {
   phone: number | null;
   district: string | null;
 };
+=======
+    id: number;
+    address: string;
+    phone: number;
+    district: string;
+  };
+>>>>>>> dev

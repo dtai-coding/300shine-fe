@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
-import { Navigate, Outlet } from 'react-router-dom';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+
+import { Outlet, Navigate } from 'react-router-dom';
+
 import { useAuthStore } from 'src/stores/auth/auth.store'; // Adjust the path as necessary
 
 interface ProtectedRouteProps {

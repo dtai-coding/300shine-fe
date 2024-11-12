@@ -1,13 +1,15 @@
 import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+
 import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
 import { HomeLayout } from 'src/layouts/home';
-import { DashboardLayout } from 'src/layouts/dashboard';
 import { StylistLayout } from 'src/layouts/stylist';
 import { ManagerLayout } from 'src/layouts/manager';
+import { DashboardLayout } from 'src/layouts/dashboard';
 import AxiosInterceptor from 'src/api/axiosInterceptor';
 import ProtectedRoute from '../stores/auth/protected.route'; // Path to your ProtectedRoute component
 
@@ -22,6 +24,7 @@ const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
 const SalonPage = lazy(() => import('src/pages/salon'));
 const RevenuePage = lazy(() => import('src/pages/revenue'));
+const SelectStylistPage = lazy(() => import('src/pages/select-stylist'));
 const BlogPage = lazy(() => import('src/pages/blog'));
 const UserPage = lazy(() => import('src/pages/user'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
@@ -61,6 +64,7 @@ export function Router() {
             { path: 'appointment', element: <AppointmentPage /> },
             { path: 'select-salon', element: <SelectSalonPage /> },
             { path: 'select-service', element: <SelectServicePage /> },
+            { path: 'select-stylist', element: <SelectStylistPage /> },
             { path: 'service-detail/:id', element: <ServiceDetailPage /> },
           ],
         },

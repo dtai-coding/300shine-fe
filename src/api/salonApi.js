@@ -1,4 +1,3 @@
-import internal from 'stream';
 import axiosClient from './axiosClient';
 
 const salonApi = {

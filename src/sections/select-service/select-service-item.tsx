@@ -1,11 +1,13 @@
+import type { ServiceItemProps } from 'src/model/response/service';
+
 import { useNavigate } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { fCurrency } from 'src/utils/format-number';
-import { ServiceItemProps } from 'src/model/response/service';
 
 
 
@@ -18,6 +20,8 @@ export function SelectServiceItem({ service }: { service: ServiceItemProps }) {
     const handleSelectService = () => {
       localStorage.setItem('selectedServiceId', service.id.toString());
       localStorage.setItem('selectedServiceName', service.name.toString());
+      localStorage.setItem('selectedServiceDuration', service.duration.toString());
+      // console.log(service.id,service.name,service.duration )
       navigate('/appointment'); 
     };
 
