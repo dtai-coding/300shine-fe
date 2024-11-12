@@ -12,31 +12,38 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Card } from "@mui/material";
+
 import slotApi from "src/api/slot";
 
+import { AlertDialog } from "../component/alert-dialog";
 import { SelectSlotItem } from "./appointment-slot-item";
 
 
 export function AppointmentServiceStylistSlot({
   selectedServiceName,
   selectedStylistName,
-  onClear
+  onClear,
+  viewdone
 }: {
   selectedServiceName: string | null;
   selectedStylistName: string | null;
   onClear: () => void;
+  viewdone: (viewDone: boolean) => void
 }) {
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const [serviceName, setServiceName] = useState(selectedServiceName);
   const [stylistName, setStylistName] = useState(selectedStylistName);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [slots, setSlots] = useState<SlotItemProps[]>([]);
-  const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);  // Updated to handle multiple slots
+  const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);
+  const [unavailableSlotIds, setUnavailableSlotIds] = useState<number[]>([]); // New state
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
 
   const navigate = useNavigate();
-
-  const serviceDuration = parseInt(localStorage.getItem('selectedServiceDuration') || '1', 10);  // Add radix
+  const serviceDuration = parseInt(localStorage.getItem('selectedServiceDuration') || '1', 10);
 
   useEffect(() => {
     if (stylistName && selectedDate) {
@@ -54,11 +61,16 @@ export function AppointmentServiceStylistSlot({
             storedServiceId,
             formattedDate
           );
-          const slotData = response?.data;
+          const slotData: SlotItemProps[] = response?.data;
           setSlots(slotData);
+
+          // Extract IDs of slots with status == false
+          const unavailableIds = slotData.filter(slot => !slot.status).map(slot => slot.id);
+          setUnavailableSlotIds(unavailableIds);
         } catch (error) {
-          alert(`${error.message  } please choose another stylist`);
-          console.error('Failed to fetch slot:', error);
+          if (error.message) {
+            showAlert(`${error.message} please choose another stylist`);
+          }
         }
       };
 
@@ -66,55 +78,141 @@ export function AppointmentServiceStylistSlot({
     }
   }, [stylistName, selectedDate]);
 
-  const handleSelectSlot = (id: number) => {
-    const updatedSelectedSlotIds = [id]; 
+  // useEffect(() => {
+  //   if (selectedDate && selectedSlotIds.length > 0) {
+  //     const fetchSlots =() => {
 
+  //     };
+
+  //     fetchSlots();
+  //   }
+  // }, [selectedSlotIds]);
+
+  const handleSelectSlot = (id: number) => {
+    const updatedSelectedSlotIds = [id];
     const selectedSlotIndex = slots.findIndex((slot) => slot.id === id);
 
-    for (let i = 1; i < serviceDuration; i += 1) {  
+    for (let i = 1; i < serviceDuration; i += 1) {
       const nextSlot = slots[selectedSlotIndex + i];
       if (nextSlot) {
         updatedSelectedSlotIds.push(nextSlot.id);
       }
     }
 
+    if (updatedSelectedSlotIds.some(slotId => unavailableSlotIds.includes(slotId))) {
+      showAlert("Cannot book this slot, as one or more selected slots are unavailable.");
+      setSelectedSlotIds([]);
+      return;
+    }
+
     setSelectedSlotIds(updatedSelectedSlotIds);
     localStorage.setItem('selectedSlotIds', JSON.stringify(updatedSelectedSlotIds));
-    console.log(updatedSelectedSlotIds);
+    if (serviceName && stylistName && selectedDate && selectedSlotIds) {
+      viewdone(true);
+    }
   };
+
   const handleDeleteClick = () => {
-    setOpenDeleteDialog(true);
+    if (serviceName) {
+      setOpenDeleteDialog(true);
+    }
+
   };
 
   const handleConfirmDelete = () => {
+    // if (selectedSlotIds.length>0) {
+    //   localStorage.removeItem('selectedStylistId');
+    //   localStorage.removeItem('selectedStylistName');
+    //   setStylistName(null);
+    //   setSlots([]);
+    //   setOpenDeleteDialog(false);
+
+    // }
     localStorage.removeItem('selectedServiceId');
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
     localStorage.removeItem('selectedStylistName');
-
+    localStorage.removeItem('selectedDate');
+    localStorage.removeItem('selectedSlotIds');
+    localStorage.removeItem('selectedStylistDuration');
     setServiceName(null);
     setStylistName(null);
     setOpenDeleteDialog(false);
 
     onClear();
+
   };
 
   const handleCancelDelete = () => {
     setOpenDeleteDialog(false);
   };
-  
+  const showAlert = (message: string) => {
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  const handleRedirectService = () => {
+    if (stylistName) {
+      setOpenDeleteDialog(true);
+    } else {
+      navigate('/select-service');
+    }
+  };
+
+  const handleRedirectStylist = () => {
+    if (selectedSlotIds.length > 0) {
+      setOpenDeleteDialog(true);
+    } else {
+      navigate('/select-stylist');
+    }
+  };
+
+  const handleSelectDate = (date: dayjs.Dayjs | null) => {
+    if (!date) {
+      return;
+    }
+
+    if (date.isSame(dayjs(), 'day') || date.isBefore(dayjs(), 'day')) {
+      showAlert("Date cannot be in the past or today");
+      setSelectedDate(null);
+      setSelectedSlotIds([]);
+    } else {
+      setSelectedDate(date);
+      localStorage.setItem('selectedDate', date.format('MM-DD-YYYY'));
+    }
+  };
+
   return (
     <Box sx={{ padding: 3, boxShadow: 3, borderRadius: 2, backgroundColor: '#fff', maxWidth: 700, position: 'relative' }}>
-      <IconButton aria-label="delete" sx={{ position: 'absolute', top: 8, right: 8, color: 'lightgray' }} onClick={() => setOpenDeleteDialog(true)}>
+      <IconButton aria-label="delete" sx={{ position: 'absolute', top: 8, right: 8, color: 'lightgray', '&:hover': { backgroundColor: 'lightgray', color: 'red' } }} onClick={() => handleDeleteClick()}>
         <DeleteIcon />
       </IconButton>
 
       <Typography variant="h5" mb={2}>1. Select Service</Typography>
       <Typography variant="h6" mb={2}>
         {serviceName ? (
-          <Link color="inherit" underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} onClick={() => navigate('/select-service')}>
-            {serviceName}
-          </Link>
+          <Card
+          onClick={() => handleRedirectService()}
+          sx={{
+            cursor:'pointer',
+            height: '30px',
+            margin: '18px',
+            backgroundColor:'#b3e5fc' ,
+            color:  'black',
+            transition: '0.3s',
+            '&:hover': {
+              backgroundColor:  'palegoldenrod ' ,
+            },
+          }}
+          >
+            <Link color="inherit" marginLeft='20px' underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} >
+              {serviceName}
+            </Link>
+          </Card>
         ) : (
           <Link color="inherit" underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} onClick={() => navigate('/select-service')}>
             Choose Service
@@ -127,9 +225,24 @@ export function AppointmentServiceStylistSlot({
           <Typography variant="h5" mb={2}>2. Select Stylist</Typography>
           <Typography variant="h6" mb={2}>
             {stylistName ? (
-              <Link color="inherit" underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} onClick={() => navigate('/select-stylist')}>
+              <Card
+              onClick={() => handleRedirectStylist()}
+              sx={{
+                cursor:'pointer',
+                height: '30px',
+                margin: '18px',
+                backgroundColor:'#b3e5fc' ,
+                color:  'black',
+                transition: '0.3s',
+                '&:hover': {
+                  backgroundColor:  'palegoldenrod ' ,
+                },
+              }}
+              >
+              <Link color="inherit" marginLeft='20px' underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} >
                 {stylistName}
               </Link>
+              </Card>
             ) : (
               <Link color="inherit" underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} onClick={() => navigate('/select-stylist')}>
                 Choose Stylist
@@ -145,7 +258,7 @@ export function AppointmentServiceStylistSlot({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
+              onChange={(date) => handleSelectDate(date)}
               minDate={dayjs()}
               label="Select Date"
               format="DD-MM-YYYY"
@@ -170,11 +283,12 @@ export function AppointmentServiceStylistSlot({
           </Box>
         </>
       )}
-       <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+
+      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Deleting the service will clear both the service and stylist selection. Do you want to continue?
+            This action will clear other selection. Do you want to continue?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -186,6 +300,10 @@ export function AppointmentServiceStylistSlot({
           </Button>
         </DialogActions>
       </Dialog>
+
+      <AlertDialog open={alertOpen} message={alertMessage} onClose={handleAlertClose} />
+
     </Box>
   );
 }
+

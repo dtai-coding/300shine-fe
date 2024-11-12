@@ -1,28 +1,23 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import type { StylistItemProps } from 'src/model/response/stylist';
+
+import { useNavigate } from 'react-router-dom';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Unstable_Grid2';
+import { IconButton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
-
-import { _products } from 'src/_mock';
-import { HomeContent } from 'src/layouts/home';
-
-import type { StylistItemProps } from 'src/model/response/stylist';
-import stylistApi from 'src/api/stylistApi';
-
-
-
-
-
-import { SelectStylistItem } from 'src/sections/select-stylist/select-stylist-item';
-import { useNavigate } from 'react-router-dom';
-import { IconButton } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 
-import type { FiltersProps } from '../../product/product-filters';
-import { StylistFilters } from '../stylist-filters';
+import stylistApi from 'src/api/stylistApi';
+import { HomeContent } from 'src/layouts/home';
+
+import { SelectStylistItem } from 'src/sections/select-stylist/select-stylist-item';
+
 import { StylistSort } from '../stylist-sort';
+import { StylistFilters } from '../stylist-filters';
+
+import type { FiltersProps } from '../../product/product-filters';
 
 
 // ----------------------------------------------------------------------
