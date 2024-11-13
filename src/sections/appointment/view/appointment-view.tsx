@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -16,9 +17,6 @@ import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentStylistServiceSlot } from "../appoinment-stylist-service-slot";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
 
-
-
-
 export function AppointmentView() {
   const [salonId, setSalonId] = useState<number | null>(null);
   const [salonAddress, setSalonAddress] = useState<string | null>(null);
@@ -26,18 +24,27 @@ export function AppointmentView() {
   const [serviceId, setServiceId] = useState<number | null>(null);
   const [serviceName, setServiceName] = useState<string | null>(null);
   const [serviceDuration, setServiceDuration] = useState<number | null>(null);
+  const [serviceId2, setServiceId2] = useState<number | null>(null);
+  const [serviceName2, setServiceName2] = useState<string | null>(null);
+  const [serviceDuration2, setServiceDuration2] = useState<number | null>(null);
 
   const [stylistId, setStylistId] = useState<number | null>(null);
   const [stylistName, setStylistName] = useState<string | null>(null);
+  const [stylistId2, setStylistId2] = useState<number | null>(null);
+  const [stylistName2, setStylistName2] = useState<string | null>(null);
 
   const [date, setDate] = useState<string | null>(null);
+  const [date2, setDate2] = useState<string | null>(null);
 
   const [slotIds, setSlotId] = useState<number[]>([]);
+  const [slotIds2, setSlotId2] = useState<number[]>([]);
 
   const [viewChoice, setViewChoice] = useState<string | null>(null);
   const [openBackDialog, setOpenBackDialog] = useState<boolean>(false);
   const [viewDone, setViewDone] = useState<boolean>(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedSalonId = localStorage.getItem('selectedSalonId');
@@ -46,13 +53,21 @@ export function AppointmentView() {
     const storedServiceId = localStorage.getItem('selectedServiceId');
     const storedServiceName = localStorage.getItem('selectedServiceName');
     const storedServiceDuration = localStorage.getItem('selectedServiceDuration');
+    const storedServiceId2 = localStorage.getItem('selectedServiceId2');
+    const storedServiceName2 = localStorage.getItem('selectedServiceName2');
+    const storedServiceDuration2 = localStorage.getItem('selectedServiceDuration2');
 
     const storedStylistId = localStorage.getItem('selectedStylistId');
     const storedStylistName = localStorage.getItem('selectedStylistName');
+    const storedStylistId2 = localStorage.getItem('selectedStylistId2');
+    const storedStylistName2 = localStorage.getItem('selectedStylistName2');
 
     const storedDate = localStorage.getItem('selectedDate');
+    const storedDate2 = localStorage.getItem('selectedDate2');
 
     const storedSlotIds = localStorage.getItem('selectedSlotIds');
+    const storedSlotIds2 = localStorage.getItem('selectedSlotIds2');
+
 
     const storedViewChoice = localStorage.getItem('viewChoice');
 
@@ -69,18 +84,34 @@ export function AppointmentView() {
       setServiceDuration(Number(storedServiceDuration));
 
     }
+    if (storedServiceId2) {
+      setServiceId2(Number(storedServiceId2));
+      setServiceName2(storedServiceName2);
+      setServiceDuration2(Number(storedServiceDuration2));
+
+    }
     if (storedStylistId) {
       setStylistId(Number(storedStylistId));
       setStylistName(storedStylistName);
     }
+    if (storedStylistId2) {
+      setStylistId2(Number(storedStylistId2));
+      setStylistName2(storedStylistName2);
+    }
     if (storedDate) {
       setDate(storedDate);
+    }
+    if (storedDate2) {
+      setDate2(storedDate2);
     }
     if (storedSlotIds) {
       const parsedSlotIds = JSON.parse(storedSlotIds); 
       setSlotId(Array.isArray(parsedSlotIds) ? parsedSlotIds.map(Number) : []);
     }
-   
+    if (storedSlotIds2) {
+      const parsedSlotIds2 = JSON.parse(storedSlotIds2); 
+      setSlotId2(Array.isArray(parsedSlotIds2) ? parsedSlotIds2.map(Number) : []);
+    }
   }, []);
 
   console.log(`salon ${salonId}`);
@@ -108,8 +139,14 @@ export function AppointmentView() {
   
     const handleConfirm = async () => {
       try {
-        await appointmentApi.createAppointment(appointment);
-        console.log('Appointment created successfully');
+        const accessToken = localStorage.getItem('accessToken')
+        if(accessToken){
+          await appointmentApi.createAppointment(appointment);
+        }
+        else{
+          navigate('/sign-in');
+        }
+        
         setOpenConfirmDialog(false); 
       } catch (error) {
         console.error('Failed to create appointment', error);
@@ -216,7 +253,15 @@ export function AppointmentView() {
               />
             )}
 
-            {viewChoice === 'stylist' && salonId !== null && <AppointmentStylistServiceSlot />}
+            {viewChoice === 'stylist' && salonId !== null && (
+              <AppointmentStylistServiceSlot 
+              selectedServiceName2={serviceName2}
+              selectedStylistName2={stylistName2}
+              onClear2={clearServiceAndStylist} 
+              viewdone2={handleViewDone}
+            />
+          
+          )}
             {/* 
             {serviceName !== null && stylistName !== null && (
               <Link marginLeft={1}>
@@ -273,18 +318,18 @@ export function AppointmentView() {
       </Dialog>
 
       <Dialog open={openConfirmDialog} onClose={handleCancel}>
-        <DialogTitle>Xác nhận tạo cuộc hẹn</DialogTitle>
+        <DialogTitle>Create Appointment Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Bạn có chắc chắn muốn tạo cuộc hẹn này không?
+            Are you sure you want to make this appointment with these selection and continue to checkout
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="secondary">
-            Hủy
+          <Button onClick={handleCancel} color="error">
+            Cancel
           </Button>
           <Button onClick={handleConfirm} color="primary">
-            Xác nhận
+            Confirm
           </Button>
         </DialogActions>
       </Dialog>
