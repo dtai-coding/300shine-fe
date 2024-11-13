@@ -18,7 +18,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children 
     return <Navigate to="/sign-in" replace />;
   }
 
-  if (!allowedRoles.includes(auth.user.role)) {
+  if (!allowedRoles.includes(auth.user.roleName)) {
     // If the user role is not allowed, redirect to a forbidden page or homepage
     return <Navigate to="/forbidden" replace />; // Or some other "forbidden" page
   }
