@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -7,14 +8,16 @@ import {
   Button,
   TextField,
 } from '@mui/material';
-import { SalonViewProps } from 'src/model/response/salon';
+import { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
 
 interface SalonDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (salon: SalonViewProps) => void;
-  salon?: SalonViewProps | null;
+  onSave: (salon: SalonCreateProps) => void;
+  salon?: SalonCreateProps | null;
   isEditMode?: boolean;
+  imageFile: File | null;
+  setImageFile: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 export function SalonDialog({
@@ -23,8 +26,10 @@ export function SalonDialog({
   onSave,
   salon,
   isEditMode = false,
+  imageFile,
+  setImageFile,
 }: SalonDialogProps) {
-  const [newSalon, setNewSalon] = useState<SalonViewProps>({
+  const [newSalon, setNewSalon] = useState<SalonCreateProps | SalonUpdateProps>({
     id: 0,
     imageUrl: '',
     address: '',
@@ -32,20 +37,62 @@ export function SalonDialog({
     district: '',
   });
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+        setImageFile(file);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
-    if (salon) setNewSalon(salon);
-  }, [salon]);
+    if (isEditMode && salon) setNewSalon(salon);
+  }, [isEditMode, salon]);
+
+  const resetForm = () => {
+    setNewSalon({
+      imageUrl: '',
+      address: '',
+      phone: 0,
+      district: '',
+    });
+  };
+
+  const handleOnCancel = () => {
+    onClose();
+    setImageFile(null);
+    setImagePreview(null);
+    resetForm();
+  };
+
+  const handleOnSave = () => {
+    onSave(newSalon);
+    setImageFile(null);
+    setImagePreview(null);
+
+    console.log('Salon saved successfully!');
+
+    resetForm();
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setNewSalon((prevSalon) => ({
+    setNewSalon((prevSalon: SalonCreateProps | SalonUpdateProps) => ({
       ...prevSalon,
       [name]: name === 'phone' || name === 'id' ? Number(value) : value,
     }));
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleOnCancel} maxWidth="sm" fullWidth>
       <DialogTitle>{isEditMode ? 'Edit Salon' : 'Add New Salon'}</DialogTitle>
       <DialogContent dividers>
         <TextField
@@ -55,14 +102,6 @@ export function SalonDialog({
           value={newSalon.phone}
           onChange={handleChange}
           fullWidth
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Image URL"
-          name="imageUrl"
-          value={newSalon.imageUrl}
-          onChange={handleChange}
           margin="normal"
         />
         <TextField
@@ -81,10 +120,24 @@ export function SalonDialog({
           onChange={handleChange}
           margin="normal"
         />
+        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+          <Button variant="outlined" component="label">
+            Upload Image
+            <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
+          </Button>
+          {imagePreview && (
+            <Box
+              component="img"
+              src={imagePreview}
+              alt="Preview"
+              sx={{ width: 100, height: 100 }}
+            />
+          )}
+        </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={() => onSave(newSalon)} variant="contained">
+        <Button onClick={handleOnCancel}>Cancel</Button>
+        <Button onClick={handleOnSave} variant="contained">
           {isEditMode ? 'Save Changes' : 'Add Salon'}
         </Button>
       </DialogActions>

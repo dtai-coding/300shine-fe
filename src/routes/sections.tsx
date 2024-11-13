@@ -96,25 +96,25 @@ export function Router() {
         {
           path: 'dashboard',
           element: (
-            // <ProtectedRoute allowedRoles={['admin']}>
-            <DashboardLayout>
-              <Suspense fallback={renderFallback}>
-                <Outlet />
-              </Suspense>
-            </DashboardLayout>
-            // </ProtectedRoute>
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <DashboardLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </DashboardLayout>
+            </ProtectedRoute>
           ),
           children: [
-            { path: '', element: <Dashboard /> },
+            // { path: '', element: <Dashboard /> },
             { path: 'user', element: <UserPage /> },
             { path: 'salon', element: <SalonPage /> },
-            { path: 'revenue', element: <RevenuePage /> },
+            // { path: 'revenue', element: <RevenuePage /> },
           ],
         },
         {
           path: 'stylist',
           element: (
-            <ProtectedRoute allowedRoles={['staff']}>
+            <ProtectedRoute allowedRoles={['Stylist']}>
               <StylistLayout>
                 <Suspense fallback={renderFallback}>
                   <Outlet />
@@ -132,7 +132,7 @@ export function Router() {
         {
           path: 'manager',
           element: (
-            <ProtectedRoute allowedRoles={['manager']}>
+            <ProtectedRoute allowedRoles={['Manager']}>
               <ManagerLayout>
                 <Suspense fallback={renderFallback}>
                   <Outlet />

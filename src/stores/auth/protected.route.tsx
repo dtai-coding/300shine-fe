@@ -20,7 +20,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children 
 
   if (!allowedRoles.includes(auth.user.roleName)) {
     // If the user role is not allowed, redirect to a forbidden page or homepage
-    return <Navigate to="/forbidden" replace />; // Or some other "forbidden" page
+    return <Navigate to="/404" replace />; // Or some other "forbidden" page
   }
 
   // If children exist, render them; otherwise, render Outlet for nested routes

@@ -18,7 +18,7 @@ import { Iconify } from 'src/components/iconify';
 
 export function SignInView() {
   const router = useRouter();
-  const { loginUser } = useAuthStore(); // Get loginUser action from Zustand store
+  const { loginUser, auth } = useAuthStore(); // Get loginUser action from Zustand store
   const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -27,18 +27,31 @@ export function SignInView() {
 
   const handleSignIn = useCallback(async () => {
     setLoading(true);
-    setError(''); // Reset error
+    setError('');
 
     try {
-      await loginUser({ phone, password }); // Call Zustand store's loginUser function
-      // if (loginUser.user.roleName === 'Admin') {
-      //   router.push('/dashboard/user'); // Redirect to admin dashboard if user is admin
-      // } else if (loginUser.user.roleName === 'Manager') {
-      //   router.push('/manager'); // Redirect to admin dashboard if user is admin
-      // } else if (loginUser.user.roleName === 'Stylist') {
-      //   router.push('/stylist'); // Redirect to admin dashboard if user is admin
-      // }
-      router.push('/'); // Redirect to homepage on successful login
+      const user = await loginUser({ phone, password });
+      console.log('Sign-in response', user);
+
+      if (!user) {
+        throw new Error('User data is missing in the login response');
+      }
+
+      // Redirect based on user role
+      switch (user.roleName) {
+        case 'Admin':
+          router.push('/dashboard/user');
+          break;
+        case 'Manager':
+          router.push('/manager');
+          break;
+        case 'Stylist':
+          router.push('/stylist');
+          break;
+        default:
+          router.push('/');
+          break;
+      }
     } catch (err) {
       console.error('Login failed:', err);
       setError(err.message || 'Login failed. Please check your credentials.');

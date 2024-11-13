@@ -12,11 +12,15 @@ import {
 } from '@mui/material';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+
 import { SalonViewProps } from 'src/model/response/salon';
+
 import { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
 import salonApi from '../../../api/salonApi';
+import { uploadImage } from '../../../api/apis';
 import { TableNoData } from '../table-no-data';
 import { SalonTableRow } from '../salon-table-row';
 import { SalonTableHead } from '../salon-table-head';
@@ -34,6 +38,7 @@ export function SalonView() {
   const [salons, setSalons] = useState<SalonViewProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [openAddSalonDialog, setOpenAddSalonDialog] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const salonToEdit: SalonUpdateProps = {
     id: currentSalon?.id ?? 0,
@@ -66,20 +71,34 @@ export function SalonView() {
 
   const handleCloseDialog = () => {
     setOpenAddSalonDialog(false);
-    setTimeout(() => {
-      setIsEditMode(false);
-      setCurrentSalon(null);
-    }, 200);
+    setIsEditMode(false);
+    setCurrentSalon(null);
+    setImageFile(null);
   };
 
-  const handleSaveSalon = async (salon: SalonCreateProps) => {
-    if (isEditMode && currentSalon) {
-      await salonApi.updateSalon({ ...salon, id: currentSalon.id });
-    } else {
-      await salonApi.addSalon(salon);
+  const handleSaveSalon = async (salon: SalonCreateProps | SalonUpdateProps) => {
+    try {
+      let ImageUrl = salon.imageUrl;
+      if (imageFile) {
+        ImageUrl = await uploadImage(imageFile);
+      }
+      if (isEditMode && currentSalon) {
+        await salonApi.updateSalon({ ...salon, id: currentSalon.id, imageUrl: ImageUrl });
+      } else {
+        const salonSavePayload: SalonCreateProps = {
+          address: salon.address,
+          phone: salon.phone,
+          district: salon.district,
+          imageUrl: ImageUrl,
+        };
+        await salonApi.addSalon(salonSavePayload);
+      }
+      handleCloseDialog();
+      fetchData();
+    } catch (error) {
+      console.error('Error saving user:', error);
+      // Add error handling here, e.g., showing an error message
     }
-    handleCloseDialog();
-    fetchData();
   };
 
   const handleDeleteSelected = () => {
@@ -121,6 +140,8 @@ export function SalonView() {
         isEditMode={isEditMode}
         salon={salonToEdit}
         onSave={handleSaveSalon}
+        imageFile={imageFile}
+        setImageFile={setImageFile}
       />
 
       <Card>

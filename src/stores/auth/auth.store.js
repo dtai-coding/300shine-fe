@@ -21,25 +21,15 @@ const storeApi = (set, get) => ({
     const accessToken = response.data.token; // Ensure response.value contains the accessToken
     const refreshToken = response.value || 'dummyRefreshToken';
     console.log('JWT :', accessToken, ', \n RefreshToken :', refreshToken);
-
-    // const userResponse = await getUserByPhoneAPI(payload.phone);
-    // if (!userResponse || !userResponse.data) {
-    //   throw new Error('Invalid user details response');
-    // }
-
     const userInfo = response.data.user;
 
-    // const userInfo = {
-    // phone: payload.phone,
-    // ...userResponse.data,
-    // };
+    if (!userInfo) {
+      throw new Error('User information is missing in login response');
+    }
 
-    // if (userResponse.value.role === 'customer') {
-    //   throw new Error('Not Allowed');
-    // }
     set({ auth: { status: 'authorized', accessToken, refreshToken, user: userInfo } });
-    const currentState = get().auth;
-    console.log('UserState', currentState);
+    console.log('UserState:', get().auth);
+    return userInfo;
   },
   catch(error) {
     console.error('Login error:', error);

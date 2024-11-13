@@ -30,17 +30,17 @@ export function Main({ children, sx, ...other }: BoxProps) {
 
 // ----------------------------------------------------------------------
 
-type DashboardContentProps = ContainerProps & {
+type ManagerContentProps = ContainerProps & {
   disablePadding?: boolean;
 };
 
-export function DashboardContent({
+export function ManagerContent({
   sx,
   children,
   disablePadding,
   maxWidth = 'xl',
   ...other
-}: DashboardContentProps) {
+}: ManagerContentProps) {
   const theme = useTheme();
 
   const layoutQuery: Breakpoint = 'lg';
