@@ -11,7 +11,8 @@ import { StylistLayout } from 'src/layouts/stylist';
 import { ManagerLayout } from 'src/layouts/manager';
 import { DashboardLayout } from 'src/layouts/dashboard';
 import AxiosInterceptor from 'src/api/axiosInterceptor';
-import ProtectedRoute from '../stores/auth/protected.route'; // Path to your ProtectedRoute component
+
+// Path to your ProtectedRoute component
 
 // Lazy imports for pages
 const Dashboard = lazy(() => import('src/pages/dashboard'));
@@ -23,6 +24,7 @@ const StylistDetailPage = lazy(() => import('src/pages/stylist-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
+const SelectServicePage2 = lazy(() => import('src/pages/select-service-2'));
 const SalonPage = lazy(() => import('src/pages/salon'));
 const RevenuePage = lazy(() => import('src/pages/revenue'));
 const SelectStylistPage = lazy(() => import('src/pages/select-stylist'));
@@ -68,6 +70,7 @@ export function Router() {
             { path: 'appointment', element: <AppointmentPage /> },
             { path: 'select-salon', element: <SelectSalonPage /> },
             { path: 'select-service', element: <SelectServicePage /> },
+            { path: 'select-service-2', element: <SelectServicePage2 /> },
             { path: 'select-stylist', element: <SelectStylistPage /> },
             { path: 'select-stylist-2', element: <SelectStylistPage2 /> },
             { path: 'service-detail/:id', element: <ServiceDetailPage /> },

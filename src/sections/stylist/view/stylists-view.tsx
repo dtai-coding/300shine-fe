@@ -1,6 +1,6 @@
 import type { StylistItemProps } from 'src/model/response/stylist';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -144,7 +144,7 @@ export function StylistsView() {
   useEffect(() => {
     const interval = setInterval(() => {
       handleScroll('right');
-    }, 3000); // 3 seconds interval
+    }, ); // 3 seconds interval
   
     return () => clearInterval(interval);
   }, [handleScroll]);
@@ -197,10 +197,10 @@ export function StylistsView() {
       >
         {stylists.map((stylist) => (
           <Box key={stylist.id} sx={{ minWidth: '250px', maxWidth: '250px', flexShrink: 0 }}>
-                        <Link to={`/stylist-detail/${stylist.id}`} style={{ textDecoration: 'none' }}>
+                        {/* <Link to={`/stylist-detail/${stylist.id}`} style={{ textDecoration: 'none' }}> */}
 
             <SelectStylistItem stylist={stylist} />
-            </Link>
+            {/* </Link> */}
           </Box>
         ))}
       </Box>

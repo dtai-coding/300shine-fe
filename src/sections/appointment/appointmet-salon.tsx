@@ -7,16 +7,23 @@ export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddres
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [hasSelectedService, setHasSelectedService] = useState(false);
+  const [hasSelectedStylist2, setHasSelectedStylist2] = useState(false);
+
 
   useEffect(() => {
     const storedServiceId = localStorage.getItem('selectedServiceId');
+    const storedStylistId2 = localStorage.getItem('selectedServiceId2');
+
     if (storedServiceId) {
       setHasSelectedService(true); 
+    }
+    if (storedStylistId2) {
+      setHasSelectedStylist2(true); 
     }
   }, []);
 
   const handleRedirect = () => {
-    if (selectedSalonAddress && hasSelectedService) {
+    if ((selectedSalonAddress && hasSelectedService)||(selectedSalonAddress && hasSelectedStylist2)) {
       setOpenDialog(true); 
     } else {
       navigate('/select-salon'); 
@@ -28,6 +35,16 @@ export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddres
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
     localStorage.removeItem('selectedStylistName');
+    localStorage.removeItem('selectedDate');
+    localStorage.removeItem('selectedSlotIds');
+    localStorage.removeItem('selectedStylistDuration');
+    localStorage.removeItem('selectedServiceId2');
+    localStorage.removeItem('selectedServiceName2');
+    localStorage.removeItem('selectedStylistId2');
+    localStorage.removeItem('selectedStylistName2');
+    localStorage.removeItem('selectedDate2');
+    localStorage.removeItem('selectedSlotIds2');
+    localStorage.removeItem('selectedStylistDuration2');
 
     navigate('/select-salon');
   };

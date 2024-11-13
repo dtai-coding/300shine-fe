@@ -1,7 +1,6 @@
 import type { StylistItemProps } from 'src/model/response/stylist';
 
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';

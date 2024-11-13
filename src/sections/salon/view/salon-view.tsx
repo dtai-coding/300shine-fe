@@ -1,29 +1,33 @@
+import type { SalonViewProps } from 'src/model/response/salon';
+import type { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
+
 import React, { useState, useEffect, useCallback } from 'react';
+
 import {
   Box,
-  Button,
   Card,
-  CircularProgress,
-  Typography,
   Table,
+  Button,
   TableBody,
+  Typography,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from '@mui/material';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { SalonViewProps } from 'src/model/response/salon';
-import { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
+
 import salonApi from '../../../api/salonApi';
+import { SalonDialog } from '../SalonDialog';
 import { TableNoData } from '../table-no-data';
 import { SalonTableRow } from '../salon-table-row';
 import { SalonTableHead } from '../salon-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { SalonTableToolbar } from '../salon-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import { SalonDialog } from '../SalonDialog';
 
 export function SalonView() {
   const table = useTable();

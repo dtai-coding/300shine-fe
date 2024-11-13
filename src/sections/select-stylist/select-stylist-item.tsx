@@ -18,7 +18,7 @@ export function SelectStylistItem({ stylist }: { stylist: StylistItemProps; }) {
   const handleSelectStylist = () => {
     localStorage.setItem('selectedStylistId', stylist.id.toString());
     localStorage.setItem('selectedStylistName', stylist.name.toString());
-    navigate('/appointment'); 
+    navigate(-1); 
   };
 
 

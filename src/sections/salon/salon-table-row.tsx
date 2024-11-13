@@ -1,3 +1,5 @@
+import type { SalonViewProps } from 'src/model/response/salon';
+
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -10,9 +12,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
-import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
-import { SalonViewProps } from 'src/model/response/salon';
 
 // ----------------------------------------------------------------------
 

@@ -1,13 +1,15 @@
+import type { SalonViewProps } from 'src/model/response/salon';
+
 import React, { useState, useEffect } from 'react';
+
 import {
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Button,
   TextField,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
 } from '@mui/material';
-import { SalonViewProps } from 'src/model/response/salon';
 
 interface SalonDialogProps {
   open: boolean;

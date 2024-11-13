@@ -1,3 +1,5 @@
+import type { AppointmentProps } from "src/model/request/create-appointment";
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,9 +12,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import appointmentApi from "src/api/appointment";
+
 import { HomeContent } from 'src/layouts/home';
-import { AppointmentProps } from "src/model/request/create-appointment";
+import appointmentApi from "src/api/appointment";
+
 import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentStylistServiceSlot } from "../appoinment-stylist-service-slot";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
@@ -115,12 +118,24 @@ export function AppointmentView() {
   }, []);
 
   console.log(`salon ${salonId}`);
-  console.log(`service ${serviceId}`);
-  console.log(`stylist ${stylistId}`);
-  console.log(`date ${date}`);
-  console.log(`slot ${slotIds}`);
+  console.log(`service ${serviceId2}`);
+  console.log(`stylist ${stylistId2}`);
+  console.log(`date ${date2}`);
+  console.log(`slot ${slotIds2}`);
 
   const appointment: AppointmentProps = {
+    salonId: salonId ?? 0,
+    dateToGo: date2 ? new Date(date2).toISOString() : '',
+    items: [
+      {
+        serviceId: serviceId2 ?? 0, 
+        stylistId: stylistId2 ?? 0, 
+        slots: slotIds2.map(id => ({ id }))
+      }
+    ]
+  };
+
+  const appointment2: AppointmentProps = {
     salonId: salonId ?? 0,
     dateToGo: date ? new Date(date).toISOString() : '',
     items: [
@@ -185,6 +200,20 @@ export function AppointmentView() {
     setDate(null);
     setSlotId([]);
     setServiceDuration(null)
+    localStorage.removeItem('selectedServiceId2');
+    localStorage.removeItem('selectedServiceName2');
+    localStorage.removeItem('selectedStylistId2');
+    localStorage.removeItem('selectedStylistName2');
+    localStorage.removeItem('selectedDate2');
+    localStorage.removeItem('selectedSlotIds2');
+    localStorage.removeItem('selectedStylistDuration2');
+    setServiceId2(null);
+    setServiceName2(null);
+    setStylistId2(null);
+    setStylistName2(null);
+    setDate2(null);
+    setSlotId2([]);
+    setServiceDuration2(null)
 
     setOpenBackDialog(false);
     handleViewChoice('back');
@@ -210,12 +239,27 @@ export function AppointmentView() {
     setDate(null);
     setSlotId([]);
     setServiceDuration(null)
+    localStorage.removeItem('selectedServiceId2');
+    localStorage.removeItem('selectedServiceName2');
+    localStorage.removeItem('selectedStylistId2');
+    localStorage.removeItem('selectedStylistName2');
+    localStorage.removeItem('selectedDate2');
+    localStorage.removeItem('selectedSlotIds2');
+    localStorage.removeItem('selectedStylistDuration2');
+    setServiceId2(null);
+    setServiceName2(null);
+    setStylistId2(null);
+    setStylistName2(null);
+    setDate2(null);
+    setSlotId2([]);
+    setServiceDuration2(null)
     handleViewDone(false);
   };
 
   const handleViewDone = (done: boolean) => {
     setViewDone(done);
-};
+  };
+  
 
   return (
     <HomeContent>
