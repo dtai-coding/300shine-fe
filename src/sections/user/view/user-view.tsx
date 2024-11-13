@@ -20,10 +20,10 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import { uploadImage } from '../../../api/apis';
 import userApi from '../../../api/userApi';
 import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
+import { uploadImage } from '../../../api/apis';
 import { UserTableRow } from '../user-table-row';
 import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
@@ -89,7 +89,7 @@ export function UserView() {
 
   const handleSaveUser = async (user: UserCreateProps | UserUpdateProps) => {
     try {
-      let imageUrl = user.imageUrl;
+      let {imageUrl} = user;
 
       if (imageFile) {
         imageUrl = await uploadImage(imageFile);
