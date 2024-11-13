@@ -11,6 +11,7 @@ import { StylistLayout } from 'src/layouts/stylist';
 import { ManagerLayout } from 'src/layouts/manager';
 import { DashboardLayout } from 'src/layouts/dashboard';
 import AxiosInterceptor from 'src/api/axiosInterceptor';
+import ProtectedRoute from 'src/stores/auth/protected.route';
 
 // Path to your ProtectedRoute component
 

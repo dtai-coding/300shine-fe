@@ -1,5 +1,5 @@
 import type { UserProps } from 'src/model/response/User';
-import type { UserCreateProps } from 'src/model/request/User';
+import type { UserCreateProps, UserUpdateProps } from 'src/model/request/User';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
