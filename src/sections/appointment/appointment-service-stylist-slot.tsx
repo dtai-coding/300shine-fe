@@ -172,6 +172,7 @@ export function AppointmentServiceStylistSlot({
       showAlert("Date cannot be in the past or today");
       setSelectedDate(null);
       setSelectedSlotIds([]);
+      setSlots([]);
     } else {
       setSelectedDate(date);
       localStorage.setItem('selectedDate', date.format('MM-DD-YYYY'));

@@ -19,13 +19,11 @@ export function SelectServiceView2() {
 
     useEffect(() => {
         const storedStylistId2 = localStorage.getItem('selectedStylistId2');
-// console.log(storedStylistId2);
         const fetchServices = async () => {
           try {
             const response = await serviceApi.getServiceByStylistId(storedStylistId2); 
             const serviceData = response?.data; 
             setServices(serviceData);
-            console.log('Successfully fetched services:', serviceData);
           } catch (error) {
             console.error('Failed to fetch services:', error);
           }

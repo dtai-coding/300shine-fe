@@ -23,8 +23,6 @@ export function SelectStylistView2() {
         const response = await stylistApi.getStylistsBySalonId(storedSalonId);
         const stylistData = response?.data;
         setStylists(stylistData);
-        console.log('Successfully fetched stylists:', stylistData);
-
       } catch (error) {
         console.error('Failed to fetch stylists:', error);
       }

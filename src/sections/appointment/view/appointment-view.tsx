@@ -1,3 +1,4 @@
+import type { PaymentItemProps } from "src/model/response/payment";
 import type { AppointmentProps } from "src/model/request/create-appointment";
 
 import { useState, useEffect } from "react";
@@ -16,6 +17,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import { HomeContent } from 'src/layouts/home';
 import appointmentApi from "src/api/appointment";
 
+import { AlertDialog } from "src/sections/component/alert-dialog";
 import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentStylistServiceSlot } from "../appoinment-stylist-service-slot";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
@@ -46,6 +48,8 @@ export function AppointmentView() {
   const [openBackDialog, setOpenBackDialog] = useState<boolean>(false);
   const [viewDone, setViewDone] = useState<boolean>(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -108,11 +112,11 @@ export function AppointmentView() {
       setDate2(storedDate2);
     }
     if (storedSlotIds) {
-      const parsedSlotIds = JSON.parse(storedSlotIds); 
+      const parsedSlotIds = JSON.parse(storedSlotIds);
       setSlotId(Array.isArray(parsedSlotIds) ? parsedSlotIds.map(Number) : []);
     }
     if (storedSlotIds2) {
-      const parsedSlotIds2 = JSON.parse(storedSlotIds2); 
+      const parsedSlotIds2 = JSON.parse(storedSlotIds2);
       setSlotId2(Array.isArray(parsedSlotIds2) ? parsedSlotIds2.map(Number) : []);
     }
   }, []);
@@ -123,54 +127,94 @@ export function AppointmentView() {
   console.log(`date ${date2}`);
   console.log(`slot ${slotIds2}`);
 
-  const appointment: AppointmentProps = {
+  const formatDateToISO = (dateString: string) => {
+    const [month, day, year] = dateString.split('-');
+    return `${year}-${month}-${day}T12:00:00Z`;
+  };
+  
+  const appointment2: AppointmentProps = {
     salonId: salonId ?? 0,
-    dateToGo: date2 ? new Date(date2).toISOString() : '',
+    dateToGo: date2 ? new Date(formatDateToISO(date2)).toISOString() : '',
     items: [
       {
-        serviceId: serviceId2 ?? 0, 
-        stylistId: stylistId2 ?? 0, 
+        serviceId: serviceId2 ?? 0,
+        stylistId: stylistId2 ?? 0,
         slots: slotIds2.map(id => ({ id }))
       }
     ]
   };
-
-  const appointment2: AppointmentProps = {
+  
+  const appointment: AppointmentProps = {
     salonId: salonId ?? 0,
-    dateToGo: date ? new Date(date).toISOString() : '',
+    dateToGo: date ? new Date(formatDateToISO(date)).toISOString() : '',
     items: [
       {
-        serviceId: serviceId ?? 0, 
-        stylistId: stylistId ?? 0, 
+        serviceId: serviceId ?? 0,
+        stylistId: stylistId ?? 0,
         slots: slotIds.map(id => ({ id }))
       }
     ]
   };
+  
+  
 
-    const handleDoneClick = () => {
-      setOpenConfirmDialog(true);
-      console.log(appointment);
-    };
-  
-    const handleConfirm = async () => {
-      try {
-        const accessToken = localStorage.getItem('accessToken')
-        if(accessToken){
-          await appointmentApi.createAppointment(appointment);
-        }
-        else{
-          navigate('/sign-in');
-        }
-        
-        setOpenConfirmDialog(false); 
-      } catch (error) {
-        console.error('Failed to create appointment', error);
+  const handleDoneClick = () => {
+    setOpenConfirmDialog(true);
+    console.log(appointment);
+    console.log(appointment2)
+  };
+
+  // Đổi tên tham số appointment thành `apt` trong hàm isAppointmentValid
+const isAppointmentValid = (apt: AppointmentProps) => (
+  apt.salonId !== undefined &&
+  apt.dateToGo !== '' &&
+  apt.items.length > 0 &&
+  apt.items.every(item => item.serviceId !== 0 && item.stylistId !== 0 && item.slots.length > 0)
+);
+
+const handleConfirm = async () => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      let response;  
+      
+      if (appointment && isAppointmentValid(appointment)) {
+        response = await appointmentApi.createAppointment(appointment);
+      } else if (appointment2 && isAppointmentValid(appointment2)) {
+        response = await appointmentApi.createAppointment(appointment2);
+      } else {
+        showAlert('Appointment is not valid');
+        return;
       }
-    };
+
+      const payment: PaymentItemProps = response?.data;
+
+      if (payment && payment.checkoutUrl) {
+        window.location.href = payment.checkoutUrl;
+      }
+    } else {
+      navigate('/sign-in');
+    }
+
+    setOpenConfirmDialog(false);
+  } catch (error) {
+    console.error('Failed to create appointment', error);
+  }
+};
+
   
-    const handleCancel = () => {
-      setOpenConfirmDialog(false);
-    };
+  const handleCancel = () => {
+    setOpenConfirmDialog(false);
+  };
+
+  const showAlert = (message: string) => {
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
 
   const handleViewChoice = (choice: string) => {
     setViewChoice(choice);
@@ -259,7 +303,7 @@ export function AppointmentView() {
   const handleViewDone = (done: boolean) => {
     setViewDone(done);
   };
-  
+
 
   return (
     <HomeContent>
@@ -271,9 +315,9 @@ export function AppointmentView() {
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Card sx={{ width: 700, padding: 2, boxShadow: 3 }}>
           <Box display="flex" flexDirection="column" gap={3}>
-          <Typography variant="h3" flexGrow={1} textAlign="center" color='seagreen  '>
-          Customize Your Appointment
-        </Typography>
+            <Typography variant="h3" flexGrow={1} textAlign="center" color='seagreen  '>
+              Customize Your Appointment
+            </Typography>
 
             <AppointmentSalon selectedSalonAddress={salonAddress} />
 
@@ -292,20 +336,20 @@ export function AppointmentView() {
               <AppointmentServiceStylistSlot
                 selectedServiceName={serviceName}
                 selectedStylistName={stylistName}
-                onClear={clearServiceAndStylist} 
+                onClear={clearServiceAndStylist}
                 viewdone={handleViewDone}
               />
             )}
 
             {viewChoice === 'stylist' && salonId !== null && (
-              <AppointmentStylistServiceSlot 
-              selectedServiceName2={serviceName2}
-              selectedStylistName2={stylistName2}
-              onClear2={clearServiceAndStylist} 
-              viewdone2={handleViewDone}
-            />
-          
-          )}
+              <AppointmentStylistServiceSlot
+                selectedServiceName2={serviceName2}
+                selectedStylistName2={stylistName2}
+                onClear2={clearServiceAndStylist}
+                viewdone2={handleViewDone}
+              />
+
+            )}
             {/* 
             {serviceName !== null && stylistName !== null && (
               <Link marginLeft={1}>
@@ -313,9 +357,9 @@ export function AppointmentView() {
               </Link>
             )} */}
 
-            { viewDone && (
+            {viewDone && (
               <Button
-              onClick={handleDoneClick}
+                onClick={handleDoneClick}
                 sx={{
                   fontSize: '18px',
                   color: 'white',
@@ -377,6 +421,9 @@ export function AppointmentView() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <AlertDialog open={alertOpen} message={alertMessage} onClose={handleAlertClose} />
+
     </HomeContent>
   );
 }
