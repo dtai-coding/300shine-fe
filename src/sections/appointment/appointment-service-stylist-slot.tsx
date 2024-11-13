@@ -33,13 +33,13 @@ export function AppointmentServiceStylistSlot({
 }) {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const [serviceName, setServiceName] = useState(selectedServiceName);
   const [stylistName, setStylistName] = useState(selectedStylistName);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [slots, setSlots] = useState<SlotItemProps[]>([]);
   const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);
-  const [unavailableSlotIds, setUnavailableSlotIds] = useState<number[]>([]); // New state
+  const [unavailableSlotIds, setUnavailableSlotIds] = useState<number[]>([]);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
 
   const navigate = useNavigate();
@@ -120,14 +120,6 @@ export function AppointmentServiceStylistSlot({
   };
 
   const handleConfirmDelete = () => {
-    // if (selectedSlotIds.length>0) {
-    //   localStorage.removeItem('selectedStylistId');
-    //   localStorage.removeItem('selectedStylistName');
-    //   setStylistName(null);
-    //   setSlots([]);
-    //   setOpenDeleteDialog(false);
-
-    // }
     localStorage.removeItem('selectedServiceId');
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
@@ -180,6 +172,7 @@ export function AppointmentServiceStylistSlot({
       showAlert("Date cannot be in the past or today");
       setSelectedDate(null);
       setSelectedSlotIds([]);
+      setSlots([]);
     } else {
       setSelectedDate(date);
       localStorage.setItem('selectedDate', date.format('MM-DD-YYYY'));
@@ -196,18 +189,18 @@ export function AppointmentServiceStylistSlot({
       <Typography variant="h6" mb={2}>
         {serviceName ? (
           <Card
-          onClick={() => handleRedirectService()}
-          sx={{
-            cursor:'pointer',
-            height: '30px',
-            margin: '18px',
-            backgroundColor:'#b3e5fc' ,
-            color:  'black',
-            transition: '0.3s',
-            '&:hover': {
-              backgroundColor:  'palegoldenrod ' ,
-            },
-          }}
+            onClick={() => handleRedirectService()}
+            sx={{
+              cursor: 'pointer',
+              height: '30px',
+              margin: '18px',
+              backgroundColor: '#b3e5fc',
+              color: 'black',
+              transition: '0.3s',
+              '&:hover': {
+                backgroundColor: 'palegoldenrod ',
+              },
+            }}
           >
             <Link color="inherit" marginLeft='20px' underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} >
               {serviceName} - Duration: {serviceDuration} slots
@@ -226,22 +219,22 @@ export function AppointmentServiceStylistSlot({
           <Typography variant="h6" mb={2}>
             {stylistName ? (
               <Card
-              onClick={() => handleRedirectStylist()}
-              sx={{
-                cursor:'pointer',
-                height: '30px',
-                margin: '18px',
-                backgroundColor:'#b3e5fc' ,
-                color:  'black',
-                transition: '0.3s',
-                '&:hover': {
-                  backgroundColor:  'palegoldenrod ' ,
-                },
-              }}
+                onClick={() => handleRedirectStylist()}
+                sx={{
+                  cursor: 'pointer',
+                  height: '30px',
+                  margin: '18px',
+                  backgroundColor: '#b3e5fc',
+                  color: 'black',
+                  transition: '0.3s',
+                  '&:hover': {
+                    backgroundColor: 'palegoldenrod ',
+                  },
+                }}
               >
-              <Link color="inherit" marginLeft='20px' underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} >
-                {stylistName}
-              </Link>
+                <Link color="inherit" marginLeft='20px' underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} >
+                  {stylistName}
+                </Link>
               </Card>
             ) : (
               <Link color="inherit" underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} onClick={() => navigate('/select-stylist')}>

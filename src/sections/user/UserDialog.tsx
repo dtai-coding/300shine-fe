@@ -1,16 +1,17 @@
 import type { UserCreateProps, UserUpdateProps } from 'src/model/request/User';
 
 import React, { useState, useEffect } from 'react';
+
 import {
-  FormControlLabel,
-  Checkbox,
   Box,
   Dialog,
   Button,
+  Checkbox,
   TextField,
   DialogTitle,
   DialogActions,
   DialogContent,
+  FormControlLabel,
 } from '@mui/material';
 
 interface UserDialogProps {

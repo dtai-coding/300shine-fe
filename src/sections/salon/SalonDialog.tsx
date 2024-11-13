@@ -1,12 +1,15 @@
+import type { SalonViewProps } from 'src/model/response/salon';
+
 import React, { useState, useEffect } from 'react';
+
 import {
   Box,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Button,
   TextField,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
 } from '@mui/material';
 import { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
 

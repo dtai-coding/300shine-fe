@@ -10,8 +10,8 @@ const AxiosInterceptor = () => {
   useEffect(() => {
     // Request Interceptor
     const requestInterceptor = (config) => {
-      console.log('Request interceptor triggered');
-      console.log(accessToken)
+      // console.log('Request interceptor triggered');
+      // console.log(accessToken)
       const customHeader = {};
       if (accessToken) {
         customHeader.Authorization = `Bearer ${accessToken}`;
@@ -32,11 +32,11 @@ const AxiosInterceptor = () => {
 
     // Response Interceptor
     const responseInterceptor = (response) => {
-      console.log('Response interceptor triggered:', response);
+      // console.log('Response interceptor triggered:', response);
     
       // Check if the response has the "value" and "data" properties
       if (response?.data?.value) {
-        console.log('list', response.data.value);
+        // console.log('list', response.data.value);
         return response.data.value;  // This should return the users array directly
       }
     

@@ -14,13 +14,16 @@ import { fCurrency } from 'src/utils/format-number';
 // ----------------------------------------------------------------------
 
 
-export function SelectServiceItem({ service }: { service: ServiceItemProps }) {
+export function SelectServiceItem2({ service }: { service: ServiceItemProps }) {
     const navigate = useNavigate();
 
     const handleSelectService = () => {
-      localStorage.setItem('selectedServiceId', service.id.toString());
-      localStorage.setItem('selectedServiceName', service.name.toString());
-      localStorage.setItem('selectedServiceDuration', service.duration.toString());
+      console.log(service.id, service.name, service.duration);
+
+      localStorage.setItem('selectedServiceId2', service.id.toString());
+      localStorage.setItem('selectedServiceName2', service.name.toString());
+      localStorage.setItem('selectedServiceDuration2', service.duration.toString());
+
       navigate(-1); 
     };
 

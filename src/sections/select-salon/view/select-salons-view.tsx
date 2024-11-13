@@ -23,7 +23,6 @@ export function SelectSalonView() {
             const response = await salonApi.getSalons(); // Call API
             const salonData = response?.data; // Extract the product data from response.value.data
             setSalons(salonData); // Update the products state with data from API
-            console.log('Successfully fetched salons:', salonData);
           } catch (error) {
             console.error('Failed to fetch salons:', error);
           }
