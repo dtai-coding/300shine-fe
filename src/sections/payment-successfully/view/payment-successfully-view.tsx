@@ -1,15 +1,25 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle } from '@mui/icons-material'; // Assuming you're using Material UI
 import { Box, Card, Button, Typography, CardContent, CardActions } from '@mui/material';
 
 export const PaymentSuccessfullyView: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    const [orderCode, setOrderCode] = useState<string | null>(null);
 
-    // Handler to redirect the user back to the home or orders page
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const orderCodeFromUrl = params.get('orderCode');
+        
+        if (orderCodeFromUrl) {
+            setOrderCode(orderCodeFromUrl);
+        }
+    }, [location]);
+
     const handleGoHome = () => {
-        navigate('/'); // Change this path to your desired home or orders page
+        navigate('/'); 
     };
 
     return (
@@ -21,7 +31,7 @@ export const PaymentSuccessfullyView: React.FC = () => {
             bgcolor="#f6f6f6"
             padding={3}
         >
-            <Card sx={{  maxWidth: 600, width: '90%', boxShadow: 5, borderRadius: 3, padding: 4}}>
+            <Card sx={{ maxWidth: 600, width: '90%', boxShadow: 5, borderRadius: 3, padding: 4 }}>
                 <CardContent sx={{ textAlign: 'center', padding: 4 }}>
                     <CheckCircle style={{ fontSize: 90, color: '#4caf50', marginBottom: '15px' }} />
                     
@@ -38,10 +48,7 @@ export const PaymentSuccessfullyView: React.FC = () => {
                             Transaction Details
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                            Transaction ID: <strong>123456789</strong>
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                            Amount Paid: <strong>$99.99</strong>
+                            Order Code: <strong>{orderCode || 'Loading...'}</strong>
                         </Typography>
                     </Box>
                 </CardContent>
