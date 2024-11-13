@@ -67,3 +67,11 @@ export function SalonTableHead({
     </TableHead>
   );
 }
+
+// Define head labels to match salon fields
+export const salonHeadLabels = [
+  { id: 'imageUrl', label: 'Image', align: 'left', width: 100, minWidth: 80 },
+  { id: 'address', label: 'Address', align: 'left', width: 200, minWidth: 150 },
+  { id: 'phone', label: 'Phone', align: 'left', width: 150, minWidth: 120 },
+  { id: 'district', label: 'District', align: 'left', width: 150, minWidth: 120 },
+];

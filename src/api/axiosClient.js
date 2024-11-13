@@ -15,5 +15,5 @@ const axiosClient = axios.create({
 /* Export */
 export default axiosClient;
 
-// https://localhost:7073/api
+// https://localhost:7073/index.html
 // https://300shine.azurewebsites.net/index.html

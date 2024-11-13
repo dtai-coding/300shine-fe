@@ -1,4 +1,5 @@
-import type { UserProps, UserCreateProps } from 'src/model/response/User';
+import type { UserProps } from 'src/model/response/User';
+import type { UserCreateProps, UserUpdateProps } from 'src/model/request/User';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -75,15 +76,21 @@ export function UserView() {
     setOpenAddUserDialog(true);
   };
 
+  const handleCloseDialog = () => {
+    setOpenAddUserDialog(false);
+    setTimeout(() => {
+      setIsEditMode(false);
+      setCurrentUser(null);
+    }, 200);
+  };
+
   const handleSaveUser = async (user: UserCreateProps) => {
     if (isEditMode && currentUser) {
       await userApi.updateUser(currentUser.id, user);
     } else {
       await userApi.addManager({ ...user, password: user.password || '' });
     }
-    setOpenAddUserDialog(false);
-    setIsEditMode(false);
-    setCurrentUser(null);
+    handleCloseDialog();
     fetchData();
   };
 
@@ -118,7 +125,7 @@ export function UserView() {
 
       <UserDialog
         open={openAddUserDialog}
-        onClose={() => setOpenAddUserDialog(false)}
+        onClose={() => handleCloseDialog()}
         isEditMode={isEditMode}
         user={userToEdit}
         onSave={handleSaveUser}
@@ -191,7 +198,7 @@ export function UserView() {
                       emptyRows={emptyRows(table.page, table.rowsPerPage, users.length)}
                     />
 
-                    <TableNoData searchQuery={filterName} />
+                    {notFound && <TableNoData searchQuery={filterName} />}
                   </TableBody>
                 </Table>
               </TableContainer>
