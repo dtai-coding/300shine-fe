@@ -1,28 +1,34 @@
+import type { UserProps } from 'src/model/response/User';
+import type { UserCreateProps, UserUpdateProps } from 'src/model/request/User';
+
 import React, { useState, useEffect, useCallback } from 'react';
+
 import {
   Box,
-  Button,
   Card,
-  CircularProgress,
-  Typography,
   Table,
+  Button,
   TableBody,
+  Typography,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from '@mui/material';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { UserProps, UserCreateProps } from 'src/model/response/User';
+
 import userApi from '../../../api/userApi';
+import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
+import { uploadImage } from '../../../api/apis';
 import { UserTableRow } from '../user-table-row';
 import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import { UserDialog } from '../UserDialog';
 
 export function UserView() {
   const table = useTable();
@@ -33,14 +39,15 @@ export function UserView() {
   const [users, setUsers] = useState<UserProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const userToEdit: UserCreateProps = {
+  const userToEdit: UserUpdateProps = {
     phone: currentUser?.phone ?? null,
-    password: isEditMode ? null : '',
     fullName: currentUser?.fullName ?? null,
     dateOfBirth: currentUser?.dateOfBirth ?? null,
     gender: currentUser?.gender ?? null,
     address: currentUser?.address ?? null,
+    role: currentUser?.roleName ?? null,
     isVerified: currentUser?.isVerified ?? null,
     status: currentUser?.status ?? null,
     salonId: currentUser?.salonId ?? null,
@@ -71,16 +78,47 @@ export function UserView() {
     setOpenAddUserDialog(true);
   };
 
-  const handleSaveUser = async (user: UserCreateProps) => {
-    if (isEditMode && currentUser) {
-      await userApi.updateUser(currentUser.id, user);
-    } else {
-      await userApi.addManager({ ...user, password: user.password || '' });
-    }
+  const handleCloseDialog = () => {
     setOpenAddUserDialog(false);
-    setIsEditMode(false);
-    setCurrentUser(null);
-    fetchData();
+    setTimeout(() => {
+      setIsEditMode(false);
+      setCurrentUser(null);
+      setImageFile(null);
+    }, 200);
+  };
+
+  const handleSaveUser = async (user: UserCreateProps | UserUpdateProps) => {
+    try {
+      let {imageUrl} = user;
+
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
+      if (isEditMode && currentUser) {
+        // Cast `user` as UserUpdateProps when updating
+        const updateUserPayload: UserUpdateProps = {
+          ...user,
+          imageUrl,
+          role: (user as UserUpdateProps).role || '',
+          isStylist: (user as UserUpdateProps).isStylist ?? false,
+        };
+        await userApi.updateUser(currentUser.id, updateUserPayload);
+      } else {
+        // Cast `user` as UserCreateProps when creating
+        const createUserPayload: UserCreateProps = {
+          ...user,
+          imageUrl,
+          password: (user as UserCreateProps).password || '',
+        };
+        await userApi.addManager(createUserPayload);
+      }
+      handleCloseDialog();
+      fetchData();
+    } catch (error) {
+      console.error('Error saving user:', error);
+      // Add error handling here, e.g., showing an error message
+    }
   };
 
   const handleDeleteUser = async (userId: number) => {
@@ -114,10 +152,12 @@ export function UserView() {
 
       <UserDialog
         open={openAddUserDialog}
-        onClose={() => setOpenAddUserDialog(false)}
+        onClose={() => handleCloseDialog()}
         isEditMode={isEditMode}
         user={userToEdit}
         onSave={handleSaveUser}
+        imageFile={imageFile}
+        setImageFile={setImageFile}
       />
 
       <Card>
@@ -187,7 +227,7 @@ export function UserView() {
                       emptyRows={emptyRows(table.page, table.rowsPerPage, users.length)}
                     />
 
-                    <TableNoData searchQuery={filterName} />
+                    {notFound && <TableNoData searchQuery={filterName} />}
                   </TableBody>
                 </Table>
               </TableContainer>

@@ -1,3 +1,5 @@
+import type { SalonViewProps } from 'src/model/response/salon';
+
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -10,35 +12,25 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
-import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export type SalonProps = {
-  id: number;
-  fullName: string | null;
-  dateOfBirth: string | null;
-  gender: boolean | null;
-  phone: string | null;
-  address: string | null;
-  isVerified: boolean | null;
-  status: string | null;
-  salonId: number | null;
-  roleName: string | null;
-  imageUrl: string | null;
-  commission: number | null;
-  salary: number | null;
-  salaryPerDay: number | null;
-};
-
 type SalonTableRowProps = {
-  row: SalonProps;
+  row: SalonViewProps;
   selected: boolean;
   onSelectRow: () => void;
+  onEditSalon: (user: SalonViewProps) => void;
+  onDeleteSalon: (userId: number) => void;
 };
 
-export function SalonTableRow({ row, selected, onSelectRow }: SalonTableRowProps) {
+export function SalonTableRow({
+  row,
+  selected,
+  onSelectRow,
+  onEditSalon,
+  onDeleteSalon,
+}: SalonTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,34 +53,13 @@ export function SalonTableRow({ row, selected, onSelectRow }: SalonTableRowProps
 
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.fullName || '-'} src={row.imageUrl || ''} />
-            {getDisplayValue(row.fullName)}
+            <Avatar alt="Salon Image" src={row.imageUrl || ''} />
+            {getDisplayValue(row.address)}
           </Box>
         </TableCell>
 
-        <TableCell>{getDisplayValue(row.dateOfBirth)}</TableCell>
-        <TableCell>
-          {getDisplayValue(row.gender !== null ? (row.gender ? 'Male' : 'Female') : '-')}
-        </TableCell>
         <TableCell>{getDisplayValue(row.phone)}</TableCell>
-        <TableCell align="center">
-          {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
-          ) : (
-            '-'
-          )}
-        </TableCell>
-        <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>
-            {getDisplayValue(row.status)}
-          </Label>
-        </TableCell>
-        <TableCell>{getDisplayValue(row.salonId)}</TableCell>
-        <TableCell>{getDisplayValue(row.roleName)}</TableCell>
-
-        <TableCell>{getDisplayValue(row.commission)}</TableCell>
-        <TableCell>{getDisplayValue(row.salary)}</TableCell>
-        <TableCell>{getDisplayValue(row.salaryPerDay)}</TableCell>
+        <TableCell>{getDisplayValue(row.district)}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>
@@ -120,12 +91,23 @@ export function SalonTableRow({ row, selected, onSelectRow }: SalonTableRowProps
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem
+            onClick={() => {
+              handleClosePopover();
+              onEditSalon(row);
+            }}
+          >
             <Iconify icon="solar:pen-bold" />
             Edit
           </MenuItem>
 
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+          <MenuItem
+            onClick={() => {
+              handleClosePopover();
+              onDeleteSalon(row.id);
+            }}
+            sx={{ color: 'error.main' }}
+          >
             <Iconify icon="solar:trash-bin-trash-bold" />
             Delete
           </MenuItem>

@@ -9,11 +9,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
-import { Iconify } from 'src/components/iconify';
+
 import { registerAPI } from 'src/api/apis';
-import FileUploader from 'src/components/firebase/FileUploader';
 
-
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -45,7 +44,7 @@ export function SignUpView() {
       dateOfBirth,
       gender,
       address,
-      imageUrl, // Include imageUrl in registration data
+      imageUrl,
     };
 
     try {
@@ -59,10 +58,6 @@ export function SignUpView() {
       setLoading(false);
     }
   }, [phone, password, fullName, dateOfBirth, gender, address, imageUrl, router]);
-
-  const handleUploadSuccess = (url: string) => {
-    setImageUrl(url);
-  };
 
   const handleSignInClick = () => {
     router.push('/sign-in');
@@ -79,16 +74,35 @@ export function SignUpView() {
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-      <TextField
-        fullWidth
-        name="dateOfBirth"
-        label="Date of Birth"
-        type="date"
-        value={dateOfBirth}
-        onChange={(e) => setDateOfBirth(e.target.value)}
-        InputLabelProps={{ shrink: true }}
-        sx={{ mb: 3 }}
-      />
+      <Box display="flex" gap={2} sx={{ mb: 3, width: '100%' }}>
+        <TextField
+          fullWidth
+          name="dateOfBirth"
+          label="Date of Birth"
+          type="date"
+          value={dateOfBirth}
+          onChange={(e) => setDateOfBirth(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          sx={{ flexGrow: 1 }}
+        />
+
+        <TextField
+          fullWidth
+          name="gender"
+          label="Gender"
+          select
+          SelectProps={{
+            native: true,
+          }}
+          value={gender ? 'true' : 'false'}
+          onChange={(e) => setGender(e.target.value === 'true')}
+          InputLabelProps={{ shrink: true }}
+          sx={{ flexGrow: 1 }}
+        >
+          <option value="true">Male</option>
+          <option value="false">Female</option>
+        </TextField>
+      </Box>
       <TextField
         fullWidth
         name="phone"
@@ -98,31 +112,7 @@ export function SignUpView() {
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-      <TextField
-        fullWidth
-        name="address"
-        label="Address"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        InputLabelProps={{ shrink: true }}
-        sx={{ mb: 3 }}
-      />
-      <TextField
-        fullWidth
-        name="gender"
-        label="Gender"
-        select
-        SelectProps={{
-          native: true,
-        }}
-        value={gender ? 'true' : 'false'}
-        onChange={(e) => setGender(e.target.value === 'true')}
-        InputLabelProps={{ shrink: true }}
-        sx={{ mb: 3 }}
-      >
-        <option value="true">Male</option>
-        <option value="false">Female</option>
-      </TextField>
+
       <TextField
         fullWidth
         name="password"
@@ -143,7 +133,25 @@ export function SignUpView() {
         sx={{ mb: 3 }}
       />
 
-      <FileUploader onUploadSuccess={handleUploadSuccess} />
+      <TextField
+        fullWidth
+        name="imageUrl"
+        label="Image"
+        value={imageUrl}
+        onChange={(e) => setImageUrl(e.target.value)}
+        InputLabelProps={{ shrink: true }}
+        sx={{ mb: 3 }}
+      />
+
+      <TextField
+        fullWidth
+        name="address"
+        label="Address"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        InputLabelProps={{ shrink: true }}
+        sx={{ mb: 3 }}
+      />
 
       {error && (
         <Typography variant="body2" color="error" sx={{ mb: 2 }}>

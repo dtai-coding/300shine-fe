@@ -9,9 +9,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
-import { Iconify } from 'src/components/iconify';
-import { useAuthStore } from 'src/stores/auth/auth.store'; 
 
+import { useAuthStore } from 'src/stores/auth/auth.store';
+
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -29,8 +30,14 @@ export function SignInView() {
     setError(''); // Reset error
 
     try {
-      await loginUser({ phone, password }); // Call Zustand store's loginUser function
-      router.push('/'); // Redirect to homepage on successful login
+      let formattedPhone = phone;
+      if (phone.startsWith('0')) {
+        formattedPhone = `+84${  phone.slice(1)}`;
+      }
+
+      await loginUser({ phone: formattedPhone, password });
+      // await loginUser({ phone, password }); 
+      router.push('/'); 
     } catch (err) {
       console.error('Login failed:', err);
       setError(err.message || 'Login failed. Please check your credentials.');

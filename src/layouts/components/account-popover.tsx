@@ -1,5 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import type { IconButtonProps } from '@mui/material/IconButton';
+
+import React, { useState, useCallback } from 'react';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -7,9 +9,11 @@ import Popover from '@mui/material/Popover';
 import Divider from '@mui/material/Divider';
 import MenuList from '@mui/material/MenuList';
 import Typography from '@mui/material/Typography';
-
+import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
+
 import { useRouter, usePathname } from 'src/routes/hooks';
+
 import { useAuthStore } from 'src/stores/auth/auth.store';
 
 export type AccountPopoverProps = IconButtonProps & {
@@ -162,37 +166,6 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
                 onClick={() => handleClickItem('/sign-in')}
               >
                 Login
-              </Button>
-            </Box>
-            <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }} />
-            <Box sx={{ p: 1 }}>
-              <Button
-                fullWidth
-                size="medium"
-                variant="text"
-                onClick={() => handleClickItem('/dashboard')}
-              >
-                Admin
-              </Button>
-            </Box>
-            <Box sx={{ p: 1 }}>
-              <Button
-                fullWidth
-                size="medium"
-                variant="text"
-                onClick={() => handleClickItem('/manager')}
-              >
-                Manager
-              </Button>
-            </Box>
-            <Box sx={{ p: 1 }}>
-              <Button
-                fullWidth
-                size="medium"
-                variant="text"
-                onClick={() => handleClickItem('/stylist')}
-              >
-                Stylist
               </Button>
             </Box>
           </>

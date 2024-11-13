@@ -61,4 +61,28 @@ export const convertToFormData = (data) => {
   return formData;
 };
 
+export const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    // Ensure the URL is correct, and you are passing the formData as the second parameter
+    const response = await axiosClient.post(
+      'https://localhost:7073/api/Photo/upload-photo', // The full URL to your upload endpoint
+      formData, // The formData object with the file
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Setting the content type
+        },
+      }
+    );
+
+    // Return the response data, assuming it contains the image URL or relevant data
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    return null;
+  }
+};
+
 export default axiosClient;

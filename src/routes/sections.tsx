@@ -6,14 +6,14 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 
 import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
-import { HomeLayout } from 'src/layouts/home'; 
+import { HomeLayout } from 'src/layouts/home';
 import { StylistLayout } from 'src/layouts/stylist';
 import { ManagerLayout } from 'src/layouts/manager';
 import { DashboardLayout } from 'src/layouts/dashboard';
 import AxiosInterceptor from 'src/api/axiosInterceptor';
+import ProtectedRoute from 'src/stores/auth/protected.route';
 
 // Path to your ProtectedRoute component
-
 
 // Lazy imports for pages
 const Dashboard = lazy(() => import('src/pages/dashboard'));
@@ -21,17 +21,24 @@ const Stylist = lazy(() => import('src/pages/stylist'));
 const Manager = lazy(() => import('src/pages/manager'));
 const HomePage = lazy(() => import('src/pages/home'));
 const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
+const StylistDetailPage = lazy(() => import('src/pages/stylist-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
+const SelectServicePage2 = lazy(() => import('src/pages/select-service-2'));
+const SalonPage = lazy(() => import('src/pages/salon'));
+const RevenuePage = lazy(() => import('src/pages/revenue'));
 const SelectStylistPage = lazy(() => import('src/pages/select-stylist'));
+const SelectStylistPage2 = lazy(() => import('src/pages/select-stylist-2'));
+const PaymentSuccessfullyPage = lazy(() => import('src/pages/payment-successfully'));
+const PaymentCancelPage = lazy(() => import('src/pages/payment-cancel'));
 const BlogPage = lazy(() => import('src/pages/blog'));
 const UserPage = lazy(() => import('src/pages/user'));
+const UserMangerPage = lazy(() => import('src/pages/user-manager'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
 const SignUpPage = lazy(() => import('src/pages/sign-up'));
 const ProductsPage = lazy(() => import('src/pages/products'));
 const Page404 = lazy(() => import('src/pages/page-not-found'));
-
 
 const renderFallback = (
   <Box display="flex" alignItems="center" justifyContent="center" flex="1 1 auto">
@@ -51,7 +58,7 @@ export function Router() {
     {
       path: '',
       element: <AxiosInterceptor />,
-      children: [ 
+      children: [
         {
           element: (
             <HomeLayout>
@@ -65,15 +72,22 @@ export function Router() {
             { path: 'appointment', element: <AppointmentPage /> },
             { path: 'select-salon', element: <SelectSalonPage /> },
             { path: 'select-service', element: <SelectServicePage /> },
+            { path: 'select-service-2', element: <SelectServicePage2 /> },
             { path: 'select-stylist', element: <SelectStylistPage /> },
+            { path: 'select-stylist-2', element: <SelectStylistPage2 /> },
             { path: 'service-detail/:id', element: <ServiceDetailPage /> },
+            { path: 'stylist-detail/:id', element: <StylistDetailPage /> },
+            { path: 'payment-successfully', element: <PaymentSuccessfullyPage /> },
+            { path: 'payment-cancel', element: <PaymentCancelPage /> },
           ],
         },
         {
           path: 'sign-in',
           element: (
             <AuthLayout>
-              <SignInPage />
+              <Suspense fallback={renderFallback}>
+                <SignInPage />
+              </Suspense>
             </AuthLayout>
           ),
         },
@@ -89,30 +103,30 @@ export function Router() {
           path: 'dashboard',
           element: (
             // <ProtectedRoute allowedRoles={['admin']}>
-              <DashboardLayout>
-                <Suspense fallback={renderFallback}>
-                  <Outlet />
-                </Suspense>
-              </DashboardLayout>
+            <DashboardLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </DashboardLayout>
             // </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Dashboard /> },
             { path: 'user', element: <UserPage /> },
-            // { path: 'products', element: <ProductsPage /> },
-            // { path: 'blog', element: <BlogPage /> },
+            { path: 'salon', element: <SalonPage /> },
+            { path: 'revenue', element: <RevenuePage /> },
           ],
         },
         {
           path: 'stylist',
           element: (
-            // <ProtectedRoute allowedRoles={['staff']}>
+            <ProtectedRoute allowedRoles={['staff']}>
               <StylistLayout>
                 <Suspense fallback={renderFallback}>
                   <Outlet />
                 </Suspense>
               </StylistLayout>
-            // </ProtectedRoute>
+            </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Stylist /> },
@@ -124,19 +138,22 @@ export function Router() {
         {
           path: 'manager',
           element: (
-            // <ProtectedRoute allowedRoles={['manager']}>
+            <ProtectedRoute allowedRoles={['manager']}>
               <ManagerLayout>
                 <Suspense fallback={renderFallback}>
                   <Outlet />
                 </Suspense>
               </ManagerLayout>
-            // </ProtectedRoute>
+            </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Manager /> },
-            { path: 'user', element: <UserPage /> },
-            // { path: 'products', element: <ProductsPage /> },
-            // { path: 'blog', element: <BlogPage /> },
+            { path: 'user', element: <UserMangerPage /> },
+            // { path: 'appointment', element: <AppointmentsPage /> },
+            // { path: 'service', element: <ServicePage /> },
+            // { path: 'shift', element: <ShiftPage /> },
+            // { path: 'revenue', element: <Revenue /> },
+            // { path: 'commission', element: <CommissionPage /> },
           ],
         },
         {

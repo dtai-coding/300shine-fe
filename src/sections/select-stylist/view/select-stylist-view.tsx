@@ -18,8 +18,6 @@ export function SelectStylistView() {
   const [stylists, setStylists] = useState<StylistItemProps[]>([]);
   const [serviceId, setServiceId] = useState<number | null>(null);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const storedSalonId = localStorage.getItem('selectedSalonId');
     const storedServiceId = localStorage.getItem('selectedServiceId');
@@ -31,7 +29,6 @@ export function SelectStylistView() {
         const response = await stylistApi.getStylistBySalonIdAndServiceId(storedSalonId, storedServiceId);
         const stylistData = response?.data;
         setStylists(stylistData);
-        console.log('Successfully fetched stylists:', stylistData);
 
       } catch (error) {
         console.error('Failed to fetch stylists:', error);
@@ -39,7 +36,7 @@ export function SelectStylistView() {
     };
 
     fetchStylists();
-  }, [serviceId]); // Dependency on selected serviceId
+  }, [serviceId]); 
 
 
   return (
@@ -48,13 +45,22 @@ export function SelectStylistView() {
         Select Stylist
       </Typography>
 
-      <Grid container spacing={0}>
+      
+
+      {stylists ? (
+        <Grid container spacing={0}>
         {stylists.map((stylist) => (
           <Grid key={stylist.id} xs={12} sm={6} md={3}>
             <SelectStylistItem stylist={stylist}  />
           </Grid>
         ))}
       </Grid>
+      ):(
+        <Typography variant="h2" sx={{ mb: 5 }}>
+          No stylist this salon can do this service
+        </Typography>
+      )
+      }
 
       <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />
     </HomeContent>

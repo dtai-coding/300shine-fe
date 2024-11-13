@@ -1,4 +1,4 @@
-import { UserProps } from 'src/model/response/User';
+import type { UserProps } from 'src/model/response/User';
 
 // ----------------------------------------------------------------------
 

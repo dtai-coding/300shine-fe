@@ -20,7 +20,8 @@ export function SelectServiceItem({ service }: { service: ServiceItemProps }) {
     const handleSelectService = () => {
       localStorage.setItem('selectedServiceId', service.id.toString());
       localStorage.setItem('selectedServiceName', service.name.toString());
-      navigate('/appointment'); 
+      localStorage.setItem('selectedServiceDuration', service.duration.toString());
+      navigate(-1); 
     };
 
   return (

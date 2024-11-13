@@ -1,18 +1,24 @@
-import { useState, useCallback } from 'react';
+import type { StylistItemProps } from 'src/model/response/stylist';
+
+import { useNavigate } from 'react-router-dom';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Unstable_Grid2';
+import { IconButton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
 
-import { _products } from 'src/_mock';
+import stylistApi from 'src/api/stylistApi';
 import { HomeContent } from 'src/layouts/home';
 
-import { StylistItem } from '../stylist-item';
+import { SelectStylistItem } from 'src/sections/select-stylist/select-stylist-item';
+
 import { StylistSort } from '../stylist-sort';
 import { StylistFilters } from '../stylist-filters';
 
 import type { FiltersProps } from '../../product/product-filters';
+
 
 // ----------------------------------------------------------------------
 
@@ -60,9 +66,13 @@ export function StylistsView() {
   const [sortBy, setSortBy] = useState('featured');
 
   const [openFilter, setOpenFilter] = useState(false);
+  
 
   const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
-
+  const [stylists, setStylists] = useState<StylistItemProps[]>([]);
+  const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const handleOpenFilter = useCallback(() => {
     setOpenFilter(true);
   }, []);
@@ -82,21 +92,127 @@ export function StylistsView() {
   const canReset = Object.keys(filters).some(
     (key) => filters[key as keyof FiltersProps] !== defaultFilters[key as keyof FiltersProps]
   );
+    useEffect(() => {
+      const fetchStylists = async () => {
+        try {
+          const response = await stylistApi.getAllStylists(); // Call API
+          const productData = response?.data; // Extract the product data from response.value.data
+          const stylistsWithImage = response.data.map((stylist: any) => ({
+            ...stylist,
+            imageUrl: stylist.imageUrl || 'defaultImageUrl', // Ensure imageUrl is present
+          }));
+          setStylists(stylistsWithImage); // Set updated stylists to state
+          console.log('Successfully fetched stylists:', stylistsWithImage);
+        } catch (err) {
+      
+          console.error('Failed to fetch stylists:', err);
+        }
+      };
+  
+      fetchStylists(); // Trigger the API call
+    }, []);
+  // Auto-scroll effect
+  const handleScroll = useCallback(
+    (direction: string) => {
+      if (scrollRef.current) {
+        const itemWidth = 250; // assuming each item has a fixed width of 250px
+        let newIndex = currentIndex;
+  
+        if (direction === 'right') {
+          newIndex = currentIndex + 1;
+          if (newIndex >= stylists.length) {
+            newIndex = 0; // loop back to the start
+          }
+        } else if (direction === 'left') {
+          newIndex = currentIndex - 1;
+          if (newIndex < 0) {
+            newIndex = stylists.length - 1; // loop to the end
+          }
+        }
+  
+        setCurrentIndex(newIndex);
+  
+        scrollRef.current.scrollTo({
+          left: newIndex * itemWidth,
+          behavior: 'smooth',
+        });
+      }
+    },
+    [currentIndex, stylists.length] // dependencies for handleScroll
+  );
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleScroll('right');
+    }, ); // 3 seconds interval
+  
+    return () => clearInterval(interval);
+  }, [handleScroll]);
 
   return (
-    <HomeContent>
+    <HomeContent sx={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
       <Typography variant="h2" sx={{ mb: 5 }}>
         Stylists
       </Typography>
 
-      {/* <CartIcon totalItems={8} /> */}
+      {/* Left Arrow Button */}
+      <IconButton
+        onClick={() => handleScroll('left')}
+        sx={{
+          position: 'absolute',
+          left: 0,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 1,
+          backgroundColor: 'white',
+        }}
+      >
+        <ArrowBack />
+      </IconButton>
 
+      {/* Right Arrow Button */}
+      <IconButton
+        onClick={() => handleScroll('right')}
+        sx={{
+          position: 'absolute',
+          right: 0,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 1,
+          backgroundColor: 'white',
+        }}
+      >
+        <ArrowForward />
+      </IconButton>
+      {/* Horizontal Scroll Container */}
+      <Box
+        ref={scrollRef}
+        sx={{
+          display: 'flex',
+          gap: 2,
+          padding: 2,
+          overflowX: 'hidden', // Hide the scrollbar
+          scrollBehavior: 'smooth',
+        }}
+      >
+        {stylists.map((stylist) => (
+          <Box key={stylist.id} sx={{ minWidth: '250px', maxWidth: '250px', flexShrink: 0 }}>
+                        {/* <Link to={`/stylist-detail/${stylist.id}`} style={{ textDecoration: 'none' }}> */}
+
+            <SelectStylistItem stylist={stylist} />
+            {/* </Link> */}
+          </Box>
+        ))}
+      </Box>
+
+     
+      {/* Filters and Sorting Options */}
       <Box
         display="flex"
         alignItems="center"
         flexWrap="wrap-reverse"
         justifyContent="flex-end"
-        sx={{ mb: 5 }}
+        sx={{ gap: 2, padding: 2 }}
       >
         <Box gap={1} display="flex" flexShrink={0} sx={{ my: 1 }}>
           <StylistFilters
@@ -128,16 +244,11 @@ export function StylistsView() {
           />
         </Box>
       </Box>
-
-      <Grid container spacing={3}>
-        {_products.map((product) => (
-          <Grid key={product.id} xs={12} sm={6} md={2}>
-            <StylistItem product={product} />
-          </Grid>
-        ))}
-      </Grid>
+      
 
       <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />
     </HomeContent>
   );
 }
+
+

@@ -1,37 +1,51 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
-import { Box, Link, Dialog, Button, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@mui/material';
+import { Box, Link, Card, Dialog, Button, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 
 export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddress: string | null }) {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [hasSelectedService, setHasSelectedService] = useState(false);
+  const [hasSelectedStylist2, setHasSelectedStylist2] = useState(false);
 
-  // Check if the user has already selected a service
+
   useEffect(() => {
     const storedServiceId = localStorage.getItem('selectedServiceId');
+    const storedStylistId2 = localStorage.getItem('selectedServiceId2');
+
     if (storedServiceId) {
-      setHasSelectedService(true); // Set flag to true if service is selected
+      setHasSelectedService(true); 
+    }
+    if (storedStylistId2) {
+      setHasSelectedStylist2(true); 
     }
   }, []);
 
   const handleRedirect = () => {
-    if (selectedSalonAddress && hasSelectedService) {
-      setOpenDialog(true); // Show dialog only if a salon is selected and service is also selected
+    if ((selectedSalonAddress && hasSelectedService)||(selectedSalonAddress && hasSelectedStylist2)) {
+      setOpenDialog(true); 
     } else {
-      navigate('/select-salon'); // If no service is selected, go directly to salon selection
+      navigate('/select-salon'); 
     }
   };
 
   const handleConfirmChangeSalon = () => {
-    // Clear the selected service and stylist in localStorage
     localStorage.removeItem('selectedServiceId');
     localStorage.removeItem('selectedServiceName');
     localStorage.removeItem('selectedStylistId');
     localStorage.removeItem('selectedStylistName');
+    localStorage.removeItem('selectedDate');
+    localStorage.removeItem('selectedSlotIds');
+    localStorage.removeItem('selectedStylistDuration');
+    localStorage.removeItem('selectedServiceId2');
+    localStorage.removeItem('selectedServiceName2');
+    localStorage.removeItem('selectedStylistId2');
+    localStorage.removeItem('selectedStylistName2');
+    localStorage.removeItem('selectedDate2');
+    localStorage.removeItem('selectedSlotIds2');
+    localStorage.removeItem('selectedStylistDuration2');
 
-    // Navigate to salon selection page
     navigate('/select-salon');
   };
 
@@ -50,16 +64,31 @@ export function AppointmentSalon({ selectedSalonAddress }: { selectedSalonAddres
       </Typography>
 
       {selectedSalonAddress ? (
+        <Card
+        onClick={handleRedirect}        
+        sx={{
+          cursor:'pointer',
+          height: '30px',
+          margin: '18px',
+          backgroundColor:'#b3e5fc' ,
+          color:  'black',
+          transition: '0.3s',
+          '&:hover': {
+            backgroundColor:  'palegoldenrod ' ,
+          },
+        }}
+        >
         <Link
           color="inherit"
+          marginLeft='20px'
           underline="hover"
           variant="subtitle1"
           noWrap
           sx={{ cursor: 'pointer' }}
-          onClick={handleRedirect}
         >
           {selectedSalonAddress}
         </Link>
+        </Card>
       ) : (
         <Link
           color="inherit"

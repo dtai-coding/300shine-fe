@@ -1,4 +1,5 @@
 import type { StylistItemProps } from 'src/model/response/stylist';
+
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -17,7 +18,7 @@ export function SelectStylistItem({ stylist }: { stylist: StylistItemProps; }) {
   const handleSelectStylist = () => {
     localStorage.setItem('selectedStylistId', stylist.id.toString());
     localStorage.setItem('selectedStylistName', stylist.name.toString());
-    navigate('/appointment'); 
+    navigate(-1); 
   };
 
 
