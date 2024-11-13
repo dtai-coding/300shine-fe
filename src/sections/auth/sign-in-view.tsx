@@ -18,7 +18,7 @@ import { Iconify } from 'src/components/iconify';
 
 export function SignInView() {
   const router = useRouter();
-  const { loginUser, auth } = useAuthStore(); // Get loginUser action from Zustand store
+  const { loginUser } = useAuthStore(); // Get loginUser action from Zustand store
   const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -27,13 +27,14 @@ export function SignInView() {
 
   const handleSignIn = useCallback(async () => {
     setLoading(true);
-    setError('');
+    setError(''); // Reset error
 
     try {
       let formattedPhone = phone;
       if (phone.startsWith('0')) {
         formattedPhone = `+84${phone.slice(1)}`;
       }
+
       const user = await loginUser({ phone, password });
       console.log('Sign-in response', user);
 

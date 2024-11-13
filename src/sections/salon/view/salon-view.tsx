@@ -20,9 +20,6 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import { SalonViewProps } from 'src/model/response/salon';
-
-import { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
 import salonApi from '../../../api/salonApi';
 import { uploadImage } from '../../../api/apis';
 import { SalonDialog } from '../SalonDialog';
