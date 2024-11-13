@@ -11,9 +11,10 @@ const AxiosInterceptor = () => {
     // Request Interceptor
     const requestInterceptor = (config) => {
       console.log('Request interceptor triggered');
+      console.log(accessToken)
       const customHeader = {};
       if (accessToken) {
-        customHeader.Authorization = `Bearer ${accessToken.value}`;
+        customHeader.Authorization = `Bearer ${accessToken}`;
       }
       return {
         ...config,

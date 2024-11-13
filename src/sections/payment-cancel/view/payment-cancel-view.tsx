@@ -1,15 +1,25 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Cancel } from '@mui/icons-material';
 import { Box, Card, Button, Typography, CardContent, CardActions } from '@mui/material';
 
 export const PaymentCanceledView: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    const [orderCode, setOrderCode] = useState<string | null>(null);
 
-    // Handler to redirect the user back to the home or orders page
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const orderCodeFromUrl = params.get('orderCode');
+        
+        if (orderCodeFromUrl) {
+            setOrderCode(orderCodeFromUrl);
+        }
+    }, [location]);
+
     const handleGoHome = () => {
-        navigate('/'); // Change this path to your desired home or orders page
+        navigate('/'); 
     };
 
     return (
@@ -38,10 +48,7 @@ export const PaymentCanceledView: React.FC = () => {
                             Transaction Details
                         </Typography>
                         <Typography variant="body1" color="textSecondary">
-                            Transaction ID: <strong>123456789</strong>
-                        </Typography>
-                        <Typography variant="body1" color="textSecondary">
-                            Amount Attempted: <strong>$99.99</strong>
+                            Order Code: <strong>{orderCode || 'Loading...'}</strong>
                         </Typography>
                     </Box>
                 </CardContent>

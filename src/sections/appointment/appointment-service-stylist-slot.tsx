@@ -210,7 +210,7 @@ export function AppointmentServiceStylistSlot({
           }}
           >
             <Link color="inherit" marginLeft='20px' underline="hover" variant="subtitle1" noWrap sx={{ cursor: 'pointer' }} >
-              {serviceName}
+              {serviceName} - Duration: {serviceDuration} slots
             </Link>
           </Card>
         ) : (

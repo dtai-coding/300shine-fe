@@ -9,12 +9,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-
+import appointmentApi from "src/api/appointment";
 import { HomeContent } from 'src/layouts/home';
-
+import { AppointmentProps } from "src/model/request/create-appointment";
 import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentStylistServiceSlot } from "../appoinment-stylist-service-slot";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
+
+
 
 
 export function AppointmentView() {
@@ -35,6 +37,7 @@ export function AppointmentView() {
   const [viewChoice, setViewChoice] = useState<string | null>(null);
   const [openBackDialog, setOpenBackDialog] = useState<boolean>(false);
   const [viewDone, setViewDone] = useState<boolean>(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 
   useEffect(() => {
     const storedSalonId = localStorage.getItem('selectedSalonId');
@@ -74,14 +77,48 @@ export function AppointmentView() {
       setDate(storedDate);
     }
     if (storedSlotIds) {
-      setSlotId([Number(storedSlotIds)]);
+      const parsedSlotIds = JSON.parse(storedSlotIds); 
+      setSlotId(Array.isArray(parsedSlotIds) ? parsedSlotIds.map(Number) : []);
     }
-    console.log(`salon ${storedSalonId}`);
-    console.log(`service ${storedServiceId}`);
-    console.log(`stylist ${storedStylistId}`);
-    console.log(`date ${storedDate}`);
-    console.log(`slot ${storedSlotIds}`);
+   
   }, []);
+
+  console.log(`salon ${salonId}`);
+  console.log(`service ${serviceId}`);
+  console.log(`stylist ${stylistId}`);
+  console.log(`date ${date}`);
+  console.log(`slot ${slotIds}`);
+
+  const appointment: AppointmentProps = {
+    salonId: salonId ?? 0,
+    dateToGo: date ? new Date(date).toISOString() : '',
+    items: [
+      {
+        serviceId: serviceId ?? 0, 
+        stylistId: stylistId ?? 0, 
+        slots: slotIds.map(id => ({ id }))
+      }
+    ]
+  };
+
+    const handleDoneClick = () => {
+      setOpenConfirmDialog(true);
+      console.log(appointment);
+    };
+  
+    const handleConfirm = async () => {
+      try {
+        await appointmentApi.createAppointment(appointment);
+        console.log('Appointment created successfully');
+        setOpenConfirmDialog(false); 
+      } catch (error) {
+        console.error('Failed to create appointment', error);
+      }
+    };
+  
+    const handleCancel = () => {
+      setOpenConfirmDialog(false);
+    };
 
   const handleViewChoice = (choice: string) => {
     setViewChoice(choice);
@@ -189,7 +226,7 @@ export function AppointmentView() {
 
             { viewDone && (
               <Button
-                // onClick={handleBack}
+              onClick={handleDoneClick}
                 sx={{
                   fontSize: '18px',
                   color: 'white',
@@ -218,7 +255,6 @@ export function AppointmentView() {
         </Card>
       </Box>
 
-      {/* Back confirmation dialog */}
       <Dialog open={openBackDialog} onClose={handleCancelBack}>
         <DialogTitle>Confirm Back</DialogTitle>
         <DialogContent>
@@ -232,6 +268,23 @@ export function AppointmentView() {
           </Button>
           <Button onClick={handleConfirmBack} color="error" autoFocus>
             Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openConfirmDialog} onClose={handleCancel}>
+        <DialogTitle>Xác nhận tạo cuộc hẹn</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Bạn có chắc chắn muốn tạo cuộc hẹn này không?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} color="secondary">
+            Hủy
+          </Button>
+          <Button onClick={handleConfirm} color="primary">
+            Xác nhận
           </Button>
         </DialogActions>
       </Dialog>
