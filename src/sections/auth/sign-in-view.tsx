@@ -30,15 +30,14 @@ export function SignInView() {
     setError(''); // Reset error
 
     try {
-      await loginUser({ phone, password }); // Call Zustand store's loginUser function
-      // if (loginUser.user.roleName === 'Admin') {
-      //   router.push('/dashboard/user'); // Redirect to admin dashboard if user is admin
-      // } else if (loginUser.user.roleName === 'Manager') {
-      //   router.push('/manager'); // Redirect to admin dashboard if user is admin
-      // } else if (loginUser.user.roleName === 'Stylist') {
-      //   router.push('/stylist'); // Redirect to admin dashboard if user is admin
-      // }
-      router.push('/'); // Redirect to homepage on successful login
+      let formattedPhone = phone;
+      if (phone.startsWith('0')) {
+        formattedPhone = `+84${  phone.slice(1)}`;
+      }
+
+      await loginUser({ phone: formattedPhone, password });
+      // await loginUser({ phone, password }); 
+      router.push('/'); 
     } catch (err) {
       console.error('Login failed:', err);
       setError(err.message || 'Login failed. Please check your credentials.');

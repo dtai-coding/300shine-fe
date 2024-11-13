@@ -12,12 +12,12 @@ import Stack from '@mui/material/Stack';
 // ----------------------------------------------------------------------
 
 
-export function SelectStylistItem({ stylist }: { stylist: StylistItemProps; }) {
+export function SelectStylistItem2({ stylist }: { stylist: StylistItemProps; }) {
   const navigate = useNavigate();
 
   const handleSelectStylist = () => {
-    localStorage.setItem('selectedStylistId', stylist.id.toString());
-    localStorage.setItem('selectedStylistName', stylist.name.toString());
+    localStorage.setItem('selectedStylistId2', stylist.id.toString());
+    localStorage.setItem('selectedStylistName2', stylist.name.toString());
     navigate(-1); 
   };
 
