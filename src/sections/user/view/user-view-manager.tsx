@@ -1,5 +1,5 @@
 import type { UserProps } from 'src/model/response/User';
-import type { UserCreateProps } from 'src/model/request/User';
+import type { UserCreateProps, UserUpdateProps } from 'src/model/request/User';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -20,7 +20,6 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import { uploadImage } from '../../../api/apis';
 import userApi from '../../../api/userApi';
 import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
@@ -30,7 +29,7 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-export function UserView() {
+export function UserMangerView() {
   const table = useTable();
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -48,6 +47,7 @@ export function UserView() {
     gender: currentUser?.gender ?? null,
     address: currentUser?.address ?? null,
     role: currentUser?.roleName ?? null,
+    isStylist: true,
     isVerified: currentUser?.isVerified ?? null,
     status: currentUser?.status ?? null,
     salonId: currentUser?.salonId ?? null,
@@ -64,14 +64,22 @@ export function UserView() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await userApi.getUsers();
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-    setLoading(false);
-  };
+      // Fetch both stylists and customers simultaneously
+      const [stylistsResponse, customersResponse] = await Promise.all([
+        userApi.getStylists(),
+        userApi.getCustomers(),
+      ]);
 
+      // Merge the data from both responses
+      const combinedUsers = [...stylistsResponse.data, ...customersResponse.data];
+
+      setUsers(combinedUsers);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleEditUser = (user: UserProps) => {
     setCurrentUser(user);
     setIsEditMode(true);
@@ -83,23 +91,15 @@ export function UserView() {
     setTimeout(() => {
       setIsEditMode(false);
       setCurrentUser(null);
-      setImageFile(null);
     }, 200);
   };
 
   const handleSaveUser = async (user: UserCreateProps | UserUpdateProps) => {
     try {
-      let imageUrl = user.imageUrl;
-
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
-      }
-
       if (isEditMode && currentUser) {
         // Cast `user` as UserUpdateProps when updating
         const updateUserPayload: UserUpdateProps = {
           ...user,
-          imageUrl,
           role: (user as UserUpdateProps).role || '',
           isStylist: (user as UserUpdateProps).isStylist ?? false,
         };
@@ -108,10 +108,9 @@ export function UserView() {
         // Cast `user` as UserCreateProps when creating
         const createUserPayload: UserCreateProps = {
           ...user,
-          imageUrl,
           password: (user as UserCreateProps).password || '',
         };
-        await userApi.addManager(createUserPayload);
+        await userApi.addStylist(createUserPayload);
       }
       handleCloseDialog();
       fetchData();

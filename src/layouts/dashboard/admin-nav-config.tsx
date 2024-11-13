@@ -7,11 +7,11 @@ const icon = (name: string) => (
 );
 
 export const navData = [
-  {
-    title: 'Dashboard',
-    path: '/dashboard',
-    icon: icon('ic-analytics'),
-  },
+  // {
+  //   title: 'Dashboard',
+  //   path: '/dashboard',
+  //   icon: icon('ic-analytics'),
+  // },
   {
     title: 'User',
     path: '/dashboard/user',
@@ -27,9 +27,9 @@ export const navData = [
     //   </Label>
     // ),
   },
-  {
-    title: 'Revenue',
-    path: '/dashboard/revenue',
-    icon: icon('ic-blog'),
-  },
+  // {
+  //   title: 'Revenue',
+  //   path: '/dashboard/revenue',
+  //   icon: icon('ic-blog'),
+  // },
 ];

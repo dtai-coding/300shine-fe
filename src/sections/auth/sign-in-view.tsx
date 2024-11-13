@@ -12,8 +12,7 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useAuthStore } from 'src/stores/auth/auth.store';
 
-import { Iconify } from 'src/components/iconify'; 
-
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
