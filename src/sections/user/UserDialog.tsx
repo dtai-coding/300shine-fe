@@ -19,17 +19,26 @@ interface UserDialogProps {
   onSave: (user: UserCreateProps | UserUpdateProps) => void;
   user?: UserCreateProps | UserUpdateProps | null;
   isEditMode?: boolean;
+  imageFile: File | null;
+  setImageFile: React.Dispatch<React.SetStateAction<File | null>>;
 }
-
-export function UserDialog({ open, onClose, onSave, user, isEditMode = false }: UserDialogProps) {
+export function UserDialog({
+  open,
+  onClose,
+  onSave,
+  user,
+  isEditMode = false,
+  imageFile,
+  setImageFile,
+}: UserDialogProps) {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   // Initial user state: defaults to create or update props based on edit mode
   const ROLE_MAP: { [key: string]: string } = {
     Admin: '1',
     Manager: '2',
-    'Customer\n': '3',
+    Customer: '3',
     Stylist: '4',
   };
-
   const isUserUpdateProps = (u: UserCreateProps | UserUpdateProps): u is UserUpdateProps =>
     'role' in u;
 
@@ -67,6 +76,17 @@ export function UserDialog({ open, onClose, onSave, user, isEditMode = false }: 
           salaryPerDay: 0,
         }
   );
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+        setImageFile(file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     if (user) setNewUser(user);
@@ -214,14 +234,20 @@ export function UserDialog({ open, onClose, onSave, user, isEditMode = false }: 
             />
           </Box>
         )}
-        <TextField
-          fullWidth
-          label="Image URL"
-          name="imageUrl"
-          value={newUser.imageUrl}
-          onChange={handleChange}
-          margin="normal"
-        />
+        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+          <Button variant="outlined" component="label">
+            Upload Image
+            <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
+          </Button>
+          {imagePreview && (
+            <Box
+              component="img"
+              src={imagePreview}
+              alt="Preview"
+              sx={{ width: 100, height: 100 }}
+            />
+          )}
+        </Box>
         <TextField
           fullWidth
           label="Commission"

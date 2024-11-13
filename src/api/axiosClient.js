@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const localPhat = 'https://localhost:7073/api'
-const local = 'http://localhost:5035/api'
-const server = 'https://300shine.azurewebsites.net/api'
+const localPhat = 'https://localhost:7073/api';
+const local = 'http://localhost:5035/api';
+const server = 'https://300shine.azurewebsites.net/api';
 
-export const VITE_API_BASE_URL = server;
+export const VITE_API_BASE_URL = localPhat;
 const axiosClient = axios.create({
   baseURL: VITE_API_BASE_URL,
   headers: {

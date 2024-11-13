@@ -21,7 +21,7 @@ export type UserUpdateProps = {
   gender: boolean | null;
   address: string | null;
   role: string | null;
-  isStylist: boolean | null;
+  isStylist?: boolean | null;
   isVerified: boolean | null;
   status: string | null;
   salonId: number | null;

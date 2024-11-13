@@ -20,6 +20,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
+import { uploadImage } from '../../../api/apis';
 import userApi from '../../../api/userApi';
 import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
@@ -38,6 +39,7 @@ export function UserView() {
   const [users, setUsers] = useState<UserProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const userToEdit: UserUpdateProps = {
     phone: currentUser?.phone ?? null,
@@ -46,7 +48,6 @@ export function UserView() {
     gender: currentUser?.gender ?? null,
     address: currentUser?.address ?? null,
     role: currentUser?.roleName ?? null,
-    isStylist: currentUser?.isStylist ?? false,
     isVerified: currentUser?.isVerified ?? null,
     status: currentUser?.status ?? null,
     salonId: currentUser?.salonId ?? null,
@@ -82,15 +83,23 @@ export function UserView() {
     setTimeout(() => {
       setIsEditMode(false);
       setCurrentUser(null);
+      setImageFile(null);
     }, 200);
   };
 
   const handleSaveUser = async (user: UserCreateProps | UserUpdateProps) => {
     try {
+      let imageUrl = user.imageUrl;
+
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
       if (isEditMode && currentUser) {
         // Cast `user` as UserUpdateProps when updating
         const updateUserPayload: UserUpdateProps = {
           ...user,
+          imageUrl,
           role: (user as UserUpdateProps).role || '',
           isStylist: (user as UserUpdateProps).isStylist ?? false,
         };
@@ -99,6 +108,7 @@ export function UserView() {
         // Cast `user` as UserCreateProps when creating
         const createUserPayload: UserCreateProps = {
           ...user,
+          imageUrl,
           password: (user as UserCreateProps).password || '',
         };
         await userApi.addManager(createUserPayload);
@@ -146,6 +156,8 @@ export function UserView() {
         isEditMode={isEditMode}
         user={userToEdit}
         onSave={handleSaveUser}
+        imageFile={imageFile}
+        setImageFile={setImageFile}
       />
 
       <Card>

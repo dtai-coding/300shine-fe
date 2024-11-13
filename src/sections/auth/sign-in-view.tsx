@@ -12,8 +12,7 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useAuthStore } from 'src/stores/auth/auth.store';
 
-import { Iconify } from 'src/components/iconify'; 
-
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +31,13 @@ export function SignInView() {
 
     try {
       await loginUser({ phone, password }); // Call Zustand store's loginUser function
+      // if (loginUser.user.roleName === 'Admin') {
+      //   router.push('/dashboard/user'); // Redirect to admin dashboard if user is admin
+      // } else if (loginUser.user.roleName === 'Manager') {
+      //   router.push('/manager'); // Redirect to admin dashboard if user is admin
+      // } else if (loginUser.user.roleName === 'Stylist') {
+      //   router.push('/stylist'); // Redirect to admin dashboard if user is admin
+      // }
       router.push('/'); // Redirect to homepage on successful login
     } catch (err) {
       console.error('Login failed:', err);

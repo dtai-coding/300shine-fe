@@ -38,6 +38,7 @@ export function UserMangerView() {
   const [users, setUsers] = useState<UserProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const userToEdit: UserUpdateProps = {
     phone: currentUser?.phone ?? null,
@@ -46,7 +47,7 @@ export function UserMangerView() {
     gender: currentUser?.gender ?? null,
     address: currentUser?.address ?? null,
     role: currentUser?.roleName ?? null,
-    isStylist: currentUser?.isStylist ?? false,
+    isStylist: true,
     isVerified: currentUser?.isVerified ?? null,
     status: currentUser?.status ?? null,
     salonId: currentUser?.salonId ?? null,
@@ -109,7 +110,7 @@ export function UserMangerView() {
           ...user,
           password: (user as UserCreateProps).password || '',
         };
-        await userApi.addManager(createUserPayload);
+        await userApi.addStylist(createUserPayload);
       }
       handleCloseDialog();
       fetchData();
@@ -154,6 +155,8 @@ export function UserMangerView() {
         isEditMode={isEditMode}
         user={userToEdit}
         onSave={handleSaveUser}
+        imageFile={imageFile}
+        setImageFile={setImageFile}
       />
 
       <Card>
