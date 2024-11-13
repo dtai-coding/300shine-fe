@@ -6,7 +6,7 @@ import { loginAPI, registerAPI } from 'src/api/apis';
 const storeApi = (set, get) => ({
   auth: {
     status: 'unauthorized',
-    accessToken: undefined,
+    accessToken: localStorage.getItem('accessToken') || undefined,
     refreshToken: undefined,
     user: undefined,
   },
@@ -26,6 +26,7 @@ const storeApi = (set, get) => ({
     // if (!userResponse || !userResponse.data) {
     //   throw new Error('Invalid user details response');
     // }
+    localStorage.setItem('accessToken', accessToken);
 
     const userInfo = response.data.user;
 
@@ -54,6 +55,7 @@ const storeApi = (set, get) => ({
     console.log('Credential incorrect:', error);
   },
   logoutUser: () => {
+    localStorage.removeItem('accessToken');
     set({
       auth: {
         status: 'unauthorized',
