@@ -43,67 +43,106 @@ export function UserDialog({
   const isUserUpdateProps = (u: UserCreateProps | UserUpdateProps): u is UserUpdateProps =>
     'role' in u;
 
-  const [newUser, setNewUser] = useState<UserCreateProps | UserUpdateProps>(
-    isEditMode
-      ? {
-          phone: '',
-          fullName: '',
-          dateOfBirth: '',
-          gender: true,
-          address: '',
-          role: '',
-          isStylist: false,
-          isVerified: false,
-          status: '',
-          salonId: 0,
-          imageUrl: '',
-          commission: 0,
-          salary: 0,
-          salaryPerDay: 0,
-        }
-      : {
-          phone: '',
-          password: '',
-          fullName: '',
-          dateOfBirth: '',
-          gender: true,
-          address: '',
-          isVerified: false,
-          status: '',
-          salonId: 0,
-          imageUrl: '',
-          commission: 0,
-          salary: 0,
-          salaryPerDay: 0,
-        }
-  );
+  const [newUser, setNewUser] = useState<UserCreateProps | UserUpdateProps>({
+    phone: '',
+    password: (user as UserCreateProps).password ?? '',
+    fullName: '',
+    dateOfBirth: '',
+    gender: true,
+    address: '',
+    role: (user as UserUpdateProps).role ?? '',
+    isStylist: false,
+    isVerified: false,
+    status: '',
+    salonId: 0,
+    imageUrl: '',
+    commission: 0,
+    salary: 0,
+    salaryPerDay: 0,
+  });
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
+
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
         setImageFile(file);
       };
+
       reader.readAsDataURL(file);
     }
   };
-
   useEffect(() => {
-    if (user) setNewUser(user);
-  }, [user]);
+    if (isEditMode && user) {
+      // Update the form only when editing an existing user, not when creating a new one
+      setNewUser({
+        phone: user.phone ?? '',
+        fullName: user.fullName ?? '',
+        dateOfBirth: user.dateOfBirth ?? '',
+        gender: user.gender ?? true,
+        address: user.address ?? '',
+        isVerified: user.isVerified ?? false,
+        status: user.status ?? '',
+        salonId: user.salonId ?? 0,
+        imageUrl: user.imageUrl ?? '',
+        commission: user.commission ?? 0,
+        salary: user.salary ?? 0,
+        salaryPerDay: user.salaryPerDay ?? 0,
+        role: (user as UserUpdateProps).role ?? '',
+      });
+    }
+  }, [isEditMode, user]);
 
+  const resetForm = () => {
+    setNewUser({
+      phone: '',
+      fullName: '',
+      dateOfBirth: '',
+      gender: true,
+      address: '',
+      role: '',
+      isStylist: false,
+      isVerified: false,
+      status: '',
+      salonId: 0,
+      imageUrl: '',
+      commission: 0,
+      salary: 0,
+      salaryPerDay: 0,
+    });
+  };
+  const handleOnCancel = () => {
+    onClose();
+    setImageFile(null);
+    setImagePreview(null);
+    resetForm();
+  };
+
+  const handleOnSave = () => {
+    if (newUser.fullName && newUser.phone) {
+      onSave(newUser);
+      setImageFile(null);
+      setImagePreview(null);
+
+      console.log('User saved successfully!');
+
+      resetForm();
+    } else {
+      console.log('Please fill in all required fields.');
+    }
+  };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, type, checked, value } = event.target;
+    const { name, value, type, checked } = event.target;
 
     setNewUser((prevUser) => ({
       ...prevUser,
-      [name]: name === 'role' ? value : type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : type === 'number' ? Number(value) : value,
     }));
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleOnCancel} maxWidth="sm" fullWidth>
       <DialogTitle>{isEditMode ? 'Edit User' : 'Add New User'}</DialogTitle>
       <DialogContent dividers>
         {/* Common fields */}
@@ -147,6 +186,19 @@ export function UserDialog({
             InputLabelProps={{ shrink: true }}
             sx={{ flexGrow: 1 }}
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={newUser.isVerified ?? false}
+                onChange={handleChange}
+                name="isVerified"
+                color="primary"
+              />
+            }
+            label="Verified"
+            labelPlacement="top"
+            sx={{ flexGrow: 1, mb: 1 }}
+          />
           <TextField
             fullWidth
             select
@@ -162,19 +214,6 @@ export function UserDialog({
             <option value="true">Male</option>
             <option value="false">Female</option>
           </TextField>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={newUser.isVerified ?? false}
-                onChange={handleChange}
-                name="isVerified"
-                color="primary"
-              />
-            }
-            label="Verified"
-            labelPlacement="top"
-            sx={{ flexGrow: 1, mb: 1 }}
-          />
         </Box>
         <TextField
           fullWidth
@@ -202,41 +241,8 @@ export function UserDialog({
           margin="normal"
         />
 
-        {isEditMode && (
-          <Box display="flex" gap={2} sx={{ width: '100%' }}>
-            <TextField
-              fullWidth
-              select
-              label="Role"
-              name="role"
-              value={isUserUpdateProps(newUser) && newUser.role ? ROLE_MAP[newUser.role] : ''}
-              onChange={handleChange}
-              margin="normal"
-              SelectProps={{ native: true }}
-              InputLabelProps={{ shrink: true }}
-              sx={{ flexGrow: 1 }}
-            >
-              <option value="1">Admin</option>
-              <option value="2">Manager</option>
-              <option value="3">Customer</option>
-              <option value="4">Stylist</option>
-            </TextField>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={(newUser as UserUpdateProps).isStylist ?? false}
-                  onChange={handleChange}
-                  name="isStylist"
-                  color="primary"
-                  sx={{ flexGrow: 1 }}
-                />
-              }
-              label="Is Stylist"
-            />
-          </Box>
-        )}
         <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
-          <Button variant="outlined" component="label">
+          <Button variant="outlined" component="label" sx={{ width: 50, height: 50 }}>
             Upload Image
             <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
           </Button>
@@ -247,6 +253,28 @@ export function UserDialog({
               alt="Preview"
               sx={{ width: 100, height: 100 }}
             />
+          )}
+
+          {isEditMode && (
+            <Box display="flex" gap={2} sx={{ width: '40%', marginLeft: 'auto' }}>
+              <TextField
+                fullWidth
+                select
+                label="Role"
+                name="role"
+                value={isUserUpdateProps(newUser) && newUser.role ? ROLE_MAP[newUser.role] : ''}
+                onChange={handleChange}
+                margin="normal"
+                SelectProps={{ native: true }}
+                InputLabelProps={{ shrink: true }}
+                sx={{ flexGrow: 1 }}
+              >
+                <option value="1">Admin</option>
+                <option value="2">Manager</option>
+                <option value="3">Customer</option>
+                <option value="4">Stylist</option>
+              </TextField>
+            </Box>
           )}
         </Box>
         <TextField
@@ -278,8 +306,8 @@ export function UserDialog({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={() => onSave(newUser)} variant="contained">
+        <Button onClick={handleOnCancel}>Cancel</Button>
+        <Button onClick={handleOnSave} variant="contained">
           {isEditMode ? 'Save Changes' : 'Add User'}
         </Button>
       </DialogActions>

@@ -40,7 +40,17 @@ export function UserTableRow({
     setOpenPopover(null);
   }, []);
 
-  const getDisplayValue = (value: any) => (value !== null && value !== undefined ? value : '-');
+  const getDisplayValue = (value: any) => {
+    if (value !== null && value !== undefined) {
+      // Check if the value is a date string and format it if necessary
+      if (typeof value === 'string' && !Number.isNaN(Date.parse(value))) {
+        const date = new Date(value);
+        return date.toISOString().split('T')[0]; // Format to "YYYY-MM-DD"
+      }
+      return value; // Return the value as is if it's not a date
+    }
+    return '-';
+  };
 
   return (
     <>
@@ -59,6 +69,7 @@ export function UserTableRow({
           {getDisplayValue(row.gender !== null ? (row.gender ? 'Male' : 'Female') : '-')}
         </TableCell>
         <TableCell>{getDisplayValue(row.phone)}</TableCell>
+        <TableCell>{getDisplayValue(row.address)}</TableCell>
         <TableCell align="center">
           {row.isVerified ? (
             <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />

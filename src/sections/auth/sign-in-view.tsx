@@ -32,12 +32,31 @@ export function SignInView() {
     try {
       let formattedPhone = phone;
       if (phone.startsWith('0')) {
-        formattedPhone = `+84${  phone.slice(1)}`;
+        formattedPhone = `+84${phone.slice(1)}`;
       }
 
-      await loginUser({ phone: formattedPhone, password });
-      // await loginUser({ phone, password }); 
-      router.push('/'); 
+      const user = await loginUser({ phone, password });
+      console.log('Sign-in response', user);
+
+      if (!user) {
+        throw new Error('User data is missing in the login response');
+      }
+
+      // Redirect based on user role
+      switch (user.roleName) {
+        case 'Admin':
+          router.push('/dashboard/user');
+          break;
+        case 'Manager':
+          router.push('/manager');
+          break;
+        case 'Stylist':
+          router.push('/stylist');
+          break;
+        default:
+          router.push('/');
+          break;
+      }
     } catch (err) {
       console.error('Login failed:', err);
       setError(err.message || 'Login failed. Please check your credentials.');

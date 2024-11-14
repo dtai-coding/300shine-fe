@@ -48,6 +48,7 @@ export function UserView() {
     gender: currentUser?.gender ?? null,
     address: currentUser?.address ?? null,
     role: currentUser?.roleName ?? null,
+    isStylist: false,
     isVerified: currentUser?.isVerified ?? null,
     status: currentUser?.status ?? null,
     salonId: currentUser?.salonId ?? null,
@@ -80,39 +81,54 @@ export function UserView() {
 
   const handleCloseDialog = () => {
     setOpenAddUserDialog(false);
-    setTimeout(() => {
-      setIsEditMode(false);
-      setCurrentUser(null);
-      setImageFile(null);
-    }, 200);
+    setIsEditMode(false);
+    setCurrentUser(null);
+    setImageFile(null);
   };
 
   const handleSaveUser = async (user: UserCreateProps | UserUpdateProps) => {
     try {
-      let {imageUrl} = user;
+      let ImageUrl = user.imageUrl;
 
       if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
+        ImageUrl = await uploadImage(imageFile);
       }
 
       if (isEditMode && currentUser) {
-        // Cast `user` as UserUpdateProps when updating
+        // Update user payload
         const updateUserPayload: UserUpdateProps = {
           ...user,
-          imageUrl,
+          imageUrl: ImageUrl,
           role: (user as UserUpdateProps).role || '',
-          isStylist: (user as UserUpdateProps).isStylist ?? false,
+          isStylist: false,
         };
         await userApi.updateUser(currentUser.id, updateUserPayload);
       } else {
-        // Cast `user` as UserCreateProps when creating
+        // Create user payload with sanitized data
         const createUserPayload: UserCreateProps = {
-          ...user,
-          imageUrl,
+          phone: user.phone || '',
+          fullName: user.fullName || '',
+          dateOfBirth: user.dateOfBirth || '',
+          gender: user.gender ?? true,
+          address: user.address || '',
+          isVerified: user.isVerified ?? false,
+          status: user.status || 'Active',
+          salonId: user.salonId || 0,
+          imageUrl: ImageUrl || '',
+          commission: user.commission || 0,
+          salary: user.salary || 0,
+          salaryPerDay: user.salaryPerDay || 0,
           password: (user as UserCreateProps).password || '',
         };
-        await userApi.addManager(createUserPayload);
+
+        // Remove `null` or `undefined` fields
+        const sanitizedPayload = Object.fromEntries(
+          Object.entries(createUserPayload).filter(([_, v]) => v !== null && v !== undefined)
+        ) as UserCreateProps;
+
+        await userApi.addManager(sanitizedPayload);
       }
+
       handleCloseDialog();
       fetchData();
     } catch (error) {
@@ -196,6 +212,7 @@ export function UserView() {
                       { id: 'dateOfBirth', label: 'DateOfBirth' },
                       { id: 'gender', label: 'Gender' },
                       { id: 'phone', label: 'Phone' },
+                      { id: 'address', label: 'Address' },
                       { id: 'isVerified', label: 'Verified', align: 'center' },
                       { id: 'status', label: 'Status' },
                       { id: 'salonId', label: 'SalonId' },

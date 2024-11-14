@@ -25,7 +25,7 @@ import { NotificationsPopover } from '../components/notifications-popover';
 
 // ----------------------------------------------------------------------
 
-export type DashboardLayoutProps = {
+export type ManagerLayoutProps = {
   sx?: SxProps<Theme>;
   children: React.ReactNode;
   header?: {
@@ -33,7 +33,7 @@ export type DashboardLayoutProps = {
   };
 };
 
-export function ManagerLayout({ sx, children, header }: DashboardLayoutProps) {
+export function ManagerLayout({ sx, children, header }: ManagerLayoutProps) {
   const theme = useTheme();
 
   const [navOpen, setNavOpen] = useState(false);
@@ -139,4 +139,3 @@ export function ManagerLayout({ sx, children, header }: DashboardLayoutProps) {
     </LayoutSection>
   );
 }
-

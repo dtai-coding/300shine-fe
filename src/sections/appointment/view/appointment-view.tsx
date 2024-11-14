@@ -121,50 +121,24 @@ export function AppointmentView() {
     }
   }, []);
 
-  console.log(`salon ${salonId}`);
-  console.log(`service ${serviceId2}`);
-  console.log(`stylist ${stylistId2}`);
-  console.log(`date ${date2}`);
-  console.log(`slot ${slotIds2}`);
+  // console.log(`salon ${salonId}`);
+  // console.log(`service ${serviceId2}`);
+  // console.log(`stylist ${stylistId2}`);
+  // console.log(`date ${date2}`);
+  // console.log(`slot ${slotIds2}`);
 
   const formatDateToISO = (dateString: string) => {
     const [month, day, year] = dateString.split('-');
     return `${year}-${month}-${day}T12:00:00Z`;
   };
   
-  const appointment2: AppointmentProps = {
-    salonId: salonId ?? 0,
-    dateToGo: date2 ? new Date(formatDateToISO(date2)).toISOString() : '',
-    items: [
-      {
-        serviceId: serviceId2 ?? 0,
-        stylistId: stylistId2 ?? 0,
-        slots: slotIds2.map(id => ({ id }))
-      }
-    ]
-  };
-  
-  const appointment: AppointmentProps = {
-    salonId: salonId ?? 0,
-    dateToGo: date ? new Date(formatDateToISO(date)).toISOString() : '',
-    items: [
-      {
-        serviceId: serviceId ?? 0,
-        stylistId: stylistId ?? 0,
-        slots: slotIds.map(id => ({ id }))
-      }
-    ]
-  };
-  
+
   
 
   const handleDoneClick = () => {
     setOpenConfirmDialog(true);
-    console.log(appointment);
-    console.log(appointment2)
   };
 
-  // Đổi tên tham số appointment thành `apt` trong hàm isAppointmentValid
 const isAppointmentValid = (apt: AppointmentProps) => (
   apt.salonId !== undefined &&
   apt.dateToGo !== '' &&
@@ -176,8 +150,35 @@ const handleConfirm = async () => {
   try {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
-      let response;  
+
+      const appointment2: AppointmentProps = {
+        salonId: salonId ?? 0,
+        dateToGo: date2 ? new Date(formatDateToISO(date2)).toISOString() : '',
+        items: [
+          {
+            serviceId: serviceId2 ?? 0,
+            stylistId: stylistId2 ?? 0,
+            slots: slotIds2.map(id => ({ id }))
+          }
+        ]
+      };
       
+      const appointment: AppointmentProps = {
+        salonId: salonId ?? 0,
+        dateToGo: date ? new Date(formatDateToISO(date)).toISOString() : '',
+        items: [
+          {
+            serviceId: serviceId ?? 0,
+            stylistId: stylistId ?? 0,
+            slots: slotIds.map(id => ({ id }))
+          }
+        ]
+      };
+
+      console.log(appointment);
+      console.log(appointment2);
+
+      let response;  
       if (appointment && isAppointmentValid(appointment)) {
         response = await appointmentApi.createAppointment(appointment);
       } else if (appointment2 && isAppointmentValid(appointment2)) {
@@ -190,15 +191,16 @@ const handleConfirm = async () => {
       const payment: PaymentItemProps = response?.data;
 
       if (payment && payment.checkoutUrl) {
-        window.location.href = payment.checkoutUrl;
+        window.location.replace(payment.checkoutUrl);
       }
+      
     } else {
       navigate('/sign-in');
     }
 
     setOpenConfirmDialog(false);
   } catch (error) {
-    console.error('Failed to create appointment', error);
+    showAlert('Failed to create appointment');
   }
 };
 

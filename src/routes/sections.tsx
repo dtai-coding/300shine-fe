@@ -23,6 +23,7 @@ const HomePage = lazy(() => import('src/pages/home'));
 const ServiceDetailPage = lazy(() => import('src/pages/service-detail'));
 const StylistDetailPage = lazy(() => import('src/pages/stylist-detail'));
 const AppointmentPage = lazy(() => import('src/pages/appointment'));
+const AppointmentHistoryPage = lazy(() => import('src/pages/appoinment-history'));
 const SelectSalonPage = lazy(() => import('src/pages/select-salon'));
 const SelectServicePage = lazy(() => import('src/pages/select-service'));
 const SelectServicePage2 = lazy(() => import('src/pages/select-service-2'));
@@ -70,6 +71,7 @@ export function Router() {
           children: [
             { element: <HomePage />, index: true },
             { path: 'appointment', element: <AppointmentPage /> },
+            { path: 'appointment-history', element: <AppointmentHistoryPage /> },
             { path: 'select-salon', element: <SelectSalonPage /> },
             { path: 'select-service', element: <SelectServicePage /> },
             { path: 'select-service-2', element: <SelectServicePage2 /> },
@@ -102,25 +104,25 @@ export function Router() {
         {
           path: 'dashboard',
           element: (
-            // <ProtectedRoute allowedRoles={['admin']}>
-            <DashboardLayout>
-              <Suspense fallback={renderFallback}>
-                <Outlet />
-              </Suspense>
-            </DashboardLayout>
-            // </ProtectedRoute>
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <DashboardLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </DashboardLayout>
+            </ProtectedRoute>
           ),
           children: [
-            { path: '', element: <Dashboard /> },
+            // { path: '', element: <Dashboard /> },
             { path: 'user', element: <UserPage /> },
             { path: 'salon', element: <SalonPage /> },
-            { path: 'revenue', element: <RevenuePage /> },
+            // { path: 'revenue', element: <RevenuePage /> },
           ],
         },
         {
           path: 'stylist',
           element: (
-            <ProtectedRoute allowedRoles={['staff']}>
+            <ProtectedRoute allowedRoles={['Stylist']}>
               <StylistLayout>
                 <Suspense fallback={renderFallback}>
                   <Outlet />
@@ -138,7 +140,7 @@ export function Router() {
         {
           path: 'manager',
           element: (
-            <ProtectedRoute allowedRoles={['manager']}>
+            <ProtectedRoute allowedRoles={['Manager']}>
               <ManagerLayout>
                 <Suspense fallback={renderFallback}>
                   <Outlet />

@@ -23,6 +23,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 import salonApi from '../../../api/salonApi';
 import { SalonDialog } from '../SalonDialog';
 import { TableNoData } from '../table-no-data';
+import { uploadImage } from '../../../api/apis';
 import { SalonTableRow } from '../salon-table-row';
 import { SalonTableHead } from '../salon-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
@@ -38,6 +39,7 @@ export function SalonView() {
   const [salons, setSalons] = useState<SalonViewProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [openAddSalonDialog, setOpenAddSalonDialog] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const salonToEdit: SalonUpdateProps = {
     id: currentSalon?.id ?? 0,
@@ -70,20 +72,34 @@ export function SalonView() {
 
   const handleCloseDialog = () => {
     setOpenAddSalonDialog(false);
-    setTimeout(() => {
-      setIsEditMode(false);
-      setCurrentSalon(null);
-    }, 200);
+    setIsEditMode(false);
+    setCurrentSalon(null);
+    setImageFile(null);
   };
 
-  const handleSaveSalon = async (salon: SalonCreateProps) => {
-    if (isEditMode && currentSalon) {
-      await salonApi.updateSalon({ ...salon, id: currentSalon.id });
-    } else {
-      await salonApi.addSalon(salon);
+  const handleSaveSalon = async (salon: SalonCreateProps | SalonUpdateProps) => {
+    try {
+      let ImageUrl = salon.imageUrl;
+      if (imageFile) {
+        ImageUrl = await uploadImage(imageFile);
+      }
+      if (isEditMode && currentSalon) {
+        await salonApi.updateSalon({ ...salon, id: currentSalon.id, imageUrl: ImageUrl });
+      } else {
+        const salonSavePayload: SalonCreateProps = {
+          address: salon.address,
+          phone: salon.phone,
+          district: salon.district,
+          imageUrl: ImageUrl,
+        };
+        await salonApi.addSalon(salonSavePayload);
+      }
+      handleCloseDialog();
+      fetchData();
+    } catch (error) {
+      console.error('Error saving user:', error);
+      // Add error handling here, e.g., showing an error message
     }
-    handleCloseDialog();
-    fetchData();
   };
 
   const handleDeleteSelected = () => {
@@ -125,6 +141,8 @@ export function SalonView() {
         isEditMode={isEditMode}
         salon={salonToEdit}
         onSave={handleSaveSalon}
+        imageFile={imageFile}
+        setImageFile={setImageFile}
       />
 
       <Card>

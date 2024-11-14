@@ -15,7 +15,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-import { DashboardContent } from 'src/layouts/dashboard';
+import { ManagerContent } from 'src/layouts/manager';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
@@ -23,6 +23,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 import userApi from '../../../api/userApi';
 import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
+import { uploadImage } from '../../../api/apis';
 import { UserTableRow } from '../user-table-row';
 import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
@@ -96,21 +97,41 @@ export function UserMangerView() {
 
   const handleSaveUser = async (user: UserCreateProps | UserUpdateProps) => {
     try {
+      let {imageUrl} = user;
+
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
       if (isEditMode && currentUser) {
         // Cast `user` as UserUpdateProps when updating
         const updateUserPayload: UserUpdateProps = {
           ...user,
+          imageUrl,
           role: (user as UserUpdateProps).role || '',
-          isStylist: (user as UserUpdateProps).isStylist ?? false,
+          isStylist: true,
         };
         await userApi.updateUser(currentUser.id, updateUserPayload);
       } else {
         // Cast `user` as UserCreateProps when creating
         const createUserPayload: UserCreateProps = {
-          ...user,
+          phone: user.phone || '',
+          fullName: user.fullName || '',
+          dateOfBirth: user.dateOfBirth || '',
+          gender: user.gender ?? true,
+          address: user.address || '',
+          isVerified: user.isVerified ?? false,
+          status: user.status || 'Active',
+          salonId: user.salonId || 0,
+          imageUrl: imageUrl || '',
+          commission: user.commission || 0,
+          salary: user.salary || 0,
+          salaryPerDay: user.salaryPerDay || 0,
           password: (user as UserCreateProps).password || '',
         };
-        await userApi.addStylist(createUserPayload);
+        const sanitizedPayload = Object.fromEntries(
+          Object.entries(createUserPayload).filter(([_, v]) => v !== null && v !== undefined)
+        ) as UserCreateProps;
+        await userApi.addStylist(sanitizedPayload);
       }
       handleCloseDialog();
       fetchData();
@@ -134,7 +155,7 @@ export function UserMangerView() {
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
-    <DashboardContent>
+    <ManagerContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
           Users
@@ -195,6 +216,7 @@ export function UserMangerView() {
                       { id: 'dateOfBirth', label: 'DateOfBirth' },
                       { id: 'gender', label: 'Gender' },
                       { id: 'phone', label: 'Phone' },
+                      { id: 'address', label: 'Address' },
                       { id: 'isVerified', label: 'Verified', align: 'center' },
                       { id: 'status', label: 'Status' },
                       { id: 'salonId', label: 'SalonId' },
@@ -244,7 +266,7 @@ export function UserMangerView() {
           </>
         )}
       </Card>
-    </DashboardContent>
+    </ManagerContent>
   );
 }
 
