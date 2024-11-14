@@ -1,4 +1,5 @@
-import type { SalonViewProps } from 'src/model/response/salon';
+
+import type { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
 
 import React, { useState, useEffect } from 'react';
 
@@ -11,7 +12,6 @@ import {
   DialogActions,
   DialogContent,
 } from '@mui/material';
-import { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
 
 interface SalonDialogProps {
   open: boolean;

@@ -21,9 +21,9 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import salonApi from '../../../api/salonApi';
-import { uploadImage } from '../../../api/apis';
 import { SalonDialog } from '../SalonDialog';
 import { TableNoData } from '../table-no-data';
+import { uploadImage } from '../../../api/apis';
 import { SalonTableRow } from '../salon-table-row';
 import { SalonTableHead } from '../salon-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
