@@ -1,12 +1,5 @@
-export type SalonUpdateProps = {
-  id: number;
-  imageUrl: string | null;
-  address: string | null;
-  phone: number | null;
-  district: string | null;
-};
-
-export type SalonCreateProps = {
+export type SalonActionProps = {
+  id?: number;
   imageUrl: string | null;
   address: string | null;
   phone: number | null;

@@ -168,6 +168,38 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
                 Login
               </Button>
             </Box>
+
+            <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }} />
+            <Box sx={{ p: 1 }}>
+              <Button
+                fullWidth
+                size="medium"
+                variant="text"
+                onClick={() => handleClickItem('/dashboard/user')}
+              >
+                Admin
+              </Button>
+            </Box>
+            <Box sx={{ p: 1 }}>
+              <Button
+                fullWidth
+                size="medium"
+                variant="text"
+                onClick={() => handleClickItem('/manager')}
+              >
+                Manager
+              </Button>
+            </Box>
+            <Box sx={{ p: 1 }}>
+              <Button
+                fullWidth
+                size="medium"
+                variant="text"
+                onClick={() => handleClickItem('/stylist')}
+              >
+                Stylist
+              </Button>
+            </Box>
           </>
         )}
       </Popover>
