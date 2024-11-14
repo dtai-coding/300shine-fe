@@ -1,6 +1,11 @@
+import type { PaymentItemProps } from "src/model/response/payment";
 import type { AppointmentItemProps } from "src/model/response/appoinment";
+
 import { useState } from "react";
-import { Box, Button, Collapse, Typography } from "@mui/material";
+
+import { Box, Button, Dialog, Collapse, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from "@mui/material";
+
+import paymentApi from "src/api/paymentApi";
 
 // Hàm format ngày theo định dạng DD-MM-YYYY
 function formatDate(dateString: string) {
@@ -23,10 +28,10 @@ function formatTime(slotString: string) {
 // Hàm trả về màu nền dựa trên trạng thái
 function getStatusBackgroundColor(status: string) {
     switch (status) {
-        case "Pending":
-            return "#f5dd90"; 
+        // case "Pending":
+        //     return "#f5dd90";
         case "Paid":
-            return "#ace8ba"; 
+            return "#ace8ba";
         case "Canceled":
             return "#f0a5ac"; // màu đỏ nhạt
         default:
@@ -36,6 +41,43 @@ function getStatusBackgroundColor(status: string) {
 
 export function AppointmentHistoryItem({ appoinment }: { appoinment: AppointmentItemProps }) {
     const [open, setOpen] = useState(false);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+    // const [orderCode, setOrderCode] = useState<number | null>(appoinment.orderCode);
+    // const [amount, setAmount] = useState<number | null>(2000);
+
+    const handleCheckoutClick = () => {
+        setOpenConfirmDialog(true);
+    };
+
+    const handleConfirm = async () => {
+        try {
+            // const accessToken = localStorage.getItem('accessToken');
+            // if (accessToken) {
+console.log(appoinment.orderCode);
+            let response;
+
+            if (appoinment.orderCode ) {
+                response = await paymentApi.createPaymentForPendingAppointment(appoinment.orderCode, 2000);
+            }
+            const payment: PaymentItemProps = response?.data;
+
+            if (payment && payment.checkoutUrl) {
+                window.location.href = payment.checkoutUrl;
+            }
+            // } else {
+            //     navigate('/sign-in');
+            // }
+
+            setOpenConfirmDialog(false);
+        } catch (error) {
+            console.log(error.message)
+        }
+    };
+
+
+    const handleCancel = () => {
+        setOpenConfirmDialog(false);
+    };
 
     return (
         <Box border={1} borderRadius={2} p={2} mb={2}>
@@ -77,13 +119,29 @@ export function AppointmentHistoryItem({ appoinment }: { appoinment: Appointment
                         </Box>
                     ))}
 
-                    {appoinment.status === "Pending" && (
-                        <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+                    {/* {appoinment.status === "Pending" && (
+                        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleCheckoutClick}>
                             Process to checkout
                         </Button>
-                    )}
+                    )} */}
                 </Box>
             </Collapse>
+            <Dialog open={openConfirmDialog} onClose={handleCancel}>
+                <DialogTitle>Checkout Confirmation</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want continue to checkout?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancel} color="error">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleConfirm} color="primary">
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

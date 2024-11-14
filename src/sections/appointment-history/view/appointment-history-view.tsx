@@ -13,7 +13,7 @@ import { AppointmentHistoryTab } from "../appoinmet-history-status-tab";
 
 export function AppointmentHistoryView() {
     const [appointments, setAppointments] = useState<AppointmentItemProps[]>([]);
-    const [status, setStatus] = useState("Pending");
+    const [status, setStatus] = useState("Paid");
 
     useEffect(() => {
         const fetchAppointments = async () => {
@@ -33,10 +33,10 @@ export function AppointmentHistoryView() {
 
     return (
         <HomeContent>
-            <Typography variant="h4" sx={{ mb: 3 }}>
+            <Typography variant="h2" sx={{ mb: 3 }}>
                 Appointment History
             </Typography>
-            
+
             <AppointmentHistoryTab status={status} onStatusChange={setStatus} />
 
             
