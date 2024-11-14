@@ -14,12 +14,11 @@ import { HomeContent } from 'src/layouts/home';
 
 import { Iconify } from 'src/components/iconify';
 
-import { ProductItem } from "../product-item";
-import { ProductSort } from "../product-sort";
-import { ProductFilters } from "../product-filters";
+import { ProductItem } from '../product-item';
+import { ProductSort } from '../product-sort';
+import { ProductFilters } from '../product-filters';
 
-import type { FiltersProps } from "../product-filters";
-
+import type { FiltersProps } from '../product-filters';
 
 // ----------------------------------------------------------------------
 
@@ -173,7 +172,6 @@ export function ProductsView() {
           </Grid>
         ))}
       </Grid>
-
 
       <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />
     </HomeContent>

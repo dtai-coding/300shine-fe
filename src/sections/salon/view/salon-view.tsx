@@ -1,5 +1,5 @@
 import type { SalonViewProps } from 'src/model/response/salon';
-import type { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
+import type { SalonActionProps } from 'src/model/request/salon';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -41,7 +41,7 @@ export function SalonView() {
   const [openAddSalonDialog, setOpenAddSalonDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const salonToEdit: SalonUpdateProps = {
+  const salonToEdit: SalonActionProps = {
     id: currentSalon?.id ?? 0,
     address: currentSalon?.address ?? null,
     phone: currentSalon?.phone ?? null,
@@ -77,7 +77,7 @@ export function SalonView() {
     setImageFile(null);
   };
 
-  const handleSaveSalon = async (salon: SalonCreateProps | SalonUpdateProps) => {
+  const handleSaveSalon = async (salon: SalonActionProps) => {
     try {
       let ImageUrl = salon.imageUrl;
       if (imageFile) {
@@ -86,7 +86,7 @@ export function SalonView() {
       if (isEditMode && currentSalon) {
         await salonApi.updateSalon({ ...salon, id: currentSalon.id, imageUrl: ImageUrl });
       } else {
-        const salonSavePayload: SalonCreateProps = {
+        const salonSavePayload: SalonActionProps = {
           address: salon.address,
           phone: salon.phone,
           district: salon.district,

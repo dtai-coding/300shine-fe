@@ -34,8 +34,9 @@ const SelectStylistPage2 = lazy(() => import('src/pages/select-stylist-2'));
 const PaymentSuccessfullyPage = lazy(() => import('src/pages/payment-successfully'));
 const PaymentCancelPage = lazy(() => import('src/pages/payment-cancel'));
 const BlogPage = lazy(() => import('src/pages/blog'));
+const ServicePage = lazy(() => import('src/pages/manager-service'));
 const UserPage = lazy(() => import('src/pages/user'));
-const UserMangerPage = lazy(() => import('src/pages/user-manager'));
+const UserMangerPage = lazy(() => import('src/pages/manager-user'));
 const AppointmentStylistPage = lazy(() => import('src/pages/appointment-stylist'));
 const ShiftPage = lazy(() => import('src/pages/shift'));
 const SignInPage = lazy(() => import('src/pages/sign-in'));
@@ -106,13 +107,13 @@ export function Router() {
         {
           path: 'dashboard',
           element: (
-            <ProtectedRoute allowedRoles={['Admin']}>
-              <DashboardLayout>
-                <Suspense fallback={renderFallback}>
-                  <Outlet />
-                </Suspense>
-              </DashboardLayout>
-            </ProtectedRoute>
+            // <ProtectedRoute allowedRoles={['Admin']}>
+            <DashboardLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </DashboardLayout>
+            // </ProtectedRoute>
           ),
           children: [
             // { path: '', element: <Dashboard /> },
@@ -124,13 +125,13 @@ export function Router() {
         {
           path: 'stylist',
           element: (
-            <ProtectedRoute allowedRoles={['Stylist']}>
-              <StylistLayout>
-                <Suspense fallback={renderFallback}>
-                  <Outlet />
-                </Suspense>
-              </StylistLayout>
-            </ProtectedRoute>
+            // <ProtectedRoute allowedRoles={['Stylist']}>
+            <StylistLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </StylistLayout>
+            // </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Stylist /> },
@@ -142,19 +143,19 @@ export function Router() {
         {
           path: 'manager',
           element: (
-            <ProtectedRoute allowedRoles={['Manager']}>
-              <ManagerLayout>
-                <Suspense fallback={renderFallback}>
-                  <Outlet />
-                </Suspense>
-              </ManagerLayout>
-            </ProtectedRoute>
+            // <ProtectedRoute allowedRoles={['Manager']}>
+            <ManagerLayout>
+              <Suspense fallback={renderFallback}>
+                <Outlet />
+              </Suspense>
+            </ManagerLayout>
+            // </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Manager /> },
             { path: 'user', element: <UserMangerPage /> },
             // { path: 'appointment', element: <AppointmentsPage /> },
-            // { path: 'service', element: <ServicePage /> },
+            { path: 'service', element: <ServicePage /> },
             // { path: 'shift', element: <ShiftPage /> },
             // { path: 'revenue', element: <Revenue /> },
             // { path: 'commission', element: <CommissionPage /> },

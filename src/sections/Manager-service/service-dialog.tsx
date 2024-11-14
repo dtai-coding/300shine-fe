@@ -11,53 +11,58 @@ import {
   DialogActions,
   DialogContent,
 } from '@mui/material';
-import { SalonActionProps } from 'src/model/request/salon';
+import { ServiceActionProps } from 'src/model/request/service';
 
-interface SalonDialogProps {
+interface ServiceDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (salon: SalonActionProps) => void;
-  salon?: SalonActionProps | null;
+  onSave: (service: ServiceActionProps) => void;
+  service?: ServiceActionProps | null;
   isEditMode?: boolean;
   imageFile: File | null;
   setImageFile: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
-export function SalonDialog({
+export function ServiceDialog({
   open,
   onClose,
   onSave,
-  salon,
+  service,
   isEditMode = false,
   imageFile,
   setImageFile,
-}: SalonDialogProps) {
-  const [newSalon, setNewSalon] = useState<SalonActionProps>({
+}: ServiceDialogProps) {
+  const [newService, setNewService] = useState<ServiceActionProps>({
     id: 0,
     imageUrl: '',
-    address: '',
-    phone: 0,
-    district: '',
+    price: 0,
+    name: '',
+    description: '',
+    salonId: 0,
+    isDeleted: false,
+    serviceStyles: [{ styleId: null }],
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isEditMode && salon) {
-      setNewSalon({ ...salon });
-      setImagePreview(salon.imageUrl || null);
+    if (isEditMode && service) {
+      setNewService({ ...service });
+      setImagePreview(service.imageUrl || null);
     }
-  }, [isEditMode, salon]);
+  }, [isEditMode, service]);
 
   const resetForm = () => {
-    setNewSalon({
+    setNewService({
       imageUrl: '',
-      address: '',
-      phone: 0,
-      district: '',
+      price: 0,
+      name: '',
+      description: '',
+      salonId: 0,
+      isDeleted: false,
+      serviceStyles: [{ styleId: null }],
     });
   };
-
   const handleOnCancel = () => {
     onClose();
     setImageFile(null);
@@ -66,20 +71,20 @@ export function SalonDialog({
   };
 
   const handleOnSave = () => {
-    onSave(newSalon);
+    onSave(newService);
     setImageFile(null);
     setImagePreview(null);
 
-    console.log('Salon saved successfully!');
+    // console.log('Service saved successfully!');
 
     resetForm();
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setNewSalon((prevSalon: SalonActionProps) => ({
-      ...prevSalon,
-      [name]: name === 'phone' || name === 'id' ? Number(value) : value,
+    setNewService((prevService: ServiceActionProps) => ({
+      ...prevService,
+      [name]: name === 'price' || name === 'id' || name === 'salonId' ? Number(value) : value,
     }));
   };
 
@@ -88,27 +93,36 @@ export function SalonDialog({
       <DialogTitle>{isEditMode ? 'Edit Salon' : 'Add New Salon'}</DialogTitle>
       <DialogContent dividers>
         <TextField
-          label="Phone"
-          name="phone"
+          fullWidth
+          label="Service Name"
+          name="name"
+          value={newService.name}
+          onChange={handleChange}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Price"
+          name="price"
           type="number"
-          value={newSalon.phone}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Address"
-          name="address"
-          value={newSalon.address}
+          value={newService.price}
           onChange={handleChange}
           margin="normal"
         />
         <TextField
           fullWidth
-          label="District"
-          name="district"
-          value={newSalon.district}
+          label="Description"
+          name="description"
+          value={newService.description}
+          onChange={handleChange}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Salon ID"
+          name="salonId"
+          type="number"
+          value={newService.salonId}
           onChange={handleChange}
           margin="normal"
         />
@@ -117,7 +131,7 @@ export function SalonDialog({
       <DialogActions>
         <Button onClick={handleOnCancel}>Cancel</Button>
         <Button onClick={handleOnSave} variant="contained">
-          {isEditMode ? 'Save Changes' : 'Add Salon'}
+          {isEditMode ? 'Save Changes' : 'Add Service'}
         </Button>
       </DialogActions>
     </Dialog>

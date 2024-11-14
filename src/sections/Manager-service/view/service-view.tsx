@@ -1,7 +1,7 @@
-import type { UserProps } from 'src/model/response/User';
-import type { UserActionProps } from 'src/model/request/User';
+import type { ServiceViewProps } from 'src/model/response/service';
+import type { ServiceActionProps } from 'src/model/request/service';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import {
   Box,
@@ -20,54 +20,36 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import userApi from '../../../api/userApi';
-import { UserDialog } from '../UserDialog';
-import { TableNoData } from '../table-no-data';
+import serviceApi from '../../../api/serviceApi';
 import { uploadImage } from '../../../api/apis';
-import { UserTableRow } from '../user-table-row';
-import { UserTableHead } from '../user-table-head';
+import { ServiceDialog } from '../service-dialog';
+import { TableNoData } from '../table-no-data';
+import { ServiceTableRow } from '../service-table-row';
+import { ServiceTableHead } from '../service-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
-import { UserTableToolbar } from '../user-table-toolbar';
+import { ServiceTableToolbar } from '../service-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-export function UserView() {
+export function ServiceMangerView() {
   const table = useTable();
 
   const [isEditMode, setIsEditMode] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserProps | null>(null);
+  const [currentService, setCurrentService] = useState<ServiceViewProps | null>(null);
   const [filterName, setFilterName] = useState('');
-  const [users, setUsers] = useState<UserProps[]>([]);
+  const [services, setServices] = useState<ServiceViewProps[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
+  const [openAddServiceDialog, setOpenAddServiceDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const ROLE_MAP = {
-    Admin: 1,
-    Manager: 2,
-    Customer: 3,
-    Stylist: 4,
-  } as const;
-
-  type RoleName = keyof typeof ROLE_MAP;
-
-  const userToEdit: UserActionProps = {
-    phone: currentUser?.phone ?? null,
-    fullName: currentUser?.fullName ?? null,
-    dateOfBirth: currentUser?.dateOfBirth ?? null,
-    gender: currentUser?.gender ?? null,
-    address: currentUser?.address ?? null,
-    roleId:
-      currentUser?.roleName && currentUser.roleName in ROLE_MAP
-        ? ROLE_MAP[currentUser.roleName as RoleName]
-        : null,
-    isStylist: false,
-    isVerified: currentUser?.isVerified ?? null,
-    status: currentUser?.status ?? null,
-    salonId: currentUser?.salonId ?? null,
-    imageUrl: currentUser?.imageUrl ?? null,
-    commission: currentUser?.commission ?? null,
-    salary: currentUser?.salary ?? null,
-    salaryPerDay: currentUser?.salaryPerDay ?? null,
+  const serviceToEdit: ServiceActionProps = {
+    id: currentService?.id ?? undefined,
+    imageUrl: currentService?.imageUrl ?? '',
+    price: currentService?.price ?? 0,
+    name: currentService?.name ?? '',
+    description: currentService?.description ?? '',
+    salonId: currentService?.salonId ?? 0,
+    isDeleted: currentService?.isDeleted ?? false,
+    serviceStyles: currentService?.serviceStyles ?? [{ styleId: null }],
   };
 
   useEffect(() => {
@@ -77,58 +59,38 @@ export function UserView() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await userApi.getUsers();
-      setUsers(response.data);
+      const response = await serviceApi.getServices();
+      setServices(response.data);
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('Error fetching services:', error);
     }
     setLoading(false);
   };
 
-  const handleEditUser = (user: UserProps) => {
-    setCurrentUser(user);
+  const handleEditService = (service: ServiceViewProps) => {
+    setCurrentService(service);
     setIsEditMode(true);
-    setOpenAddUserDialog(true);
+    setOpenAddServiceDialog(true);
   };
 
   const handleCloseDialog = () => {
-    setOpenAddUserDialog(false);
+    setOpenAddServiceDialog(false);
     setIsEditMode(false);
-    setCurrentUser(null);
+    setCurrentService(null);
     setImageFile(null);
   };
 
-  const handleSaveUser = async (user: UserActionProps) => {
+  const handleSaveService = async (service: ServiceActionProps) => {
     try {
-      let ImageUrl = user.imageUrl;
-
+      let ImageUrl = service.imageUrl;
       if (imageFile) {
         ImageUrl = await uploadImage(imageFile);
       }
-
-      if (isEditMode && currentUser) {
-        const updateUserPayload: UserActionProps = {
-          ...user,
-          imageUrl: ImageUrl,
-          roleId: user.roleId,
-          isStylist: false,
-          password: undefined,
-        };
-        console.log(updateUserPayload);
-        await userApi.updateUser(currentUser.id, updateUserPayload);
+      if (isEditMode && currentService) {
+        await serviceApi.updateServices({ ...service, id: currentService.id, imageUrl: ImageUrl });
       } else {
-        const createUserPayload: UserActionProps = {
-          ...user,
-          imageUrl: ImageUrl,
-          isStylist: undefined,
-          roleId: undefined,
-          password: user.password || '',
-        };
-        const sanitizedPayload = Object.fromEntries(
-          Object.entries(createUserPayload).filter(([_, v]) => v !== null && v !== undefined)
-        ) as UserActionProps;
-        console.log(sanitizedPayload);
-        await userApi.addManager(sanitizedPayload);
+        const serviceSavePayload: ServiceActionProps = { ...service };
+        await serviceApi.createServices(serviceSavePayload);
       }
       handleCloseDialog();
       fetchData();
@@ -138,13 +100,17 @@ export function UserView() {
     }
   };
 
-  const handleDeleteUser = async (userId: number) => {
-    await userApi.deleteUser(userId);
+  const handleDeleteSelected = () => {
+    // Implement deletion logic for selected services
+  };
+
+  const handleDeleteService = async (serviceId: number) => {
+    await serviceApi.deleteServices(serviceId);
     fetchData();
   };
 
-  const dataFiltered: UserProps[] = applyFilter({
-    inputData: users,
+  const dataFiltered: ServiceViewProps[] = applyFilter({
+    inputData: services,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -155,36 +121,34 @@ export function UserView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Users
+          Services
         </Typography>
         <Button
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={() => setOpenAddUserDialog(true)}
+          onClick={() => setOpenAddServiceDialog(true)}
         >
-          New user
+          New service
         </Button>
       </Box>
 
-      <UserDialog
-        open={openAddUserDialog}
+      <ServiceDialog
+        open={openAddServiceDialog}
         onClose={() => handleCloseDialog()}
         isEditMode={isEditMode}
-        user={userToEdit}
-        onSave={handleSaveUser}
+        service={serviceToEdit}
+        onSave={handleSaveService}
         imageFile={imageFile}
         setImageFile={setImageFile}
       />
 
       <Card>
-        <UserTableToolbar
+        <ServiceTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
-          onFilterName={(event) => {
-            setFilterName(event.target.value);
-            table.onResetPage();
-          }}
+          onFilterName={(event) => setFilterName(event.target.value)}
+          onDeleteSelected={handleDeleteSelected} // Add this line
         />
 
         {loading ? (
@@ -196,31 +160,24 @@ export function UserView() {
             <Scrollbar>
               <TableContainer sx={{ overflow: 'unset' }}>
                 <Table sx={{ minWidth: 800 }}>
-                  <UserTableHead
+                  <ServiceTableHead
                     order={table.order}
                     orderBy={table.orderBy}
-                    rowCount={users.length}
+                    rowCount={services.length}
                     numSelected={table.selected.length}
                     onSort={table.onSort}
                     onSelectAllRows={(checked) =>
                       table.onSelectAllRows(
                         checked,
-                        users.map((user) => user.id.toString())
+                        services.map((service) => service.id.toString())
                       )
                     }
                     headLabel={[
-                      { id: 'fullName', label: 'FullName' },
-                      { id: 'dateOfBirth', label: 'DateOfBirth' },
-                      { id: 'gender', label: 'Gender' },
-                      { id: 'phone', label: 'Phone' },
-                      { id: 'address', label: 'Address' },
-                      { id: 'isVerified', label: 'Verified', align: 'center' },
-                      { id: 'status', label: 'Status' },
-                      { id: 'salonId', label: 'SalonId' },
-                      { id: 'roleName', label: 'Role' },
-                      { id: 'commission', label: 'Commission' },
-                      { id: 'salary', label: 'Salary' },
-                      { id: 'salaryPerDay', label: 'SalaryPerDay' },
+                      { id: 'name', label: 'Service Name' },
+                      { id: 'price', label: 'Price' },
+                      { id: 'description', label: 'Description' },
+                      { id: 'salonId', label: 'Salon' },
+                      { id: 'styles', label: 'Styles' },
                       { id: '' },
                     ]}
                   />
@@ -230,19 +187,19 @@ export function UserView() {
                         table.page * table.rowsPerPage,
                         table.page * table.rowsPerPage + table.rowsPerPage
                       )
-                      .map((user) => (
-                        <UserTableRow
-                          key={user.id}
-                          row={user}
-                          selected={table.selected.includes(user.id.toString())}
-                          onSelectRow={() => table.onSelectRow(user.id.toString())}
-                          onEditUser={handleEditUser}
-                          onDeleteUser={handleDeleteUser}
+                      .map((service) => (
+                        <ServiceTableRow
+                          key={service.id}
+                          row={service}
+                          selected={table.selected.includes(service.id.toString())}
+                          onSelectRow={() => table.onSelectRow(service.id.toString())}
+                          onEditService={handleEditService}
+                          onDeleteService={handleDeleteService}
                         />
                       ))}
 
                     <TableEmptyRows
-                      emptyRows={emptyRows(table.page, table.rowsPerPage, users.length)}
+                      emptyRows={emptyRows(table.page, table.rowsPerPage, services.length)}
                     />
 
                     {notFound && <TableNoData searchQuery={filterName} />}
@@ -253,7 +210,7 @@ export function UserView() {
 
             <TablePagination
               component="div"
-              count={users.length}
+              count={services.length}
               page={table.page}
               onPageChange={table.onChangePage}
               rowsPerPage={table.rowsPerPage}
