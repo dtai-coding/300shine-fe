@@ -6,6 +6,8 @@ import { useState } from "react";
 import { Box, Button, Dialog, Collapse, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 
 import paymentApi from "src/api/paymentApi";
+import { UpdateProcessProps } from "src/model/request/update-process";
+import appointmentApi from "src/api/appointment";
 
 // Hàm format ngày theo định dạng DD-MM-YYYY
 function formatDate(dateString: string) {
@@ -46,64 +48,79 @@ function getDetailStatusBackgroundColor(status: string) {
         case "Completed":
             return "#ace8ba";
         case "In Progress":
-            return "#a5c8f0";
+            return "#b1d9fa";
         default:
             return "#FFFFFF";
     }
 }
 
-export function AppointmentStylistItem({ appoinment }: { appoinment: AppointmentItemProps }) {
+export function AppointmentStylistItem({ appointment, reloadCallBack }: { appointment: AppointmentItemProps; reloadCallBack(): void }) {
     const [open, setOpen] = useState(false);
     const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
-    // const [orderCode, setOrderCode] = useState<number | null>(appoinment.orderCode);
-    // const [amount, setAmount] = useState<number | null>(2000);
+    const [selectedDetailId, setSelectedDetailId] = useState<number | null>(null);
+    const [process, setProcess] = useState<string | null>(null);
 
-    const handleCheckoutClick = () => {
-        setOpenConfirmDialog(true);
-    };
-
-    const handleConfirm = async () => {
+    const handleAcceptClick = async () => {
         try {
-            // const accessToken = localStorage.getItem('accessToken');
-            // if (accessToken) {
-            console.log(appoinment.orderCode);
-            let response;
-
-            if (appoinment.orderCode) {
-                response = await paymentApi.createPaymentForPendingAppointment(appoinment.orderCode, 2000);
+            if (selectedDetailId) {
+                const updateProcess: UpdateProcessProps = {
+                    appointmentId: selectedDetailId,
+                    status: "In Progress",
+                };
+                const response = await appointmentApi.updateAppointmentProcess(updateProcess);
+                if (response.status) {
+                    setSelectedDetailId(null);
+                    reloadCallBack();
+                }
             }
-            const payment: PaymentItemProps = response?.data;
-
-            if (payment && payment.checkoutUrl) {
-                window.location.href = payment.checkoutUrl;
-            }
-            // } else {
-            //     navigate('/sign-in');
-            // }
-
             setOpenConfirmDialog(false);
         } catch (error) {
-            console.log(error.message)
+            console.log(error.message);
+            setOpenConfirmDialog(false);
         }
     };
 
+    const handleCompleteClick = async () => {
+        try {
+            if (selectedDetailId) {
+                const updateProcess: UpdateProcessProps = {
+                    appointmentId: selectedDetailId,
+                    status: "Completed",
+                };
+                console.log(updateProcess);
+                const response = await appointmentApi.updateAppointmentProcess(updateProcess);
+                if (response.status) {
+                    setSelectedDetailId(null);
+                    reloadCallBack();
 
-    const handleCancel = () => {
-        setOpenConfirmDialog(false);
+                }
+            }
+            setOpenConfirmDialog(false);
+            
+        } catch (error) {
+            console.log(error.message);
+            setOpenConfirmDialog(false);
+        }
+    };
+
+    const openConfirmDialogForDetail = (appointmentId: number, currentProcess: string) => {
+        setProcess(currentProcess)
+        setSelectedDetailId(appointmentId); 
+        setOpenConfirmDialog(true);
     };
 
     return (
         <Box border={1} borderRadius={2} p={2} mb={2}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6">Order Code: {appoinment.orderCode}</Typography>
+                <Typography variant="h6">Order Code: {appointment.orderCode}</Typography>
                 <Typography
                     sx={{
-                        backgroundColor: getStatusBackgroundColor(appoinment.status),
+                        backgroundColor: getStatusBackgroundColor(appointment.status),
                         padding: '4px 8px',
                         borderRadius: '4px',
                     }}
                 >
-                    Status: {appoinment.status}
+                    Status: {appointment.status}
                 </Typography>
                 <Button variant="text" onClick={() => setOpen(!open)}>
                     {open ? "Hide Details" : "Show Details"}
@@ -112,12 +129,12 @@ export function AppointmentStylistItem({ appoinment }: { appoinment: Appointment
 
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Box mt={2}>
-                    <Typography>Salon Address: {appoinment.salonAddress}</Typography>
-                    <Typography>User Name: {appoinment.userName}</Typography>
-                    <Typography>Total Amount: {appoinment.amount}</Typography>
-                    <Typography>Date: {formatDate(appoinment.date)}</Typography>
+                    <Typography>Salon Address: {appointment.salonAddress}</Typography>
+                    <Typography>User Name: {appointment.userName}</Typography>
+                    <Typography>Total Amount: {appointment.amount}</Typography>
+                    <Typography>Date: {formatDate(appointment.date)}</Typography>
 
-                    {appoinment.appointmentDetails.map((detail) => (
+                    {appointment.appointmentDetails.map((detail) => (
                         <Box key={detail.appointmentId} mt={2} pl={2} borderTop={1} pt={1}>
                             <Typography>Service Name: {detail.serviceName}</Typography>
                             <Typography>Stylist: {detail.stylistName}</Typography>
@@ -130,38 +147,42 @@ export function AppointmentStylistItem({ appoinment }: { appoinment: Appointment
                                 </Box>
                             ))}
                             <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Typography
-                                sx={{
-                                    backgroundColor: getDetailStatusBackgroundColor(detail.status),
-                                    padding: '4px 8px',
-                                    borderRadius: '4px',
-                                }}
-                            >
-                                Status: {detail.status}
-                            </Typography>
+                                <Typography
+                                    sx={{
+                                        backgroundColor: getDetailStatusBackgroundColor(detail.status),
+                                        padding: '4px 8px',
+                                        borderRadius: '4px',
+                                    }}
+                                >
+                                    Status: {detail.status}
+                                </Typography>
+                                {detail.status === "Pending" && (
+                                    <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => openConfirmDialogForDetail(detail.appointmentId, detail.status)}>
+                                        Accept
+                                    </Button>
+                                )}
+                                {detail.status === "In Progress" && (
+                                    <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => openConfirmDialogForDetail(detail.appointmentId, detail.status)}>
+                                        Complete
+                                    </Button>
+                                )}
                             </Box>
                         </Box>
                     ))}
-
-                    {/* {appoinment.status === "Pending" && (
-                        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleCheckoutClick}>
-                            Process to checkout
-                        </Button>
-                    )} */}
                 </Box>
             </Collapse>
-            <Dialog open={openConfirmDialog} onClose={handleCancel}>
-                <DialogTitle>Checkout Confirmation</DialogTitle>
+            <Dialog open={openConfirmDialog} onClose={() => setOpenConfirmDialog(false)}>
+                <DialogTitle>Confirm Action</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want continue to checkout?
+                        Are you sure you want to update the status of this appointment?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCancel} color="error">
+                    <Button onClick={() => setOpenConfirmDialog(false)} color="error">
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirm} color="primary">
+                    <Button onClick={selectedDetailId && process === "Pending" ? handleAcceptClick : handleCompleteClick} color="primary">
                         Confirm
                     </Button>
                 </DialogActions>

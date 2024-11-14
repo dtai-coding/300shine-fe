@@ -33,47 +33,23 @@ export function ShiftView() {
 
     const handleConfirm = async () => {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-            if (accessToken) {
 
-                // const shiftStylist: ShiftStylistProps = {
-                //     shi: salonId ?? 0,
-                //     dateToGo: date ? new Date(formatDateToISO(date)).toISOString() : '',
-                //     items: [
-                //         {
-                //             serviceId: serviceId ?? 0,
-                //             stylistId: stylistId ?? 0,
-                //             slots: slotIds.map(id => ({ id }))
-                //         }
-                //     ]
-                // };
-
-                // console.log(appointment);
-                // console.log(appointment2);
-
-                // let response;
-                // if (appointment && isAppointmentValid(appointment)) {
-                //     response = await appointmentApi.createAppointment(appointment);
-                // } else if (appointment2 && isAppointmentValid(appointment2)) {
-                //     response = await appointmentApi.createAppointment(appointment2);
-                // } else {
-                //     showAlert('Appointment is not valid');
-                //     return;
-                // }
-
-                // const payment: PaymentItemProps = response?.data;
-
-                // if (payment && payment.checkoutUrl) {
-                //     window.location.replace(payment.checkoutUrl);
-                // }
-
-            } else {
-                // navigate('/sign-in');
+            const shiftStylist: ShiftStylistProps = {
+                shiftIds: selectedShiftIds, 
+            };
+            const response = await shiftApi.stylistChoseShift(shiftStylist);
+            if(response.status){
+                setSelectedShiftIds([]);
+                const response2 = await shiftApi.getShift();
+                const shiftData: ShiftItemProps[] = response2?.data;
+                setShifts(shiftData);
             }
 
             setOpenConfirmDialog(false);
         } catch (error) {
             console.log(error.message);
+            setOpenConfirmDialog(false);
+
         }
     };
 
@@ -110,7 +86,7 @@ export function ShiftView() {
                     <Button
                         variant="contained"
                         color="primary"
-                    onClick={handleDoneClick}
+                        onClick={handleDoneClick}
                     >
                         Confirm to choose shift
                     </Button>

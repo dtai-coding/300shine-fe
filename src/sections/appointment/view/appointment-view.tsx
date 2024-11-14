@@ -200,6 +200,7 @@ const handleConfirm = async () => {
 
     setOpenConfirmDialog(false);
   } catch (error) {
+    setOpenConfirmDialog(false);
     showAlert('Failed to create appointment');
   }
 };

@@ -33,6 +33,21 @@ export function AppointmentStylistView() {
         fetchAppointments();
     }, [status, process]);
 
+    const handleReload = () => {
+        const fetchAppointments = async () => {
+            try {
+                console.log(status);
+                const response = await appointmentApi.stylistGetAppointmentBystatusAndProcess(status, process);
+                const appointmentData: AppointmentItemProps[] = response?.data;
+                setAppointments(appointmentData);
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+
+        fetchAppointments();
+    };
+
     return (
         <StylistConTent>
             <Typography marginLeft="60px" variant="h2" sx={{ mb: 3 }}>
@@ -55,7 +70,7 @@ export function AppointmentStylistView() {
             <Grid marginLeft="45px" container spacing={2}>
                 {appointments.map((appointment) => (
                     <Grid item xs={8} key={appointment.orderCode}>
-                        <AppointmentStylistItem appoinment={appointment} />
+                        <AppointmentStylistItem appointment={appointment} reloadCallBack={handleReload} />
                     </Grid>
                 ))}
             </Grid>

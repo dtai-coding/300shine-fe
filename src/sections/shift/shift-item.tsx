@@ -38,8 +38,15 @@ export function ShiftItem({
             <Checkbox
                 checked={isChecked}
                 onChange={handleChange}
-                disabled={shift.isChosen} // Vô hiệu hóa nếu `isChosen` là false
+                disabled={shift.isChosen}
+                sx={{
+                    background: shift.isChosen ? "gray" : "default", 
+                    "&.Mui-disabled": {
+                        color: "gray", 
+                    },
+                }}
             />
+
             <Box ml={2}>
                 <Typography variant="h6">{shift.name}</Typography>
                 <Typography>Date: {formatDate(shift.date)}</Typography>
