@@ -52,7 +52,7 @@ function getDetailStatusBackgroundColor(status: string) {
     }
 }
 
-export function AppointmentHistoryItem({ appoinment }: { appoinment: AppointmentItemProps }) {
+export function AppointmentStylistItem({ appoinment }: { appoinment: AppointmentItemProps }) {
     const [open, setOpen] = useState(false);
     const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
     // const [orderCode, setOrderCode] = useState<number | null>(appoinment.orderCode);

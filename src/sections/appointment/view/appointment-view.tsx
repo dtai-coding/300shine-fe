@@ -411,7 +411,7 @@ const handleConfirm = async () => {
         <DialogTitle>Create Appointment Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to make this appointment with these selection and continue to checkout
+          Your appointment will be confirmed after payment is made. Continue to checkout?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
