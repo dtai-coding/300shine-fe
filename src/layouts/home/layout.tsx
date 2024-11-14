@@ -11,6 +11,7 @@ import { _langs, _notifications } from 'src/_mock';
 
 import { Iconify } from 'src/components/iconify';
 
+import { useAuthStore } from 'src/stores/auth/auth.store';
 import { Main } from './main';
 import { NavMobile } from './nav';
 import { layoutClasses } from '../classes';
@@ -43,10 +44,44 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
   const navigate = useNavigate();
 
   const HandleAppointmentClick = () => {
-
-      navigate('/appointment-history');
-    
+    navigate('/appointment-history');
   };
+  const { auth } = useAuthStore();
+
+  const role = auth.user.roleName;
+  const menuItems = [
+    {
+      label: 'Home',
+      href: '/',
+      icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
+    },
+    {
+      label: 'Profile',
+      href: '#',
+      icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
+    },
+  ];
+
+  // Conditionally render role-based menu items
+  if (role === 'Admin') {
+    menuItems.push({
+      label: 'Admin Page',
+      href: '/dashboard/user',
+      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
+    });
+  } else if (role === 'Manager') {
+    menuItems.push({
+      label: 'Manager Page',
+      href: '/manager',
+      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
+    });
+  } else if (role === 'Stylist') {
+    menuItems.push({
+      label: 'Stylist Page',
+      href: '/stylist/appointment',
+      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
+    });
+  }
   return (
     <LayoutSection
       /** **************************************
@@ -101,29 +136,10 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
                       backgroundColor: 'lightgray',
                       borderRadius: '10px',
                     },
-                    marginRight: '10px'
+                    marginRight: '10px',
                   }}
                 />
-                <AccountPopover
-                  data={[
-                    {
-                      label: 'Home',
-                      href: '/',
-                      icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
-                    },
-
-                    {
-                      label: 'Profile',
-                      href: '#',
-                      icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
-                    },
-                    {
-                      label: 'Settings',
-                      href: '#',
-                      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
-                    },
-                  ]}
-                />
+                <AccountPopover data={menuItems} />
               </Box>
             ),
           }}

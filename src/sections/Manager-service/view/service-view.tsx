@@ -20,6 +20,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
+import styleApi from '../../../api/styleApi';
 import serviceApi from '../../../api/serviceApi';
 import { uploadImage } from '../../../api/apis';
 import { ServiceDialog } from '../service-dialog';
@@ -29,6 +30,11 @@ import { ServiceTableHead } from '../service-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { ServiceTableToolbar } from '../service-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+
+interface Style {
+  id: number;
+  style: string;
+}
 
 export function ServiceMangerView() {
   const table = useTable();
@@ -40,6 +46,9 @@ export function ServiceMangerView() {
   const [loading, setLoading] = useState(true);
   const [openAddServiceDialog, setOpenAddServiceDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [availableStyles, setAvailableStyles] = useState<{ styleId: number; styleName: string }[]>(
+    []
+  );
 
   const serviceToEdit: ServiceActionProps = {
     id: currentService?.id ?? undefined,
@@ -48,13 +57,28 @@ export function ServiceMangerView() {
     name: currentService?.name ?? '',
     description: currentService?.description ?? '',
     salonId: currentService?.salonId ?? 0,
+    duration: 0,
     isDeleted: currentService?.isDeleted ?? false,
-    serviceStyles: currentService?.serviceStyles ?? [{ styleId: null }],
+    serviceStyles: currentService?.serviceStyles ?? [{ styleId: undefined }],
   };
 
   useEffect(() => {
+    fetchStyles();
     fetchData();
   }, []);
+
+  const fetchStyles = async () => {
+    try {
+      const response = await styleApi.getStyle();
+      const styles = response.data.map((style: Style) => ({
+        styleId: style.id,
+        styleName: style.style,
+      }));
+      setAvailableStyles(styles);
+    } catch (error) {
+      console.error('Error fetching styles:', error);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -141,6 +165,7 @@ export function ServiceMangerView() {
         onSave={handleSaveService}
         imageFile={imageFile}
         setImageFile={setImageFile}
+        availableStyles={availableStyles}
       />
 
       <Card>

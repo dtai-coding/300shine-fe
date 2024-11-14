@@ -5,6 +5,7 @@ export type ServiceActionProps = {
   name: string | null;
   description: string | null;
   salonId: number | null;
+  duration: number | null;
   isDeleted?: boolean | null;
-  serviceStyles: { styleId: number | null }[];
+  serviceStyles: { styleId?: number | null }[];
 };

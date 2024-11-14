@@ -169,7 +169,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
               </Button>
             </Box>
 
-            <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }} />
+            {/* <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }} />
             <Box sx={{ p: 1 }}>
               <Button
                 fullWidth
@@ -195,11 +195,11 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
                 fullWidth
                 size="medium"
                 variant="text"
-                onClick={() => handleClickItem('/stylist')}
+                onClick={() => handleClickItem('/stylist/appointment')}
               >
                 Stylist
               </Button>
-            </Box>
+            </Box> */}
           </>
         )}
       </Popover>

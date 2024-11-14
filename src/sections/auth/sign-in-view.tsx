@@ -51,7 +51,7 @@ export function SignInView() {
           router.push('/manager');
           break;
         case 'Stylist':
-          router.push('/stylist');
+          router.push('/stylist/appointment');
           break;
         default:
           router.push('/');

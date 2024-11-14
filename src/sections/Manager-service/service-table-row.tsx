@@ -1,6 +1,6 @@
 import type { ServiceViewProps } from 'src/model/response/service';
 
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -44,10 +44,28 @@ export function ServiceTableRow({
   // Helper function to display fallback value for missing data
   const getDisplayValue = (value: any) => (value !== null && value !== undefined ? value : '-');
 
-  const getServiceStyles = () =>
-    row.serviceStyles.map((style, index) => (
+  const getServiceStyles = () => {
+    const styles = row.serviceStyles.map((style, index) => (
       <span key={index}>{style.styleId !== null ? `${style.styleId}` : 'No Style'}</span>
     ));
+
+    // Check if there are multiple styles and join them with a comma.
+    if (styles.length > 1) {
+      return (
+        <>
+          {styles.map((style, index) => (
+            <React.Fragment key={index}>
+              {style}
+              {index < styles.length - 1 && ', '}
+            </React.Fragment>
+          ))}
+        </>
+      );
+    }
+
+    return styles;
+  };
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
