@@ -20,7 +20,7 @@ export const PaymentCanceledView: React.FC = () => {
     }, [location]);
 
     const handleGoHome = () => {
-        navigate('/'); 
+        navigate('/appointment-history', { replace: true }); 
     };
 
     return (
@@ -61,7 +61,7 @@ export const PaymentCanceledView: React.FC = () => {
                         onClick={handleGoHome}
                         size="large"
                     >
-                        Go to Home
+                        View History
                     </Button>
                 </CardActions>
             </Card>

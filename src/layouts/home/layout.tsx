@@ -1,6 +1,7 @@
 import type { Theme, SxProps, Breakpoint } from '@mui/material/styles';
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
@@ -12,7 +13,7 @@ import { Iconify } from 'src/components/iconify';
 
 import { Main } from './main';
 import { NavMobile } from './nav';
-import { layoutClasses } from '../classes'; 
+import { layoutClasses } from '../classes';
 import { navData } from '../config-nav-dashboard';
 import { Searchbar } from '../components/searchbar';
 import { _workspaces } from '../config-nav-workspace';
@@ -39,7 +40,13 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
   const [navOpen, setNavOpen] = useState(false);
 
   const layoutQuery: Breakpoint = 'lg';
+  const navigate = useNavigate();
 
+  const HandleAppointmentClick = () => {
+
+      navigate('/appointment-history');
+    
+  };
   return (
     <LayoutSection
       /** **************************************
@@ -83,6 +90,20 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
                 <Searchbar />
                 <LanguagePopover data={_langs} />
                 <NotificationsPopover data={_notifications} />
+                <Iconify
+                  onClick={HandleAppointmentClick}
+                  marginRight="10px"
+                  width={25}
+                  icon="solar:reorder-bold-duotone"
+                  color="gray"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'lightgray',
+                      borderRadius: '10px',
+                    },
+                    marginRight: '10px'
+                  }}
+                />
                 <AccountPopover
                   data={[
                     {
@@ -90,6 +111,7 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
                       href: '/',
                       icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
                     },
+
                     {
                       label: 'Profile',
                       href: '#',
