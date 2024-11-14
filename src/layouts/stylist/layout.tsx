@@ -10,7 +10,7 @@ import { _langs, _notifications } from 'src/_mock';
 
 import { Iconify } from 'src/components/iconify';
 
-import { Main } from './main';
+import { StylistConTent } from './main';
 import { layoutClasses } from '../classes';
 import { NavMobile, NavDesktop } from './nav';
 import { navData } from './stylist-nav-config';
@@ -85,11 +85,11 @@ export function StylistLayout({ sx, children, header }: DashboardLayoutProps) {
                 <NotificationsPopover data={_notifications} />
                 <AccountPopover
                   data={[
-                    {
-                      label: 'Home',
-                      href: '/',
-                      icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
-                    },
+                    // {
+                    //   label: 'Home',
+                    //   href: '/',
+                    //   icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
+                    // },
                     {
                       label: 'Profile',
                       href: '#',
@@ -135,7 +135,7 @@ export function StylistLayout({ sx, children, header }: DashboardLayoutProps) {
         ...sx,
       }}
     >
-      <Main>{children}</Main>
+      <StylistConTent>{children}</StylistConTent>
     </LayoutSection>
   );
 }

@@ -10,7 +10,7 @@ import { layoutClasses } from 'src/layouts/classes';
 
 // ----------------------------------------------------------------------
 
-export function Main({ children, sx, ...other }: BoxProps) {
+export function StylistConTent({ children, sx, ...other }: BoxProps) {
   return (
     <Box
       component="main"

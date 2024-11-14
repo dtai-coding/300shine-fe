@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { CheckCircle } from '@mui/icons-material'; // Assuming you're using Material UI
+import type { UpdateAppointmentWithOrderCode } from 'src/model/request/update-appointment-with-ordercode';
+
 import { Box, Card, Button, Typography, CardContent, CardActions } from '@mui/material';
+
 import appointmentApi from 'src/api/appointment';
-import { UpdateAppointmentWithOrderCode } from 'src/model/request/update-appointment-with-ordercode';
 
 export const PaymentSuccessfullyView: React.FC = () => {
     const navigate = useNavigate();

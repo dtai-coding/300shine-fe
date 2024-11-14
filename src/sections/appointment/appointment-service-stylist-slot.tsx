@@ -64,7 +64,6 @@ export function AppointmentServiceStylistSlot({
           const slotData: SlotItemProps[] = response?.data;
           setSlots(slotData);
 
-          // Extract IDs of slots with status == false
           const unavailableIds = slotData.filter(slot => !slot.status).map(slot => slot.id);
           setUnavailableSlotIds(unavailableIds);
         } catch (error) {
@@ -78,15 +77,6 @@ export function AppointmentServiceStylistSlot({
     }
   }, [stylistName, selectedDate]);
 
-  // useEffect(() => {
-  //   if (selectedDate && selectedSlotIds.length > 0) {
-  //     const fetchSlots =() => {
-
-  //     };
-
-  //     fetchSlots();
-  //   }
-  // }, [selectedSlotIds]);
 
   const handleSelectSlot = (id: number) => {
     const updatedSelectedSlotIds = [id];
@@ -173,6 +163,7 @@ export function AppointmentServiceStylistSlot({
       setSelectedDate(null);
       setSelectedSlotIds([]);
       setSlots([]);
+
     } else {
       setSelectedDate(date);
       localStorage.setItem('selectedDate', date.format('MM-DD-YYYY'));
