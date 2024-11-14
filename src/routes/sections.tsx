@@ -105,13 +105,13 @@ export function Router() {
         {
           path: 'dashboard',
           element: (
-            // <ProtectedRoute allowedRoles={['Admin']}>
-            <DashboardLayout>
-              <Suspense fallback={renderFallback}>
-                <Outlet />
-              </Suspense>
-            </DashboardLayout>
-            // </ProtectedRoute>
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <DashboardLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </DashboardLayout>
+            </ProtectedRoute>
           ),
           children: [
             // { path: '', element: <Dashboard /> },
@@ -123,13 +123,13 @@ export function Router() {
         {
           path: 'stylist',
           element: (
-            // <ProtectedRoute allowedRoles={['Stylist']}>
-            <StylistLayout>
-              <Suspense fallback={renderFallback}>
-                <Outlet />
-              </Suspense>
-            </StylistLayout>
-            // </ProtectedRoute>
+            <ProtectedRoute allowedRoles={['Stylist']}>
+              <StylistLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </StylistLayout>
+            </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Stylist /> },
@@ -141,13 +141,13 @@ export function Router() {
         {
           path: 'manager',
           element: (
-            // <ProtectedRoute allowedRoles={['Manager']}>
-            <ManagerLayout>
-              <Suspense fallback={renderFallback}>
-                <Outlet />
-              </Suspense>
-            </ManagerLayout>
-            // </ProtectedRoute>
+            <ProtectedRoute allowedRoles={['Manager']}>
+              <ManagerLayout>
+                <Suspense fallback={renderFallback}>
+                  <Outlet />
+                </Suspense>
+              </ManagerLayout>
+            </ProtectedRoute>
           ),
           children: [
             { path: '', element: <Manager /> },
