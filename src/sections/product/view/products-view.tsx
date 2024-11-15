@@ -1,5 +1,4 @@
 import type { ServiceItemProps } from 'src/model/response/service';
-
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '@mui/material';
@@ -32,7 +31,7 @@ const GENDER_OPTIONS = [
 
 const CATEGORY_OPTIONS = [
   { value: 'all', label: 'All' },
-  { value: 'shose', label: 'Shose' },
+  { value: 'shoes', label: 'Shoes' },
   { value: 'apparel', label: 'Apparel' },
   { value: 'accessories', label: 'Accessories' },
 ];
@@ -69,6 +68,9 @@ export function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
   const [products, setProducts] = useState<ServiceItemProps[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
+  const productsPerPage = 8; // Adjust this number as needed
   const navigate = useNavigate();
 
   // Fetch products from API
@@ -78,6 +80,7 @@ export function ProductsView() {
         const response = await serviceApi.getServices(); // Call API
         const productData = response?.data; // Extract the product data from response.value.data
         setProducts(productData); // Update the products state with data from API
+        setTotalPages(Math.ceil(productData.length / productsPerPage)); // Calculate total pages
         console.log('Successfully fetched products:', productData);
       } catch (error) {
         console.error('Failed to fetch products:', error);
@@ -111,46 +114,50 @@ export function ProductsView() {
 
   const handleRedirect = () => {
     const logined = auth.accessToken;
-    if(logined){
+    if (logined) {
       navigate('/appointment');
-    }
-    else{
+    } else {
       navigate('/sign-in');
     }
   };
+
   const theme = useTheme();
+
+  // Paginate products based on currentPage
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
 
   return (
     <HomeContent>
       <Box marginTop="50px" display="flex" alignItems="center" mb={5}>
-      <Typography variant="h2" flexGrow={1}>
-        Services
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<Iconify icon="mingcute:add-line" />}
-        onClick={handleRedirect}
-        sx={{
-          fontSize: '1.2rem',            
-          padding: theme.spacing(2, 4),   
-          borderRadius: '30px',           
-          textTransform: 'none',         
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-          backgroundColor: '#1877f2',    
-          '&:hover': {
-            backgroundColor: '#005bb5',   
-          },
-        }}
-      >
-        Make Appointment
-      </Button>
-    </Box>
-
-      
+        <Typography variant="h2" flexGrow={1}>
+          Services
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={handleRedirect}
+          sx={{
+            fontSize: '1.2rem',
+            padding: theme.spacing(2, 4),
+            borderRadius: '30px',
+            textTransform: 'none',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+            backgroundColor: '#1877f2',
+            '&:hover': {
+              backgroundColor: '#005bb5',
+            },
+          }}
+        >
+          Make Appointment
+        </Button>
+      </Box>
 
       <Grid container spacing={3}>
-        {products.map((product) => (
+        {paginatedProducts.map((product) => (
           <Grid key={product.id} xs={12} sm={6} md={3}>
             <Link to={`/service-detail/${product.id}`} style={{ textDecoration: 'none' }}>
               <ProductItem product={product} />
@@ -159,7 +166,14 @@ export function ProductsView() {
         ))}
       </Grid>
 
-      <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />
+      {/* Pagination */}
+      <Pagination
+        count={totalPages}
+        page={currentPage}
+        onChange={(event, page) => setCurrentPage(page)}
+        color="primary"
+        sx={{ mt: 8, mx: 'auto' }}
+      />
     </HomeContent>
   );
 }

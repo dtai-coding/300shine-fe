@@ -1,5 +1,6 @@
 import type { UserProps } from 'src/model/response/User';
 import type { UserActionProps } from 'src/model/request/User';
+import type { SalonNameProps } from 'src/model/response/salon';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -21,6 +22,7 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import userApi from '../../../api/userApi';
+import salonApi from '../../../api/salonApi';
 import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
 import { uploadImage } from '../../../api/apis';
@@ -30,16 +32,34 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
+interface Salon {
+  id: number;
+  address: string;
+}
+
 export function UserMangerView() {
   const table = useTable();
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserProps | null>(null);
   const [filterName, setFilterName] = useState('');
+  const [salons, setSalons] = useState<SalonNameProps[]>([]);
   const [users, setUsers] = useState<UserProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [availableSalon, setAavailableSalon] = useState<{ salonId: number; salonName: string }[]>(
+    []
+  );
+
+  const ROLE_MAP = {
+    Admin: 1,
+    Manager: 2,
+    Customer: 3,
+    Stylist: 4,
+  } as const;
+
+  type RoleName = keyof typeof ROLE_MAP;
 
   const userToEdit: UserActionProps = {
     phone: currentUser?.phone ?? null,
@@ -47,7 +67,10 @@ export function UserMangerView() {
     dateOfBirth: currentUser?.dateOfBirth ?? null,
     gender: currentUser?.gender ?? null,
     address: currentUser?.address ?? null,
-    roleId: currentUser?.roleId ?? null,
+    roleId:
+      currentUser?.roleName && currentUser.roleName in ROLE_MAP
+        ? ROLE_MAP[currentUser.roleName as RoleName]
+        : null,
     isStylist: true,
     isVerified: currentUser?.isVerified ?? null,
     status: currentUser?.status ?? null,
@@ -59,8 +82,25 @@ export function UserMangerView() {
   };
 
   useEffect(() => {
+    fetchSalon();
     fetchData();
   }, []);
+
+  const fetchSalon = async () => {
+    setLoading(true);
+    try {
+      const response = await salonApi.getSalons();
+      setSalons(response.data);
+      const salonsDropBox = response.data.map((salon: Salon) => ({
+        salonId: salon.id,
+        salonName: salon.address,
+      }));
+      setAavailableSalon(salonsDropBox);
+    } catch (error) {
+      console.error('Error fetching salon:', error);
+    }
+    setLoading(false);
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -96,7 +136,7 @@ export function UserMangerView() {
 
   const handleSaveUser = async (user: UserActionProps) => {
     try {
-      let {imageUrl} = user;
+      let { imageUrl } = user;
 
       if (imageFile) {
         imageUrl = await uploadImage(imageFile);
@@ -131,7 +171,11 @@ export function UserMangerView() {
       // Add error handling here, e.g., showing an error message
     }
   };
-
+  const getSalonName = (salonId: number | null): string => {
+    if (salonId === null) return 'No Salon';
+    const salon = salons.find((s) => s.id === salonId);
+    return salon && salon.address ? salon.address : 'Unknown Salon';
+  };
   const handleDeleteUser = async (userId: number) => {
     await userApi.deleteUser(userId);
     fetchData();
@@ -169,6 +213,7 @@ export function UserMangerView() {
         onSave={handleSaveUser}
         imageFile={imageFile}
         setImageFile={setImageFile}
+        availableSalons={availableSalon}
       />
 
       <Card>
@@ -210,7 +255,7 @@ export function UserMangerView() {
                       { id: 'address', label: 'Address' },
                       { id: 'isVerified', label: 'Verified', align: 'center' },
                       { id: 'status', label: 'Status' },
-                      { id: 'salonId', label: 'SalonId' },
+                      { id: 'salonId', label: 'Salon' },
                       { id: 'roleName', label: 'Role' },
                       { id: 'commission', label: 'Commission' },
                       { id: 'salary', label: 'Salary' },
@@ -227,7 +272,10 @@ export function UserMangerView() {
                       .map((user) => (
                         <UserTableRow
                           key={user.id}
-                          row={user}
+                          row={{
+                            ...user,
+                            salonName: getSalonName(user.salonId),
+                          }}
                           selected={table.selected.includes(user.id.toString())}
                           onSelectRow={() => table.onSelectRow(user.id.toString())}
                           onEditUser={handleEditUser}

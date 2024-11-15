@@ -17,6 +17,7 @@ export type ServiceViewProps = {
   name: string;
   description: string;
   salonId: number;
+  salonName?: string;
   isDeleted: boolean;
   serviceStyles: { styleId: number }[];
 };

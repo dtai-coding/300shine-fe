@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { ServiceMangerView } from 'src/sections/manager-service/view';
+import { AppointmentManagerView } from 'src/sections/manager-appointment/view';
 
 // ----------------------------------------------------------------------
 
@@ -10,10 +10,10 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> {`Service - ${CONFIG.appName}`}</title>
+        <title> {`Appointment - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <ServiceMangerView />
+      <AppointmentManagerView />
     </>
   );
 }

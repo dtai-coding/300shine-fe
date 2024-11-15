@@ -8,6 +8,7 @@ export type UserProps = {
   isVerified: boolean | null;
   status: string | null;
   salonId: number | null;
+  salonName?: string | null;
   roleName: string | null;
   imageUrl: string | null;
   commission: number | null;

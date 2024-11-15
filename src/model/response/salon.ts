@@ -5,6 +5,11 @@ export type SalonItemProps = {
   district: string;
 };
 
+export type SalonNameProps = {
+  id: number;
+  address: string | null;
+};
+
 export type SalonViewProps = {
   id: number;
   imageUrl: string | null;

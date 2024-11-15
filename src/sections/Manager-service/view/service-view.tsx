@@ -1,5 +1,6 @@
 import type { ServiceViewProps } from 'src/model/response/service';
 import type { ServiceActionProps } from 'src/model/request/service';
+import type { SalonNameProps } from 'src/model/response/salon';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -20,20 +21,27 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
+import { TableNoData } from 'src/sections/manager-service/table-no-data';
+
+import { ServiceDialog } from 'src/sections/manager-service/service-dialog';
+import { TableEmptyRows } from 'src/sections/manager-service/table-empty-rows';
+import { ServiceTableRow } from 'src/sections/manager-service/service-table-row';
+import { ServiceTableHead } from 'src/sections/manager-service/service-table-head';
+import { ServiceTableToolbar } from 'src/sections/manager-service/service-table-toolbar';
 import styleApi from '../../../api/styleApi';
-import { TableNoData } from '../table-no-data';
+import salonApi from '../../../api/salonApi';
 import { uploadImage } from '../../../api/apis';
 import serviceApi from '../../../api/serviceApi';
-import { ServiceDialog } from '../service-dialog';
-import { TableEmptyRows } from '../table-empty-rows';
-import { ServiceTableRow } from '../service-table-row';
-import { ServiceTableHead } from '../service-table-head';
-import { ServiceTableToolbar } from '../service-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
 interface Style {
   id: number;
   style: string;
+}
+
+interface Salon {
+  id: number;
+  address: string;
 }
 
 export function ServiceMangerView() {
@@ -43,10 +51,14 @@ export function ServiceMangerView() {
   const [currentService, setCurrentService] = useState<ServiceViewProps | null>(null);
   const [filterName, setFilterName] = useState('');
   const [services, setServices] = useState<ServiceViewProps[]>([]);
+  const [salons, setSalons] = useState<SalonNameProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [openAddServiceDialog, setOpenAddServiceDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [availableStyles, setAvailableStyles] = useState<{ styleId: number; styleName: string }[]>(
+    []
+  );
+  const [availableSalon, setAavailableSalon] = useState<{ salonId: number; salonName: string }[]>(
     []
   );
 
@@ -63,6 +75,7 @@ export function ServiceMangerView() {
   };
 
   useEffect(() => {
+    fetchSalon();
     fetchStyles();
     fetchData();
   }, []);
@@ -78,6 +91,22 @@ export function ServiceMangerView() {
     } catch (error) {
       console.error('Error fetching styles:', error);
     }
+  };
+
+  const fetchSalon = async () => {
+    setLoading(true);
+    try {
+      const response = await salonApi.getSalons();
+      setSalons(response.data);
+      const salonsDropBox = response.data.map((salon: Salon) => ({
+        salonId: salon.id,
+        salonName: salon.address,
+      }));
+      setAavailableSalon(salonsDropBox);
+    } catch (error) {
+      console.error('Error fetching salon:', error);
+    }
+    setLoading(false);
   };
 
   const fetchData = async () => {
@@ -102,6 +131,11 @@ export function ServiceMangerView() {
     setIsEditMode(false);
     setCurrentService(null);
     setImageFile(null);
+  };
+
+  const getSalonName = (salonId: number) => {
+    const salon = salons.find((s) => s.id === salonId);
+    return salon ? salon.address || 'Unnamed Salon' : 'Unknown Salon';
   };
 
   const handleSaveService = async (service: ServiceActionProps) => {
@@ -166,6 +200,7 @@ export function ServiceMangerView() {
         imageFile={imageFile}
         setImageFile={setImageFile}
         availableStyles={availableStyles}
+        availableSalons={availableSalon}
       />
 
       <Card>
@@ -173,7 +208,7 @@ export function ServiceMangerView() {
           numSelected={table.selected.length}
           filterName={filterName}
           onFilterName={(event) => setFilterName(event.target.value)}
-          onDeleteSelected={handleDeleteSelected} // Add this line
+          onDeleteSelected={handleDeleteSelected}
         />
 
         {loading ? (
@@ -215,11 +250,15 @@ export function ServiceMangerView() {
                       .map((service) => (
                         <ServiceTableRow
                           key={service.id}
-                          row={service}
+                          row={{
+                            ...service,
+                            salonName: getSalonName(service.salonId),
+                          }}
                           selected={table.selected.includes(service.id.toString())}
                           onSelectRow={() => table.onSelectRow(service.id.toString())}
                           onEditService={handleEditService}
                           onDeleteService={handleDeleteService}
+                          availableStyles={availableStyles}
                         />
                       ))}
 

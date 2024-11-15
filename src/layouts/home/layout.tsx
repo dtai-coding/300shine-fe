@@ -46,7 +46,7 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
 
   const HandleAppointmentClick = () => {
     const logined = auth.accessToken;
-    if(logined){
+    if (logined) {
       navigate('/appointment-history');
     }
     navigate('/sign-in');
@@ -103,11 +103,12 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
           }}
           sx={header?.sx}
           slots={{
-
             leftArea: (
               <>
-              <Link href="/" underline="none" color="inherit">
-                <Typography variant="h3" color="#1877f2">300Shine</Typography>
+                <Link href="/" underline="none" color="inherit">
+                  <Typography variant="h3" color="#1877f2">
+                    300Shine
+                  </Typography>
                 </Link>
                 {/* <MenuButton
                   onClick={() => setNavOpen(true)}
@@ -126,9 +127,9 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
             ),
             rightArea: (
               <Box gap={1} display="flex" alignItems="center">
-                <Searchbar />
+                {/* <Searchbar />
                 <LanguagePopover data={_langs} />
-                <NotificationsPopover data={_notifications} />
+                <NotificationsPopover data={_notifications} /> */}
                 <Iconify
                   onClick={HandleAppointmentClick}
                   marginRight="10px"
@@ -160,34 +161,34 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
        *************************************** */
       footerSection={
         <Box
-                component="footer"
-                sx={{
-                  backgroundColor: '#1877f2',
-                  color: '#fff',
-                  py: 3,
-                  px: 2,
-                  textAlign: 'center',
-                  mt: 'auto',
-                }}
-              >
-                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                  © {new Date().getFullYear()} 300SHINE
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 1 }}>
-                  <Link href="#" underline="none" color="inherit">
-                    About Us
-                  </Link>
-                  <Link href="#" underline="none" color="inherit">
-                    Services
-                  </Link>
-                  <Link href="#" underline="none" color="inherit">
-                    Contact
-                  </Link>
-                  <Link href="#" underline="none" color="inherit">
-                    Privacy Policy
-                  </Link>
-                </Box>
-              </Box>
+          component="footer"
+          sx={{
+            backgroundColor: '#1877f2',
+            color: '#fff',
+            py: 3,
+            px: 2,
+            textAlign: 'center',
+            mt: 'auto',
+          }}
+        >
+          <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+            © {new Date().getFullYear()} 300SHINE
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 1 }}>
+            <Link href="#" underline="none" color="inherit">
+              About Us
+            </Link>
+            <Link href="#" underline="none" color="inherit">
+              Services
+            </Link>
+            <Link href="#" underline="none" color="inherit">
+              Contact
+            </Link>
+            <Link href="#" underline="none" color="inherit">
+              Privacy Policy
+            </Link>
+          </Box>
+        </Box>
       }
       /** **************************************
        * Style
