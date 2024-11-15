@@ -8,7 +8,6 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-// ----------------------------------------------------------------------
 export function SalonItem({ salon }: { salon: SalonItemProps }) {
   const navigate = useNavigate();
 
@@ -29,8 +28,8 @@ export function SalonItem({ salon }: { salon: SalonItemProps }) {
   const renderImg = (
     <Box
       component="img"
+      src={salon.imageUrl || 'default-image-url.jpg'}
       alt={salon.address}
-      // src={salon.imageUrl}
       sx={{
         top: 0,
         width: 1,
@@ -39,6 +38,7 @@ export function SalonItem({ salon }: { salon: SalonItemProps }) {
         position: 'absolute',
       }}
     />
+    
   );
 
   const renderAddress = (
