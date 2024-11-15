@@ -144,7 +144,7 @@ export function StylistsView() {
   useEffect(() => {
     const interval = setInterval(() => {
       handleScroll('right');
-    }, ); // 3 seconds interval
+    }, 1000); // 3 seconds interval
   
     return () => clearInterval(interval);
   }, [handleScroll]);
