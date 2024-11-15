@@ -1,5 +1,6 @@
 import type { UserActionProps } from 'src/model/request/User';
 import React, { useState, useEffect } from 'react';
+import { useAuthStore } from 'src/stores/auth/auth.store';
 import {
   Chip,
   Box,
@@ -43,6 +44,7 @@ export function UserDialog({
 }: UserDialogProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<number | null>(null);
+  const { auth } = useAuthStore();
 
   const defaultUser: UserActionProps = {
     phone: '',
@@ -241,39 +243,42 @@ export function UserDialog({
             </option>
           ))}
         </TextField>
+        {auth.user.roleName !== 'Admin' && (
+          <>
+            <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="style-select-label">Select Style</InputLabel>
+                <Select
+                  labelId="style-select-label"
+                  value={selectedStyle ?? ''}
+                  onChange={(e) => setSelectedStyle(Number(e.target.value))}
+                  label="Select Style"
+                >
+                  {availableStyles.map((style) => (
+                    <MenuItem key={style.styleId} value={style.styleId}>
+                      {style.styleName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button onClick={handleAddStyle} variant="contained" sx={{ mt: 2 }}>
+                Add Style
+              </Button>
+            </Box>
 
-        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="style-select-label">Select Style</InputLabel>
-            <Select
-              labelId="style-select-label"
-              value={selectedStyle ?? ''}
-              onChange={(e) => setSelectedStyle(Number(e.target.value))}
-              label="Select Style"
-            >
-              {availableStyles.map((style) => (
-                <MenuItem key={style.styleId} value={style.styleId}>
-                  {style.styleName}
-                </MenuItem>
+            {/* Display Selected Styles */}
+            <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {(newUser.styleId ?? []).map((id) => (
+                <Chip
+                  key={id}
+                  label={`Style ${id}`}
+                  onDelete={() => handleRemoveStyle(id)}
+                  color="primary"
+                />
               ))}
-            </Select>
-          </FormControl>
-          <Button onClick={handleAddStyle} variant="contained" sx={{ mt: 2 }}>
-            Add Style
-          </Button>
-        </Box>
-
-        {/* Display Selected Styles */}
-        <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          {(newUser.styleId ?? []).map((id) => (
-            <Chip
-              key={id}
-              label={`Style ${id}`}
-              onDelete={() => handleRemoveStyle(id)}
-              color="primary"
-            />
-          ))}
-        </Box>
+            </Box>
+          </>
+        )}
 
         <TextField
           fullWidth
