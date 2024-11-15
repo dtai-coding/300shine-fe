@@ -21,6 +21,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
+import styleApi from '../../../api/styleApi';
 import userApi from '../../../api/userApi';
 import { UserDialog } from '../UserDialog';
 import salonApi from '../../../api/salonApi';
@@ -31,6 +32,11 @@ import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+
+interface Style {
+  id: number;
+  style: string;
+}
 
 interface Salon {
   id: number;
@@ -48,6 +54,9 @@ export function UserView() {
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [salons, setSalons] = useState<SalonNameProps[]>([]);
+  const [availableStyles, setAvailableStyles] = useState<{ styleId: number; styleName: string }[]>(
+    []
+  );
   const [availableSalon, setAavailableSalon] = useState<{ salonId: number; salonName: string }[]>(
     []
   );
@@ -84,7 +93,21 @@ export function UserView() {
   useEffect(() => {
     fetchSalon();
     fetchData();
+    fetchStyles();
   }, []);
+
+  const fetchStyles = async () => {
+    try {
+      const response = await styleApi.getStyle();
+      const styles = response.data.map((style: Style) => ({
+        styleId: style.id,
+        styleName: style.style,
+      }));
+      setAvailableStyles(styles);
+    } catch (error) {
+      console.error('Error fetching styles:', error);
+    }
+  };
 
   const fetchSalon = async () => {
     setLoading(true);
@@ -140,6 +163,7 @@ export function UserView() {
           imageUrl: ImageUrl,
           roleId: user.roleId,
           isStylist: false,
+
           password: undefined,
         };
         console.log(updateUserPayload);
@@ -150,6 +174,7 @@ export function UserView() {
           imageUrl: ImageUrl,
           isStylist: undefined,
           roleId: undefined,
+          status: 'Active',
           password: user.password || '',
         };
         const sanitizedPayload = Object.fromEntries(
@@ -209,6 +234,7 @@ export function UserView() {
         onSave={handleSaveUser}
         imageFile={imageFile}
         setImageFile={setImageFile}
+        availableStyles={availableStyles}
         availableSalons={availableSalon}
       />
 
@@ -276,6 +302,7 @@ export function UserView() {
                           onSelectRow={() => table.onSelectRow(user.id.toString())}
                           onEditUser={handleEditUser}
                           onDeleteUser={handleDeleteUser}
+                          availableStyles={availableStyles}
                         />
                       ))}
 
