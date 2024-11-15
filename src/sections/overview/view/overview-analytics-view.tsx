@@ -1,8 +1,13 @@
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
+import React, { useEffect, useState } from 'react';
 
 import { _tasks, _posts, _timeline } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard'; 
+import { DashboardContent } from 'src/layouts/dashboard';
+
+import userApi from 'src/api/userApi';
+import stylistApi from 'src/api/stylistApi';
+import appointmentApi from 'src/api/appointment';
 
 import { AnalyticsNews } from '../analytics-news';
 import { AnalyticsTasks } from '../analytics-tasks';
@@ -17,6 +22,55 @@ import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
+  const [customerCount, setCustomerCount] = useState(0);
+  const [stylistCount, setStylistCount] = useState(0);
+  const [appointmentsCount, setAppointmentsCount] = useState(0);
+  const [income, setIncome] = useState(0);
+  const [visitData, setVisitData] = useState({
+    categories: [],
+    series: [],
+  });
+
+  // useEffect(() => {
+  //   const fetchCustomerCount = async () => {
+  //     const response = await axios.get('/api/customers/count');
+  //     setCustomerCount(response.data.count);
+  //   };
+
+  //   const fetchStylistCount = async () => {
+  //     const response = await axios.get('/api/stylists/count');
+  //     setStylistCount(response.data.count);
+  //   };
+
+  //   const fetchAppointmentsCount = async () => {
+  //     const response = await axios.get('/api/appointments/count');
+  //     setAppointmentsCount(response.data.count);
+  //   };
+
+  //   const fetchIncome = async () => {
+  //     const response = await axios.get('/api/income');
+  //     setIncome(response.data.totalIncome);
+  //   };
+
+  //   // Assuming visit data comes in a structure like { months: [], teamAData: [], teamBData: [] }
+  //   const fetchVisitData = async () => {
+  //     const response = await axios.get('/api/website/visits');
+  //     setVisitData({
+  //       categories: response.data.months,
+  //       series: [
+  //         { name: 'Team A', data: response.data.teamAData },
+  //         { name: 'Team B', data: response.data.teamBData },
+  //       ],
+  //     });
+  //   };
+
+  // fetchCustomerCount();
+  // fetchStylistCount();
+  // fetchAppointmentsCount();
+  // fetchIncome();
+  // fetchVisitData();
+  // }, []);
+
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
@@ -79,7 +133,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={4}>
+        {/* <Grid xs={12} md={6} lg={4}>
           <AnalyticsCurrentVisits
             title="Current visits"
             chart={{
@@ -91,9 +145,9 @@ export function OverviewAnalyticsView() {
               ],
             }}
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid xs={12} md={6} lg={8}>
+        <Grid xs={12} md={6} lg={12}>
           <AnalyticsWebsiteVisits
             title="Website visits"
             subheader="(+43%) than last year"
@@ -107,6 +161,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
+        {/* 
         <Grid xs={12} md={6} lg={8}>
           <AnalyticsConversionRates
             title="Conversion rates"
@@ -157,7 +212,7 @@ export function OverviewAnalyticsView() {
 
         <Grid xs={12} md={6} lg={8}>
           <AnalyticsTasks title="Tasks" list={_tasks} />
-        </Grid>
+        </Grid> */}
       </Grid>
     </DashboardContent>
   );

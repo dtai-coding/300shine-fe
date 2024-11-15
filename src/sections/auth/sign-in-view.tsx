@@ -69,6 +69,12 @@ export function SignInView() {
     router.push('/sign-up');
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      handleSignIn();
+    }
+  };
+
   return (
     <>
       <Box gap={1.5} display="flex" flexDirection="column" alignItems="center" sx={{ mb: 5 }}>
@@ -81,7 +87,7 @@ export function SignInView() {
         </Typography>
       </Box>
 
-      <Box display="flex" flexDirection="column" alignItems="flex-end">
+      <Box display="flex" flexDirection="column" alignItems="flex-end" onKeyDown={handleKeyDown}>
         <TextField
           fullWidth
           name="phone"
