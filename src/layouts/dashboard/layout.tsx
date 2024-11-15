@@ -118,9 +118,9 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
             ),
             rightArea: (
               <Box gap={1} display="flex" alignItems="center">
-                <Searchbar />
+                {/* <Searchbar />
                 <LanguagePopover data={_langs} />
-                <NotificationsPopover data={_notifications} />
+                <NotificationsPopover data={_notifications} /> */}
                 <AccountPopover data={menuItems} />
               </Box>
             ),

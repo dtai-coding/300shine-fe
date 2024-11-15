@@ -7,11 +7,11 @@ const icon = (name: string) => (
 );
 
 export const navData = [
-  // {
-  //   title: 'Dashboard',
-  //   path: '/manager',
-  //   icon: icon('ic-analytics'),
-  // },
+  {
+    title: 'Dashboard',
+    path: '/manager',
+    icon: icon('ic-analytics'),
+  },
   {
     title: 'User',
     path: '/manager/user',
@@ -32,19 +32,19 @@ export const navData = [
     path: '/manager/service',
     icon: icon('ic-blog'),
   },
-  {
-    title: 'Shifts',
-    path: '/manager/shift',
-    icon: icon('ic-blog'),
-  },
-  {
-    title: 'Revenue',
-    path: '/manager/revenue',
-    icon: icon('ic-blog'),
-  },
-  {
-    title: 'Commission',
-    path: '/manager/commission',
-    icon: icon('ic-blog'),
-  },
+  // {
+  //   title: 'Shifts',
+  //   path: '/manager/shift',
+  //   icon: icon('ic-blog'),
+  // },
+  // {
+  //   title: 'Revenue',
+  //   path: '/manager/revenue',
+  //   icon: icon('ic-blog'),
+  // },
+  // {
+  //   title: 'Commission',
+  //   path: '/manager/commission',
+  //   icon: icon('ic-blog'),
+  // },
 ];

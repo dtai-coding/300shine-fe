@@ -24,6 +24,7 @@ interface UserDialogProps {
   isEditMode?: boolean;
   imageFile: File | null;
   setImageFile: React.Dispatch<React.SetStateAction<File | null>>;
+  availableSalons: { salonId: number; salonName: string }[];
 }
 export function UserDialog({
   open,
@@ -33,6 +34,7 @@ export function UserDialog({
   isEditMode = false,
   imageFile,
   setImageFile,
+  availableSalons,
 }: UserDialogProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   // Initial user state: defaults to create or update props based on edit mode
@@ -102,13 +104,11 @@ export function UserDialog({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
-
     setNewUser((prevUser) => ({
       ...prevUser,
       [name]: type === 'checkbox' ? checked : type === 'number' ? Number(value) : value,
     }));
   };
-
   return (
     <Dialog open={open} onClose={handleOnCancel} maxWidth="sm" fullWidth>
       <DialogTitle>{isEditMode ? 'Edit User' : 'Add New User'}</DialogTitle>
@@ -203,13 +203,22 @@ export function UserDialog({
         />
         <TextField
           fullWidth
-          label="Salon ID"
+          select
+          label="Salon"
           name="salonId"
-          type="number"
-          value={newUser.salonId}
+          value={newUser.salonId ?? ''}
           onChange={handleChange}
           margin="normal"
-        />
+          SelectProps={{ native: true }}
+          InputLabelProps={{ shrink: true }}
+        >
+          <option value="">Select a salon</option>
+          {availableSalons.map((salon) => (
+            <option key={salon.salonId} value={salon.salonId}>
+              {salon.salonName}
+            </option>
+          ))}
+        </TextField>
 
         <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
           <FileUploadButton

@@ -1,5 +1,6 @@
 import type { UserProps } from 'src/model/response/User';
 import type { UserActionProps } from 'src/model/request/User';
+import type { SalonNameProps } from 'src/model/response/salon';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -21,6 +22,7 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import userApi from '../../../api/userApi';
+import salonApi from '../../../api/salonApi';
 import { UserDialog } from '../UserDialog';
 import { TableNoData } from '../table-no-data';
 import { uploadImage } from '../../../api/apis';
@@ -29,6 +31,11 @@ import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+
+interface Salon {
+  id: number;
+  address: string;
+}
 
 export function UserView() {
   const table = useTable();
@@ -40,6 +47,10 @@ export function UserView() {
   const [loading, setLoading] = useState(true);
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [salons, setSalons] = useState<SalonNameProps[]>([]);
+  const [availableSalon, setAavailableSalon] = useState<{ salonId: number; salonName: string }[]>(
+    []
+  );
 
   const ROLE_MAP = {
     Admin: 1,
@@ -71,8 +82,25 @@ export function UserView() {
   };
 
   useEffect(() => {
+    fetchSalon();
     fetchData();
   }, []);
+
+  const fetchSalon = async () => {
+    setLoading(true);
+    try {
+      const response = await salonApi.getSalons();
+      setSalons(response.data);
+      const salonsDropBox = response.data.map((salon: Salon) => ({
+        salonId: salon.id,
+        salonName: salon.address,
+      }));
+      setAavailableSalon(salonsDropBox);
+    } catch (error) {
+      console.error('Error fetching salon:', error);
+    }
+    setLoading(false);
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -138,6 +166,12 @@ export function UserView() {
     }
   };
 
+  const getSalonName = (salonId: number | null): string => {
+    if (salonId === null) return 'No Salon';
+    const salon = salons.find((s) => s.id === salonId);
+    return salon && salon.address ? salon.address : 'Unknown Salon';
+  };
+
   const handleDeleteUser = async (userId: number) => {
     await userApi.deleteUser(userId);
     fetchData();
@@ -175,6 +209,7 @@ export function UserView() {
         onSave={handleSaveUser}
         imageFile={imageFile}
         setImageFile={setImageFile}
+        availableSalons={availableSalon}
       />
 
       <Card>
@@ -216,7 +251,7 @@ export function UserView() {
                       { id: 'address', label: 'Address' },
                       { id: 'isVerified', label: 'Verified', align: 'center' },
                       { id: 'status', label: 'Status' },
-                      { id: 'salonId', label: 'SalonId' },
+                      { id: 'salonId', label: 'Salon' },
                       { id: 'roleName', label: 'Role' },
                       { id: 'commission', label: 'Commission' },
                       { id: 'salary', label: 'Salary' },
@@ -233,7 +268,10 @@ export function UserView() {
                       .map((user) => (
                         <UserTableRow
                           key={user.id}
-                          row={user}
+                          row={{
+                            ...user,
+                            salonName: getSalonName(user.salonId),
+                          }}
                           selected={table.selected.includes(user.id.toString())}
                           onSelectRow={() => table.onSelectRow(user.id.toString())}
                           onEditUser={handleEditUser}

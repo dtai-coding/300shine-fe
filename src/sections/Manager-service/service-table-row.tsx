@@ -22,6 +22,7 @@ type ServiceTableRowProps = {
   onSelectRow: () => void;
   onEditService: (service: ServiceViewProps) => void;
   onDeleteService: (serviceId: number) => void;
+  availableStyles: { styleId: number; styleName: string }[];
 };
 
 export function ServiceTableRow({
@@ -30,6 +31,7 @@ export function ServiceTableRow({
   onSelectRow,
   onEditService,
   onDeleteService,
+  availableStyles,
 }: ServiceTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
@@ -45,25 +47,13 @@ export function ServiceTableRow({
   const getDisplayValue = (value: any) => (value !== null && value !== undefined ? value : '-');
 
   const getServiceStyles = () => {
-    const styles = row.serviceStyles.map((style, index) => (
-      <span key={index}>{style.styleId !== null ? `${style.styleId}` : 'No Style'}</span>
-    ));
-
-    // Check if there are multiple styles and join them with a comma.
-    if (styles.length > 1) {
-      return (
-        <>
-          {styles.map((style, index) => (
-            <React.Fragment key={index}>
-              {style}
-              {index < styles.length - 1 && ', '}
-            </React.Fragment>
-          ))}
-        </>
-      );
-    }
-
-    return styles;
+    const styles = row.serviceStyles
+      .map((style) => {
+        const matchedStyle = availableStyles.find((s) => s.styleId === style.styleId);
+        return matchedStyle ? matchedStyle.styleName : 'Unknown Style';
+      })
+      .join(', '); // Join names with commas
+    return styles || 'No Style';
   };
 
   return (
@@ -82,7 +72,7 @@ export function ServiceTableRow({
 
         <TableCell>{getDisplayValue(row.price)}</TableCell>
         <TableCell>{getDisplayValue(row.description)}</TableCell>
-        <TableCell>{getDisplayValue(row.salonId)}</TableCell>
+        <TableCell>{getDisplayValue(row.salonName)}</TableCell>
 
         <TableCell>{getServiceStyles()}</TableCell>
 

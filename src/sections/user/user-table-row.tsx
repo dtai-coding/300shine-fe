@@ -82,7 +82,7 @@ export function UserTableRow({
             {getDisplayValue(row.status)}
           </Label>
         </TableCell>
-        <TableCell>{getDisplayValue(row.salonId)}</TableCell>
+        <TableCell>{getDisplayValue(row.salonName)}</TableCell>
         <TableCell>{getDisplayValue(row.roleName)}</TableCell>
         <TableCell>{getDisplayValue(row.commission)}</TableCell>
         <TableCell>{getDisplayValue(row.salary)}</TableCell>

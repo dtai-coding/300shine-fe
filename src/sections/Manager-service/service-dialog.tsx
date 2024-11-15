@@ -14,6 +14,7 @@ import {
   FormControl,
   DialogActions,
   DialogContent,
+  SelectChangeEvent,
 } from '@mui/material';
 
 import FileUploadButton from 'src/components/FileUploadButton';
@@ -26,7 +27,8 @@ interface ServiceDialogProps {
   isEditMode?: boolean;
   imageFile: File | null;
   setImageFile: React.Dispatch<React.SetStateAction<File | null>>;
-  availableStyles: { styleId: number; styleName: string }[]; // List of available styles
+  availableStyles: { styleId: number; styleName: string }[];
+  availableSalons: { salonId: number; salonName: string }[];
 }
 
 export function ServiceDialog({
@@ -38,6 +40,7 @@ export function ServiceDialog({
   imageFile,
   setImageFile,
   availableStyles,
+  availableSalons,
 }: ServiceDialogProps) {
   const [newService, setNewService] = useState<ServiceActionProps>({
     id: 0,
@@ -48,7 +51,7 @@ export function ServiceDialog({
     salonId: 0,
     duration: 0,
     isDeleted: false,
-    serviceStyles: [], // Store only styleId
+    serviceStyles: [],
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -70,7 +73,7 @@ export function ServiceDialog({
       salonId: 0,
       duration: 0,
       isDeleted: false,
-      serviceStyles: [], // Reset service styles
+      serviceStyles: [],
     });
   };
 
@@ -93,6 +96,13 @@ export function ServiceDialog({
     setNewService((prevService: ServiceActionProps) => ({
       ...prevService,
       [name]: name === 'price' || name === 'id' || name === 'salonId' ? Number(value) : value,
+    }));
+  };
+
+  const handleSalonChange = (event: SelectChangeEvent<number | null>) => {
+    setNewService((prevService) => ({
+      ...prevService,
+      salonId: event.target.value as number,
     }));
   };
 
@@ -155,15 +165,22 @@ export function ServiceDialog({
           onChange={handleChange}
           margin="normal"
         />
-        <TextField
-          fullWidth
-          label="Salon ID"
-          name="salonId"
-          type="number"
-          value={newService.salonId}
-          onChange={handleChange}
-          margin="normal"
-        />
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="salon-select-label">Select Salon</InputLabel>
+          <Select
+            labelId="salon-select-label"
+            value={newService.salonId}
+            onChange={handleSalonChange}
+            label="Select Salon"
+          >
+            {availableSalons.map((salon) => (
+              <MenuItem key={salon.salonId} value={salon.salonId}>
+                {salon.salonName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Box gap={2} sx={{ display: 'flex', alignItems: 'center' }}>
           <FileUploadButton
@@ -190,7 +207,6 @@ export function ServiceDialog({
           </Button>
         </Box>
 
-        {/* Display Selected Styles as Tags */}
         <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: 2 }}>
           {newService.serviceStyles.map((style) => {
             const styleInfo = availableStyles.find((s) => s.styleId === style.styleId);
