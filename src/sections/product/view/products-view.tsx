@@ -114,7 +114,7 @@ export function ProductsView() {
   const handleRedirect = () => {
     const logined = auth.accessToken;
     if (logined) {
-      navigate('/appointment',{ replace: true });
+      navigate('/appointment');
     } else {
       navigate('/sign-in');
     }
