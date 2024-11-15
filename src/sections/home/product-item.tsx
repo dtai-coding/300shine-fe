@@ -66,7 +66,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
         {product.priceSale && fCurrency(product.priceSale)}
       </Typography>
       &nbsp;
-      {fCurrency(product.price)}
+      {product.price}VND
     </Typography>
   );
 

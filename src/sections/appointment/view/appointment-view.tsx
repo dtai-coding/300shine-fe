@@ -18,6 +18,7 @@ import { HomeContent } from 'src/layouts/home';
 import appointmentApi from "src/api/appointment";
 
 import { AlertDialog } from "src/sections/component/alert-dialog";
+
 import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentStylistServiceSlot } from "../appoinment-stylist-service-slot";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
@@ -318,7 +319,7 @@ const handleConfirm = async () => {
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Card sx={{ width: 700, padding: 2, boxShadow: 3 }}>
           <Box display="flex" flexDirection="column" gap={3}>
-            <Typography variant="h3" flexGrow={1} textAlign="center" color='seagreen  '>
+            <Typography variant="h3" flexGrow={1} textAlign="center" color=' #0755bb '>
               Customize Your Appointment
             </Typography>
 

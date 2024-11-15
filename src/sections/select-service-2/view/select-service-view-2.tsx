@@ -35,9 +35,9 @@ export function SelectServiceView2() {
         Select Salon
       </Typography>
 
-      <Grid container spacing={0}>
+      <Grid container spacing={4}>
         {services.map((service) => (
-          <Grid key={service.id} xs={12} sm={6} md={2}>
+          <Grid key={service.id}item xs={12} sm={6} md={4} lg={3}>
             <SelectServiceItem2 service={service} />
           </Grid>
         ))}

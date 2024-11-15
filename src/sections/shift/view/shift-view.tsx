@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
-import { Grid, Typography, Checkbox, Box, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
-import { Iconify } from "src/components/iconify";
-import shiftApi from "src/api/shiftApi";
-import { ShiftStylistProps } from "src/model/request/shift-stylist";
+import type { ShiftItemProps } from "src/model/response/shift";
+import type { ShiftStylistProps } from "src/model/request/shift-stylist";
 
+import { useState, useEffect } from "react";
+
+import { Box, Grid, Button, Dialog, Typography, DialogTitle, DialogContent, DialogActions, DialogContentText } from "@mui/material";
+
+import shiftApi from "src/api/shiftApi";
 import { StylistConTent } from "src/layouts/stylist";
-import { ShiftItemProps } from "src/model/response/shift";
+
 import { ShiftItem } from "../shift-item";
 
 

@@ -7,10 +7,10 @@ import Alert from '@mui/material/Alert';
 import { useTheme } from '@mui/material/styles';
 
 import { _langs, _notifications } from 'src/_mock';
+import { useAuthStore } from 'src/stores/auth/auth.store';
 
 import { Iconify } from 'src/components/iconify';
 
-import { useAuthStore } from 'src/stores/auth/auth.store';
 import { StylistConTent } from './main';
 import { layoutClasses } from '../classes';
 import { NavMobile, NavDesktop } from './nav';

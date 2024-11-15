@@ -1,9 +1,8 @@
-import FileUploadButton from 'src/components/FileUploadButton';
+import type { SalonActionProps } from 'src/model/request/salon';
 
 import React, { useState, useEffect } from 'react';
 
 import {
-  Box,
   Dialog,
   Button,
   TextField,
@@ -11,7 +10,8 @@ import {
   DialogActions,
   DialogContent,
 } from '@mui/material';
-import { SalonActionProps } from 'src/model/request/salon';
+
+import FileUploadButton from 'src/components/FileUploadButton';
 
 interface SalonDialogProps {
   open: boolean;

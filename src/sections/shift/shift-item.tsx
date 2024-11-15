@@ -1,5 +1,6 @@
+import type { ShiftItemProps } from "src/model/response/shift";
+
 import { Box, Checkbox, Typography } from "@mui/material";
-import { ShiftItemProps } from "src/model/response/shift";
 
 
 function formatDate(dateString: string) {
