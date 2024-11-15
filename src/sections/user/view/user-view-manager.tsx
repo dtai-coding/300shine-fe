@@ -21,6 +21,7 @@ import { ManagerContent } from 'src/layouts/manager';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
+import { toast } from 'react-toastify';
 import userApi from '../../../api/userApi';
 import { UserDialog } from '../UserDialog';
 import salonApi from '../../../api/salonApi';
@@ -49,6 +50,9 @@ export function UserMangerView() {
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [availableSalon, setAavailableSalon] = useState<{ salonId: number; salonName: string }[]>(
+    []
+  );
+  const [availableStyles, setAvailableStyles] = useState<{ styleId: number; styleName: string }[]>(
     []
   );
 
@@ -122,6 +126,11 @@ export function UserMangerView() {
     }
   };
   const handleEditUser = (user: UserProps) => {
+    if (user.roleName === 'Customer') {
+      // Display an error message
+      toast.error('Customers cannot be edited.');
+      return; // Exit the function to prevent further execution
+    }
     setCurrentUser(user);
     setIsEditMode(true);
     setOpenAddUserDialog(true);
@@ -213,6 +222,7 @@ export function UserMangerView() {
         onSave={handleSaveUser}
         imageFile={imageFile}
         setImageFile={setImageFile}
+        availableStyles={availableStyles}
         availableSalons={availableSalon}
       />
 
@@ -280,6 +290,7 @@ export function UserMangerView() {
                           onSelectRow={() => table.onSelectRow(user.id.toString())}
                           onEditUser={handleEditUser}
                           onDeleteUser={handleDeleteUser}
+                          availableStyles={availableStyles}
                         />
                       ))}
 

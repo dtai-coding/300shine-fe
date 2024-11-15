@@ -60,7 +60,7 @@ export function SignUpView() {
     try {
       const response = await registerAPI(data);
       console.log('Registration successful:', response);
-      router.push('/login');
+      router.push('/sign-in');
     } catch (err) {
       console.error('Registration failed:', err);
       setError('Registration failed. Please check your input.');

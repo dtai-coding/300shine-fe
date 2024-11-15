@@ -15,4 +15,5 @@ export type UserProps = {
   salary: number | null;
   salaryPerDay: number | null;
   roleId?: number | null;
+  styleId?: [];
 };
