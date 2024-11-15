@@ -22,7 +22,6 @@ export type UserTableRowProps = {
   onSelectRow: () => void;
   onEditUser: (user: UserProps) => void;
   onDeleteUser: (userId: number) => void;
-  availableStyles: { styleId: number; styleName: string }[];
 };
 
 export function UserTableRow({
@@ -31,7 +30,6 @@ export function UserTableRow({
   onSelectRow,
   onEditUser,
   onDeleteUser,
-  availableStyles,
 }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
   const { auth } = useAuthStore();
@@ -55,16 +53,6 @@ export function UserTableRow({
     }
     return '-';
   };
-
-  // const getServiceStyles = () => {
-  //   const styles = row.styleId
-  //     .map((style) => {
-  //       const matchedStyle = availableStyles.find((s) => s.styleId === style.styleId);
-  //       return matchedStyle ? matchedStyle.styleName : 'Unknown Style';
-  //     })
-  //     .join(', '); // Join names with commas
-  //   return styles || 'No Style';
-  // };
 
   return (
     <>

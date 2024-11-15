@@ -103,6 +103,7 @@ export function UserView() {
         styleId: style.id,
         styleName: style.style,
       }));
+      console.log(styles);
       setAvailableStyles(styles);
     } catch (error) {
       console.error('Error fetching styles:', error);
@@ -302,7 +303,6 @@ export function UserView() {
                           onSelectRow={() => table.onSelectRow(user.id.toString())}
                           onEditUser={handleEditUser}
                           onDeleteUser={handleDeleteUser}
-                          availableStyles={availableStyles}
                         />
                       ))}
 

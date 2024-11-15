@@ -22,6 +22,8 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { toast } from 'react-toastify';
+
+import styleApi from '../../../api/styleApi';
 import userApi from '../../../api/userApi';
 import { UserDialog } from '../UserDialog';
 import salonApi from '../../../api/salonApi';
@@ -32,6 +34,11 @@ import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+
+interface Style {
+  id: number;
+  style: string;
+}
 
 interface Salon {
   id: number;
@@ -88,7 +95,22 @@ export function UserMangerView() {
   useEffect(() => {
     fetchSalon();
     fetchData();
+    fetchStyles();
   }, []);
+
+  const fetchStyles = async () => {
+    try {
+      const response = await styleApi.getStyle();
+      const styles = response.data.map((style: Style) => ({
+        styleId: style.id,
+        styleName: style.style,
+      }));
+      console.log(styles);
+      setAvailableStyles(styles);
+    } catch (error) {
+      console.error('Error fetching styles:', error);
+    }
+  };
 
   const fetchSalon = async () => {
     setLoading(true);
@@ -290,7 +312,6 @@ export function UserMangerView() {
                           onSelectRow={() => table.onSelectRow(user.id.toString())}
                           onEditUser={handleEditUser}
                           onDeleteUser={handleDeleteUser}
-                          availableStyles={availableStyles}
                         />
                       ))}
 

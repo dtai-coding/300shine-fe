@@ -17,5 +17,5 @@ export type UserActionProps = BaseUserProps & {
   password?: string | null; // Optional for create operations
   roleId?: number | null; // Optional for update operations
   isStylist?: boolean | null; // Optional for update operations
-  styleId?: [];
+  styleId?: number[] | null;
 };
