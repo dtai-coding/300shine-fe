@@ -22,16 +22,15 @@ export function SelectServiceView() {
 
         const fetchSalons = async () => {
           try {
-            const response = await serviceApi.getServicesBySalonId(storedSalonId); // Call API
-            const serviceData = response?.data?.services; // Extract the product data from response.value.data
-            setServices(serviceData); // Update the products state with data from API
-            console.log('Successfully fetched services:', serviceData);
+            const response = await serviceApi.getServicesBySalonId(storedSalonId); 
+            const serviceData = response?.data?.services; 
+            setServices(serviceData); 
           } catch (error) {
             console.error('Failed to fetch services:', error);
           }
         };
     
-        fetchSalons(); // Trigger the API call
+        fetchSalons(); 
       }, []);
 
     return (
@@ -40,9 +39,9 @@ export function SelectServiceView() {
                 Select Salon
             </Typography>
 
-            <Grid container spacing={0}>
+            <Grid container spacing={4}>
                 {services.map((service) => (
-                    <Grid key={service.id} xs={12} sm={6} md={2}>
+                    <Grid key={service.id} item xs={12} sm={6} md={4} lg={3}>
                         <SelectServiceItem service={service} />
                     </Grid>
                 ))}

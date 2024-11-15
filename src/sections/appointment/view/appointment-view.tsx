@@ -18,6 +18,7 @@ import { HomeContent } from 'src/layouts/home';
 import appointmentApi from "src/api/appointment";
 
 import { AlertDialog } from "src/sections/component/alert-dialog";
+
 import { AppointmentSalon } from "../appointmet-salon";
 import { AppointmentStylistServiceSlot } from "../appoinment-stylist-service-slot";
 import { AppointmentServiceStylistSlot } from "../appointment-service-stylist-slot";
@@ -200,6 +201,7 @@ const handleConfirm = async () => {
 
     setOpenConfirmDialog(false);
   } catch (error) {
+    setOpenConfirmDialog(false);
     showAlert('Failed to create appointment');
   }
 };
@@ -317,7 +319,7 @@ const handleConfirm = async () => {
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Card sx={{ width: 700, padding: 2, boxShadow: 3 }}>
           <Box display="flex" flexDirection="column" gap={3}>
-            <Typography variant="h3" flexGrow={1} textAlign="center" color='seagreen  '>
+            <Typography variant="h3" flexGrow={1} textAlign="center" color=' #0755bb '>
               Customize Your Appointment
             </Typography>
 
@@ -411,7 +413,7 @@ const handleConfirm = async () => {
         <DialogTitle>Create Appointment Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to make this appointment with these selection and continue to checkout
+          Your appointment will be confirmed after payment is made. Continue to checkout?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

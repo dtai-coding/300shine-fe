@@ -10,9 +10,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { registerAPI } from 'src/api/apis';
+import { registerAPI, uploadImage } from 'src/api/apis';
 
 import { Iconify } from 'src/components/iconify';
+import FileUploadButton from 'src/components/FileUploadButton';
 
 // ----------------------------------------------------------------------
 
@@ -28,14 +29,23 @@ export function SignUpView() {
   const [imageUrl, setImageUrl] = useState(''); // State for image URL
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleSignUp = useCallback(async () => {
-    if (!imageUrl) {
-      setError('Please upload a profile picture.');
-      return;
-    }
     setLoading(true);
     setError('');
+
+    let uploadedImageUrl = imageUrl;
+    if (imageFile) {
+      uploadedImageUrl = await uploadImage(imageFile);
+      setImageUrl(uploadedImageUrl);
+    }
+
+    if (!uploadedImageUrl && !imageFile) {
+      setError('Please upload a profile picture.');
+      setLoading(false); // Stop loading if validation fails
+      return;
+    }
 
     const data = {
       phone,
@@ -44,7 +54,7 @@ export function SignUpView() {
       dateOfBirth,
       gender,
       address,
-      imageUrl,
+      imageUrl: uploadedImageUrl,
     };
 
     try {
@@ -57,14 +67,14 @@ export function SignUpView() {
     } finally {
       setLoading(false);
     }
-  }, [phone, password, fullName, dateOfBirth, gender, address, imageUrl, router]);
+  }, [phone, password, fullName, dateOfBirth, gender, address, imageUrl, imageFile, router]);
 
   const handleSignInClick = () => {
     router.push('/sign-in');
   };
 
   const renderForm = (
-    <Box display="flex" flexDirection="column" alignItems="flex-end">
+    <Box display="flex" flexDirection="column" alignItems="flex-start">
       <TextField
         fullWidth
         name="fullName"
@@ -74,35 +84,40 @@ export function SignUpView() {
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-      <Box display="flex" gap={2} sx={{ mb: 3, width: '100%' }}>
-        <TextField
-          fullWidth
-          name="dateOfBirth"
-          label="Date of Birth"
-          type="date"
-          value={dateOfBirth}
-          onChange={(e) => setDateOfBirth(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          sx={{ flexGrow: 1 }}
-        />
 
-        <TextField
-          fullWidth
-          name="gender"
-          label="Gender"
-          select
-          SelectProps={{
-            native: true,
-          }}
-          value={gender ? 'true' : 'false'}
-          onChange={(e) => setGender(e.target.value === 'true')}
-          InputLabelProps={{ shrink: true }}
-          sx={{ flexGrow: 1 }}
-        >
-          <option value="true">Male</option>
-          <option value="false">Female</option>
-        </TextField>
+      <Box display="flex" gap={2} sx={{ mb: 3, width: '100%', marginLeft: 'auto' }}>
+        <Box display="flex" flexDirection="column" gap={2} sx={{}}>
+          <TextField
+            fullWidth
+            name="dateOfBirth"
+            label="Date of Birth"
+            type="date"
+            value={dateOfBirth}
+            onChange={(e) => setDateOfBirth(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            sx={{ flexGrow: 1 }}
+          />
+
+          <TextField
+            fullWidth
+            name="gender"
+            label="Gender"
+            select
+            SelectProps={{
+              native: true,
+            }}
+            value={gender ? 'true' : 'false'}
+            onChange={(e) => setGender(e.target.value === 'true')}
+            InputLabelProps={{ shrink: true }}
+            sx={{ flexGrow: 1 }}
+          >
+            <option value="true">Male</option>
+            <option value="false">Female</option>
+          </TextField>
+        </Box>
+        <FileUploadButton onFileSelect={(file) => setImageFile(file)} />
       </Box>
+
       <TextField
         fullWidth
         name="phone"
@@ -130,16 +145,6 @@ export function SignUpView() {
             </InputAdornment>
           ),
         }}
-        sx={{ mb: 3 }}
-      />
-
-      <TextField
-        fullWidth
-        name="imageUrl"
-        label="Image"
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
-        InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
 

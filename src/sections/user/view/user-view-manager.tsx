@@ -1,5 +1,5 @@
 import type { UserProps } from 'src/model/response/User';
-import type { UserCreateProps, UserUpdateProps } from 'src/model/request/User';
+import type { UserActionProps } from 'src/model/request/User';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -41,13 +41,13 @@ export function UserMangerView() {
   const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const userToEdit: UserUpdateProps = {
+  const userToEdit: UserActionProps = {
     phone: currentUser?.phone ?? null,
     fullName: currentUser?.fullName ?? null,
     dateOfBirth: currentUser?.dateOfBirth ?? null,
     gender: currentUser?.gender ?? null,
     address: currentUser?.address ?? null,
-    role: currentUser?.roleName ?? null,
+    roleId: currentUser?.roleId ?? null,
     isStylist: true,
     isVerified: currentUser?.isVerified ?? null,
     status: currentUser?.status ?? null,
@@ -89,13 +89,12 @@ export function UserMangerView() {
 
   const handleCloseDialog = () => {
     setOpenAddUserDialog(false);
-    setTimeout(() => {
-      setIsEditMode(false);
-      setCurrentUser(null);
-    }, 200);
+    setIsEditMode(false);
+    setCurrentUser(null);
+    setImageFile(null);
   };
 
-  const handleSaveUser = async (user: UserCreateProps | UserUpdateProps) => {
+  const handleSaveUser = async (user: UserActionProps) => {
     try {
       let {imageUrl} = user;
 
@@ -104,33 +103,25 @@ export function UserMangerView() {
       }
       if (isEditMode && currentUser) {
         // Cast `user` as UserUpdateProps when updating
-        const updateUserPayload: UserUpdateProps = {
+        const updateUserPayload: UserActionProps = {
           ...user,
           imageUrl,
-          role: (user as UserUpdateProps).role || '',
+          roleId: user.roleId,
           isStylist: true,
         };
         await userApi.updateUser(currentUser.id, updateUserPayload);
       } else {
         // Cast `user` as UserCreateProps when creating
-        const createUserPayload: UserCreateProps = {
-          phone: user.phone || '',
-          fullName: user.fullName || '',
-          dateOfBirth: user.dateOfBirth || '',
-          gender: user.gender ?? true,
-          address: user.address || '',
-          isVerified: user.isVerified ?? false,
-          status: user.status || 'Active',
-          salonId: user.salonId || 0,
-          imageUrl: imageUrl || '',
-          commission: user.commission || 0,
-          salary: user.salary || 0,
-          salaryPerDay: user.salaryPerDay || 0,
-          password: (user as UserCreateProps).password || '',
+        const createUserPayload: UserActionProps = {
+          ...user,
+          imageUrl,
+          isStylist: undefined,
+          roleId: undefined,
+          password: user.password || '',
         };
         const sanitizedPayload = Object.fromEntries(
           Object.entries(createUserPayload).filter(([_, v]) => v !== null && v !== undefined)
-        ) as UserCreateProps;
+        ) as UserActionProps;
         await userApi.addStylist(sanitizedPayload);
       }
       handleCloseDialog();

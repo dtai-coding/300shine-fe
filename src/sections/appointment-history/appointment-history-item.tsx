@@ -33,9 +33,22 @@ function getStatusBackgroundColor(status: string) {
         case "Paid":
             return "#ace8ba";
         case "Canceled":
-            return "#f0a5ac"; // màu đỏ nhạt
+            return "#f0a5ac";
         default:
-            return "#FFFFFF"; // màu trắng mặc định
+            return "#FFFFFF";
+    }
+}
+
+function getDetailStatusBackgroundColor(status: string) {
+    switch (status) {
+        case "Pending":
+            return "#f5dd90";
+        case "Completed":
+            return "#ace8ba";
+        case "In Progress":
+            return "#a5c8f0";
+        default:
+            return "#FFFFFF";
     }
 }
 
@@ -53,10 +66,10 @@ export function AppointmentHistoryItem({ appoinment }: { appoinment: Appointment
         try {
             // const accessToken = localStorage.getItem('accessToken');
             // if (accessToken) {
-console.log(appoinment.orderCode);
+            console.log(appoinment.orderCode);
             let response;
 
-            if (appoinment.orderCode ) {
+            if (appoinment.orderCode) {
                 response = await paymentApi.createPaymentForPendingAppointment(appoinment.orderCode, 2000);
             }
             const payment: PaymentItemProps = response?.data;
@@ -116,6 +129,17 @@ console.log(appoinment.orderCode);
                                     <Typography>Slot: {formatTime(slot.slot)}</Typography>
                                 </Box>
                             ))}
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Typography
+                                sx={{
+                                    backgroundColor: getDetailStatusBackgroundColor(detail.status),
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                }}
+                            >
+                                Status: {detail.status}
+                            </Typography>
+                            </Box>
                         </Box>
                     ))}
 

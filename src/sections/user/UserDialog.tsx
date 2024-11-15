@@ -1,4 +1,4 @@
-import type { UserCreateProps, UserUpdateProps } from 'src/model/request/User';
+import type { UserActionProps } from 'src/model/request/User';
 
 import React, { useState, useEffect } from 'react';
 
@@ -14,11 +14,13 @@ import {
   FormControlLabel,
 } from '@mui/material';
 
+import FileUploadButton from 'src/components/FileUploadButton';
+
 interface UserDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (user: UserCreateProps | UserUpdateProps) => void;
-  user?: UserCreateProps | UserUpdateProps | null;
+  onSave: (user: UserActionProps) => void;
+  user?: UserActionProps | null;
   isEditMode?: boolean;
   imageFile: File | null;
   setImageFile: React.Dispatch<React.SetStateAction<File | null>>;
@@ -34,63 +36,34 @@ export function UserDialog({
 }: UserDialogProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   // Initial user state: defaults to create or update props based on edit mode
-  const ROLE_MAP: { [key: string]: string } = {
-    Admin: '1',
-    Manager: '2',
-    Customer: '3',
-    Stylist: '4',
-  };
-  const isUserUpdateProps = (u: UserCreateProps | UserUpdateProps): u is UserUpdateProps =>
-    'role' in u;
 
-  const [newUser, setNewUser] = useState<UserCreateProps | UserUpdateProps>({
-    phone: '',
-    password: (user as UserCreateProps).password ?? '',
-    fullName: '',
-    dateOfBirth: '',
-    gender: true,
-    address: '',
-    role: (user as UserUpdateProps).role ?? '',
-    isStylist: false,
+  const defaultUser: UserActionProps = {
+    phone: null,
+    fullName: null,
+    dateOfBirth: null,
+    gender: null,
+    address: null,
     isVerified: false,
     status: '',
-    salonId: 0,
-    imageUrl: '',
+    salonId: null,
+    imageUrl: null,
     commission: 0,
     salary: 0,
     salaryPerDay: 0,
-  });
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-        setImageFile(file);
-      };
-
-      reader.readAsDataURL(file);
-    }
+    password: '', // Optional properties can be set to null or default values as needed
+    roleId: 0,
+    isStylist: false,
   };
+
+  // Set initial state with new `UserActionProps`
+  const [newUser, setNewUser] = useState<UserActionProps>(defaultUser);
+
   useEffect(() => {
     if (isEditMode && user) {
-      // Update the form only when editing an existing user, not when creating a new one
       setNewUser({
-        phone: user.phone ?? '',
-        fullName: user.fullName ?? '',
-        dateOfBirth: user.dateOfBirth ?? '',
-        gender: user.gender ?? true,
-        address: user.address ?? '',
-        isVerified: user.isVerified ?? false,
-        status: user.status ?? '',
-        salonId: user.salonId ?? 0,
-        imageUrl: user.imageUrl ?? '',
-        commission: user.commission ?? 0,
-        salary: user.salary ?? 0,
-        salaryPerDay: user.salaryPerDay ?? 0,
-        role: (user as UserUpdateProps).role ?? '',
+        ...user,
       });
+      setImagePreview(user.imageUrl || null);
     }
   }, [isEditMode, user]);
 
@@ -101,7 +74,7 @@ export function UserDialog({
       dateOfBirth: '',
       gender: true,
       address: '',
-      role: '',
+      roleId: 0,
       isStylist: false,
       isVerified: false,
       status: '',
@@ -120,18 +93,13 @@ export function UserDialog({
   };
 
   const handleOnSave = () => {
-    if (newUser.fullName && newUser.phone) {
-      onSave(newUser);
-      setImageFile(null);
-      setImagePreview(null);
-
-      console.log('User saved successfully!');
-
-      resetForm();
-    } else {
-      console.log('Please fill in all required fields.');
-    }
+    const userToSave: UserActionProps = {
+      ...newUser,
+    };
+    onSave(userToSave);
+    setImageFile(null);
   };
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
 
@@ -160,7 +128,7 @@ export function UserDialog({
             label="Password"
             name="password"
             type="password"
-            value={(newUser as UserCreateProps).password ?? ''}
+            value={newUser.password ?? ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -180,7 +148,9 @@ export function UserDialog({
             label="Date of Birth"
             name="dateOfBirth"
             type="date"
-            value={newUser.dateOfBirth}
+            value={
+              newUser.dateOfBirth ? new Date(newUser.dateOfBirth).toISOString().split('T')[0] : ''
+            }
             onChange={handleChange}
             margin="normal"
             InputLabelProps={{ shrink: true }}
@@ -242,18 +212,10 @@ export function UserDialog({
         />
 
         <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
-          <Button variant="outlined" component="label" sx={{ width: 50, height: 50 }}>
-            Upload Image
-            <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
-          </Button>
-          {imagePreview && (
-            <Box
-              component="img"
-              src={imagePreview}
-              alt="Preview"
-              sx={{ width: 100, height: 100 }}
-            />
-          )}
+          <FileUploadButton
+            onFileSelect={(file) => setImageFile(file)}
+            initialImage={imagePreview}
+          />
 
           {isEditMode && (
             <Box display="flex" gap={2} sx={{ width: '40%', marginLeft: 'auto' }}>
@@ -261,8 +223,8 @@ export function UserDialog({
                 fullWidth
                 select
                 label="Role"
-                name="role"
-                value={isUserUpdateProps(newUser) && newUser.role ? ROLE_MAP[newUser.role] : ''}
+                name="roleId"
+                value={newUser.roleId ?? ''}
                 onChange={handleChange}
                 margin="normal"
                 SelectProps={{ native: true }}

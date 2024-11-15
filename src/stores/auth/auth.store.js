@@ -6,9 +6,10 @@ import { loginAPI, registerAPI } from 'src/api/apis';
 const storeApi = (set, get) => ({
   auth: {
     status: 'unauthorized',
-    accessToken: localStorage.getItem('accessToken') || undefined,
+    // accessToken: localStorage.getItem('accessToken') || undefined,
+    accessToken: undefined,
     refreshToken: undefined,
-    user: undefined,
+    user: 'undefined',
   },
   loginUser: async (payload) => {
     console.log('Sending login request with payload:', payload);
@@ -20,7 +21,8 @@ const storeApi = (set, get) => ({
 
     const accessToken = response.data.token; // Ensure response.value contains the accessToken
     const refreshToken = response.value || 'dummyRefreshToken';
-    console.log('JWT :', accessToken, ', \n RefreshToken :', refreshToken);
+
+    // console.log('JWT :', accessToken, ', \n RefreshToken :', refreshToken);
 
     // const userResponse = await getUserByPhoneAPI(payload.phone);
     // if (!userResponse || !userResponse.data) {
@@ -51,7 +53,7 @@ const storeApi = (set, get) => ({
     console.log('Credential incorrect:', error);
   },
   logoutUser: () => {
-    localStorage.removeItem('accessToken');
+    // localStorage.removeItem('accessToken');
     set({
       auth: {
         status: 'unauthorized',

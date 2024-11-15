@@ -13,4 +13,5 @@ export type UserProps = {
   commission: number | null;
   salary: number | null;
   salaryPerDay: number | null;
+  roleId?: number | null;
 };

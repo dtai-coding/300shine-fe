@@ -10,30 +10,28 @@ import { ServiceDetailItem } from '../service-detail-card';
 
 
 export function ServiceDetailView() {
-    const { id } = useParams<{ id: string }>(); // Assuming id is a string
-    const [product, setProducts] = useState<ServiceItemProps | null>(null); // Change undefined to null
+    const { id } = useParams<{ id: string }>(); 
+    const [product, setProducts] = useState<ServiceItemProps | null>(null); 
   
     useEffect(() => {
       const fetchProduct = async () => {
         try {
-          const response = await serviceApi.getServiceById(id); // Gọi API với id
-          const productData = response?.data; // Lấy dữ liệu từ API
-          setProducts(productData); // Cập nhật state
+          const response = await serviceApi.getServiceById(id);
+          const productData = response?.data; 
+          setProducts(productData); 
           console.log('Successfully fetched product:', productData);
         } catch (error) {
           console.error('Failed to fetch product:', error);
         }
       };
   
-      fetchProduct(); // Gọi API khi component được render
+      fetchProduct(); 
     }, [id]);
   
-    // Kiểm tra nếu product là null (chưa tải xong) thì hiển thị Loading...
     if (!product) {
       return <div>Loading...</div>;
     }
   
-    // Khi product đã có dữ liệu, truyền vào ServiceDetailItem
     return (
       <HomeContent>
         <ServiceDetailItem product={product} />

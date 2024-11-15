@@ -1,10 +1,8 @@
-
-import type { SalonCreateProps, SalonUpdateProps } from 'src/model/request/salon';
+import type { SalonActionProps } from 'src/model/request/salon';
 
 import React, { useState, useEffect } from 'react';
 
 import {
-  Box,
   Dialog,
   Button,
   TextField,
@@ -13,11 +11,13 @@ import {
   DialogContent,
 } from '@mui/material';
 
+import FileUploadButton from 'src/components/FileUploadButton';
+
 interface SalonDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (salon: SalonCreateProps) => void;
-  salon?: SalonCreateProps | null;
+  onSave: (salon: SalonActionProps) => void;
+  salon?: SalonActionProps | null;
   isEditMode?: boolean;
   imageFile: File | null;
   setImageFile: React.Dispatch<React.SetStateAction<File | null>>;
@@ -32,7 +32,7 @@ export function SalonDialog({
   imageFile,
   setImageFile,
 }: SalonDialogProps) {
-  const [newSalon, setNewSalon] = useState<SalonCreateProps | SalonUpdateProps>({
+  const [newSalon, setNewSalon] = useState<SalonActionProps>({
     id: 0,
     imageUrl: '',
     address: '',
@@ -42,22 +42,11 @@ export function SalonDialog({
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-        setImageFile(file);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
-
   useEffect(() => {
-    if (isEditMode && salon) setNewSalon(salon);
+    if (isEditMode && salon) {
+      setNewSalon({ ...salon });
+      setImagePreview(salon.imageUrl || null);
+    }
   }, [isEditMode, salon]);
 
   const resetForm = () => {
@@ -88,7 +77,7 @@ export function SalonDialog({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setNewSalon((prevSalon: SalonCreateProps | SalonUpdateProps) => ({
+    setNewSalon((prevSalon: SalonActionProps) => ({
       ...prevSalon,
       [name]: name === 'phone' || name === 'id' ? Number(value) : value,
     }));
@@ -123,20 +112,7 @@ export function SalonDialog({
           onChange={handleChange}
           margin="normal"
         />
-        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
-          <Button variant="outlined" component="label">
-            Upload Image
-            <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
-          </Button>
-          {imagePreview && (
-            <Box
-              component="img"
-              src={imagePreview}
-              alt="Preview"
-              sx={{ width: 100, height: 100 }}
-            />
-          )}
-        </Box>
+        <FileUploadButton onFileSelect={(file) => setImageFile(file)} initialImage={imagePreview} />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleOnCancel}>Cancel</Button>

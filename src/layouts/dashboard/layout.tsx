@@ -7,6 +7,7 @@ import Alert from '@mui/material/Alert';
 import { useTheme } from '@mui/material/styles';
 
 import { _langs, _notifications } from 'src/_mock';
+import { useAuthStore } from 'src/stores/auth/auth.store';
 
 import { Iconify } from 'src/components/iconify';
 
@@ -39,6 +40,43 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
   const [navOpen, setNavOpen] = useState(false);
 
   const layoutQuery: Breakpoint = 'lg';
+
+  const { auth } = useAuthStore();
+
+  const role = auth.user.roleName;
+  const menuItems = [
+    {
+      label: 'Home',
+      href: '/',
+      icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
+    },
+    {
+      label: 'Profile',
+      href: '#',
+      icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
+    },
+  ];
+
+  // Conditionally render role-based menu items
+  if (role === 'Admin') {
+    menuItems.push({
+      label: 'Admin Page',
+      href: '/dashboard/user',
+      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
+    });
+  } else if (role === 'Manager') {
+    menuItems.push({
+      label: 'Manager Page',
+      href: '/manager',
+      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
+    });
+  } else if (role === 'Stylist') {
+    menuItems.push({
+      label: 'Stylist Page',
+      href: '/stylist/appointment',
+      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
+    });
+  }
 
   return (
     <LayoutSection
@@ -83,25 +121,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                 <Searchbar />
                 <LanguagePopover data={_langs} />
                 <NotificationsPopover data={_notifications} />
-                <AccountPopover
-                  data={[
-                    {
-                      label: 'Home',
-                      href: '/',
-                      icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
-                    },
-                    {
-                      label: 'Profile',
-                      href: '#',
-                      icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
-                    },
-                    {
-                      label: 'Settings',
-                      href: '#',
-                      icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
-                    },
-                  ]}
-                />
+                <AccountPopover data={menuItems} />
               </Box>
             ),
           }}
@@ -139,4 +159,3 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
     </LayoutSection>
   );
 }
-

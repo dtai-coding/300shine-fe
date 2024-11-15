@@ -2,6 +2,8 @@ import type { ServiceItemProps } from 'src/model/response/service';
 
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTheme } from '@mui/material';
+import { useAuthStore } from 'src/stores';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,12 +16,11 @@ import { HomeContent } from 'src/layouts/home';
 
 import { Iconify } from 'src/components/iconify';
 
-import { ProductItem } from "../product-item";
-import { ProductSort } from "../product-sort";
-import { ProductFilters } from "../product-filters";
+import { ProductItem } from '../product-item';
+import { ProductSort } from '../product-sort';
+import { ProductFilters } from '../product-filters';
 
-import type { FiltersProps } from "../product-filters";
-
+import type { FiltersProps } from '../product-filters';
 
 // ----------------------------------------------------------------------
 
@@ -106,63 +107,47 @@ export function ProductsView() {
     (key) => filters[key as keyof FiltersProps] !== defaultFilters[key as keyof FiltersProps]
   );
 
+  const { auth } = useAuthStore();
+
   const handleRedirect = () => {
-    navigate('/appointment');
+    const logined = auth.accessToken;
+    if(logined){
+      navigate('/appointment');
+    }
+    else{
+      navigate('/sign-in');
+    }
   };
+  const theme = useTheme();
 
   return (
     <HomeContent>
-      <Box display="flex" alignItems="center" mb={5}>
-        <Typography variant="h2" flexGrow={1}>
-          Services
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={handleRedirect}
-        >
-          Make Appointment
-        </Button>
-      </Box>
-
-      <Box
-        display="flex"
-        alignItems="center"
-        flexWrap="wrap-reverse"
-        justifyContent="flex-end"
-        sx={{ mb: 5 }}
+      <Box marginTop="50px" display="flex" alignItems="center" mb={5}>
+      <Typography variant="h2" flexGrow={1}>
+        Services
+      </Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<Iconify icon="mingcute:add-line" />}
+        onClick={handleRedirect}
+        sx={{
+          fontSize: '1.2rem',            
+          padding: theme.spacing(2, 4),   
+          borderRadius: '30px',           
+          textTransform: 'none',         
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+          backgroundColor: '#1877f2',    
+          '&:hover': {
+            backgroundColor: '#005bb5',   
+          },
+        }}
       >
-        <Box gap={1} display="flex" flexShrink={0} sx={{ my: 1 }}>
-          <ProductFilters
-            canReset={canReset}
-            filters={filters}
-            onSetFilters={handleSetFilters}
-            openFilter={openFilter}
-            onOpenFilter={handleOpenFilter}
-            onCloseFilter={handleCloseFilter}
-            onResetFilter={() => setFilters(defaultFilters)}
-            options={{
-              genders: GENDER_OPTIONS,
-              categories: CATEGORY_OPTIONS,
-              ratings: RATING_OPTIONS,
-              price: PRICE_OPTIONS,
-              colors: COLOR_OPTIONS,
-            }}
-          />
+        Make Appointment
+      </Button>
+    </Box>
 
-          <ProductSort
-            sortBy={sortBy}
-            onSort={handleSort}
-            options={[
-              { value: 'featured', label: 'Featured' },
-              { value: 'newest', label: 'Newest' },
-              { value: 'priceDesc', label: 'Price: High-Low' },
-              { value: 'priceAsc', label: 'Price: Low-High' },
-            ]}
-          />
-        </Box>
-      </Box>
+      
 
       <Grid container spacing={3}>
         {products.map((product) => (
@@ -173,7 +158,6 @@ export function ProductsView() {
           </Grid>
         ))}
       </Grid>
-
 
       <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />
     </HomeContent>
