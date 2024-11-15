@@ -3,6 +3,7 @@ export type SalonItemProps = {
   address: string;
   phone: number;
   district: string;
+  imageUrl: string | null;
 };
 
 export type SalonNameProps = {
