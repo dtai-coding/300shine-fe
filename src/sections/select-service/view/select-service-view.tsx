@@ -36,7 +36,7 @@ export function SelectServiceView() {
     return (
         <HomeContent>
             <Typography variant="h2" sx={{ mb: 5 }}>
-                Select Salon
+                Select Service
             </Typography>
 
             <Grid container spacing={4}>
