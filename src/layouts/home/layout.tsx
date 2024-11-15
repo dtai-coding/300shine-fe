@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import { useTheme } from '@mui/material/styles';
+import { Link, Typography } from '@mui/material';
 
 import { _langs, _notifications } from 'src/_mock';
+import { useAuthStore } from 'src/stores/auth/auth.store';
 
 import { Iconify } from 'src/components/iconify';
 
-import { useAuthStore } from 'src/stores/auth/auth.store';
 import { Main } from './main';
 import { NavMobile } from './nav';
 import { layoutClasses } from '../classes';
@@ -44,11 +45,15 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
   const navigate = useNavigate();
 
   const HandleAppointmentClick = () => {
-    navigate('/appointment-history');
+    const logined = auth.accessToken;
+    if(logined){
+      navigate('/appointment-history');
+    }
+    navigate('/sign-in');
   };
   const { auth } = useAuthStore();
 
-  const role = auth.user.roleName;
+  const role = auth.user?.roleName; // Use optional chaining to avoid error if auth.user is undefined
   const menuItems = [
     {
       label: 'Home',
@@ -98,14 +103,13 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
           }}
           sx={header?.sx}
           slots={{
-            topArea: (
-              <Alert severity="info" sx={{ display: 'none', borderRadius: 0 }}>
-                This is an info Alert.
-              </Alert>
-            ),
+
             leftArea: (
               <>
-                <MenuButton
+              <Link href="/" underline="none" color="inherit">
+                <Typography variant="h3" color="#1877f2">300Shine</Typography>
+                </Link>
+                {/* <MenuButton
                   onClick={() => setNavOpen(true)}
                   sx={{
                     ml: -1,
@@ -117,7 +121,7 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
                   open={navOpen}
                   onClose={() => setNavOpen(false)}
                   workspaces={_workspaces}
-                />
+                /> */}
               </>
             ),
             rightArea: (
@@ -154,7 +158,37 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
       /** **************************************
        * Footer
        *************************************** */
-      footerSection={null}
+      footerSection={
+        <Box
+                component="footer"
+                sx={{
+                  backgroundColor: '#1877f2',
+                  color: '#fff',
+                  py: 3,
+                  px: 2,
+                  textAlign: 'center',
+                  mt: 'auto',
+                }}
+              >
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                  © {new Date().getFullYear()} 300SHINE
+                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 1 }}>
+                  <Link href="#" underline="none" color="inherit">
+                    About Us
+                  </Link>
+                  <Link href="#" underline="none" color="inherit">
+                    Services
+                  </Link>
+                  <Link href="#" underline="none" color="inherit">
+                    Contact
+                  </Link>
+                  <Link href="#" underline="none" color="inherit">
+                    Privacy Policy
+                  </Link>
+                </Box>
+              </Box>
+      }
       /** **************************************
        * Style
        *************************************** */

@@ -1,19 +1,22 @@
-import FileUploadButton from 'src/components/FileUploadButton';
+import type { ServiceActionProps } from 'src/model/request/service';
+
 import React, { useState, useEffect } from 'react';
+
 import {
   Box,
   Dialog,
   Button,
+  Select,
+  MenuItem,
   TextField,
+  InputLabel,
   DialogTitle,
+  FormControl,
   DialogActions,
   DialogContent,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
 } from '@mui/material';
-import { ServiceActionProps } from 'src/model/request/service';
+
+import FileUploadButton from 'src/components/FileUploadButton';
 
 interface ServiceDialogProps {
   open: boolean;

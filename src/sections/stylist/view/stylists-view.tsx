@@ -144,7 +144,7 @@ export function StylistsView() {
   useEffect(() => {
     const interval = setInterval(() => {
       handleScroll('right');
-    }, ); // 3 seconds interval
+    }, 1000); // 3 seconds interval
   
     return () => clearInterval(interval);
   }, [handleScroll]);
@@ -206,44 +206,7 @@ export function StylistsView() {
       </Box>
 
      
-      {/* Filters and Sorting Options */}
-      <Box
-        display="flex"
-        alignItems="center"
-        flexWrap="wrap-reverse"
-        justifyContent="flex-end"
-        sx={{ gap: 2, padding: 2 }}
-      >
-        <Box gap={1} display="flex" flexShrink={0} sx={{ my: 1 }}>
-          <StylistFilters
-            canReset={canReset}
-            filters={filters}
-            onSetFilters={handleSetFilters}
-            openFilter={openFilter}
-            onOpenFilter={handleOpenFilter}
-            onCloseFilter={handleCloseFilter}
-            onResetFilter={() => setFilters(defaultFilters)}
-            options={{
-              genders: GENDER_OPTIONS,
-              categories: CATEGORY_OPTIONS,
-              ratings: RATING_OPTIONS,
-              price: PRICE_OPTIONS,
-              colors: COLOR_OPTIONS,
-            }}
-          />
-
-          <StylistSort
-            sortBy={sortBy}
-            onSort={handleSort}
-            options={[
-              { value: 'featured', label: 'Featured' },
-              { value: 'newest', label: 'Newest' },
-              { value: 'priceDesc', label: 'Price: High-Low' },
-              { value: 'priceAsc', label: 'Price: Low-High' },
-            ]}
-          />
-        </Box>
-      </Box>
+      
       
 
       <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />

@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 import { Box, Grid, Typography } from "@mui/material";
 
-import { StylistConTent } from "src/layouts/stylist";
 import appointmentApi from "src/api/appointment";
+import { StylistConTent } from "src/layouts/stylist";
 
 import { AppointmentStylistItem } from "../appointment-stylist-item";
 import { AppointmentStylistStatusTab } from "../appoinmet-stylist-status-tab";

@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
+
 import { AppointmentStylistView } from 'src/sections/appoinment-stylist/view';
 
 // ----------------------------------------------------------------------

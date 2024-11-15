@@ -20,15 +20,15 @@ export function SelectSalonView() {
     useEffect(() => {
         const fetchSalons = async () => {
           try {
-            const response = await salonApi.getSalons(); // Call API
-            const salonData = response?.data; // Extract the product data from response.value.data
-            setSalons(salonData); // Update the products state with data from API
+            const response = await salonApi.getSalons(); 
+            const salonData = response?.data; 
+            setSalons(salonData);
           } catch (error) {
             console.error('Failed to fetch salons:', error);
           }
         };
     
-        fetchSalons(); // Trigger the API call
+        fetchSalons(); 
       }, []);
 
     return (
@@ -37,13 +37,13 @@ export function SelectSalonView() {
                 Select Salon
             </Typography>
 
-            <Grid container spacing={0}>
-                {salons.map((salon) => (
-                    <Grid key={salon.id} xs={12} sm={6} md={2}>
-                        <SalonItem salon={salon} />
-                    </Grid>
-                ))}
-            </Grid>
+            <Grid container spacing={4}>
+    {salons.map((salon) => (
+      <Grid key={salon.id} item xs={12} sm={6} md={4} lg={3}>
+        <SalonItem salon={salon} />
+      </Grid>
+    ))}
+  </Grid>
             
             <Pagination count={5} color="primary" sx={{ mt: 8, mx: 'auto' }} />
         </HomeContent>

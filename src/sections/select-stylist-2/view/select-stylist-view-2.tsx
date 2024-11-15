@@ -41,9 +41,9 @@ export function SelectStylistView2() {
 
 
       {stylists ? (
-        <Grid container spacing={0}>
+        <Grid container spacing={4}>
           {stylists.map((stylist) => (
-            <Grid key={stylist.id} xs={12} sm={6} md={3}>
+            <Grid key={stylist.id} item xs={12} sm={6} md={4} lg={3}>
               <SelectStylistItem2 stylist={stylist} />
             </Grid>
           ))}

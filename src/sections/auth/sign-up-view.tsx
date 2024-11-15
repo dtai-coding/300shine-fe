@@ -11,10 +11,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 
 import { registerAPI, uploadImage } from 'src/api/apis';
-import FileUploadButton from 'src/components/FileUploadButton';
 
 import { Iconify } from 'src/components/iconify';
-import { Margin } from '@mui/icons-material';
+import FileUploadButton from 'src/components/FileUploadButton';
 
 // ----------------------------------------------------------------------
 
