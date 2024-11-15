@@ -9,7 +9,7 @@ const storeApi = (set, get) => ({
     // accessToken: localStorage.getItem('accessToken') || undefined,
     accessToken: undefined,
     refreshToken: undefined,
-    user: undefined,
+    user: 'undefined',
   },
   loginUser: async (payload) => {
     console.log('Sending login request with payload:', payload);

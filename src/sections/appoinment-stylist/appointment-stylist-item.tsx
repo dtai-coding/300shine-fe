@@ -1,12 +1,10 @@
-import type { PaymentItemProps } from "src/model/response/payment";
 import type { AppointmentItemProps } from "src/model/response/appoinment";
+import type { UpdateProcessProps } from "src/model/request/update-process";
 
 import { useState } from "react";
 
 import { Box, Button, Dialog, Collapse, Typography, DialogTitle, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 
-import paymentApi from "src/api/paymentApi";
-import { UpdateProcessProps } from "src/model/request/update-process";
 import appointmentApi from "src/api/appointment";
 
 // Hàm format ngày theo định dạng DD-MM-YYYY

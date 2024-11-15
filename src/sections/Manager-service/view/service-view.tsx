@@ -21,13 +21,13 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import styleApi from '../../../api/styleApi';
-import serviceApi from '../../../api/serviceApi';
-import { uploadImage } from '../../../api/apis';
-import { ServiceDialog } from '../service-dialog';
 import { TableNoData } from '../table-no-data';
+import { uploadImage } from '../../../api/apis';
+import serviceApi from '../../../api/serviceApi';
+import { ServiceDialog } from '../service-dialog';
+import { TableEmptyRows } from '../table-empty-rows';
 import { ServiceTableRow } from '../service-table-row';
 import { ServiceTableHead } from '../service-table-head';
-import { TableEmptyRows } from '../table-empty-rows';
 import { ServiceTableToolbar } from '../service-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 

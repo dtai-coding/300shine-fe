@@ -1,6 +1,5 @@
 import type { UserActionProps } from 'src/model/request/User';
 
-import FileUploadButton from 'src/components/FileUploadButton';
 import React, { useState, useEffect } from 'react';
 
 import {
@@ -14,6 +13,8 @@ import {
   DialogContent,
   FormControlLabel,
 } from '@mui/material';
+
+import FileUploadButton from 'src/components/FileUploadButton';
 
 interface UserDialogProps {
   open: boolean;

@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
@@ -13,6 +14,17 @@ export default function Page() {
       <Helmet>
         <title> {`Products - ${CONFIG.appName}`}</title>
       </Helmet>
+      <Box
+        component="img"
+        src="https://gatsbyindia.com/img/men-lifestyle/best-haircuts-men-top-mens-hairstyles-today/Mandom_2024%20Pillar_Thumb-FINAL.jpeg"
+        alt="Full Width Image"
+        sx={{
+          width: '100%',
+          height: 'auto',
+          display: 'block',
+          objectFit: 'cover', // Ensures image covers its container
+        }}
+      />
 
       <ProductsView />
       <StylistsView />

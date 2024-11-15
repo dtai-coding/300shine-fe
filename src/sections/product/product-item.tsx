@@ -5,7 +5,6 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { fCurrency } from 'src/utils/format-number';
 
 
 // ----------------------------------------------------------------------
@@ -35,10 +34,13 @@ export function ProductItem({ product }: { product: ServiceItemProps }) {
 
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="subtitle1">
-            {fCurrency(product.price)}
+          {formatCurrencyVND(product.price)}
           </Typography>
         </Box>
       </Stack>
     </Card>
   );
+}
+function formatCurrencyVND(price : number) {
+  return `${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND`;
 }

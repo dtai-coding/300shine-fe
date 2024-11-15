@@ -8,7 +8,7 @@ const appointmentApi = {
 
   updateAppointmentWithOrderCode: (updateAppointmentWithOrderCode) => axiosClient.put('/manager/update-status', updateAppointmentWithOrderCode),
 
-  stylistGetAppointmentBystatusAndProcess:(status, appoinmentDetailStatus) => axiosClient.get(`/Appoinment/list-by-stylist`, { params: { status, appoinmentDetailStatus } }),
+  stylistGetAppointmentBystatusAndProcess:(status, appoinmentDetailStatus) => axiosClient.get(`/Appointment/list-by-stylist`, { params: { status, appoinmentDetailStatus } }),
 
   updateAppointmentProcess: (request) => axiosClient.put('/manager/update-status-by-ID', request),
 };

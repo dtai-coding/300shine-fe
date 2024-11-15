@@ -1,7 +1,7 @@
 import type { UserProps } from 'src/model/response/User';
 import type { UserActionProps } from 'src/model/request/User';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import {
   Box,
