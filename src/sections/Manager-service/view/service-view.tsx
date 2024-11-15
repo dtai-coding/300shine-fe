@@ -1,6 +1,6 @@
+import type { SalonNameProps } from 'src/model/response/salon';
 import type { ServiceViewProps } from 'src/model/response/service';
 import type { ServiceActionProps } from 'src/model/request/service';
-import type { SalonNameProps } from 'src/model/response/salon';
 
 import React, { useState, useEffect, useCallback } from 'react';
 
@@ -22,12 +22,12 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { TableNoData } from 'src/sections/manager-service/table-no-data';
-
 import { ServiceDialog } from 'src/sections/manager-service/service-dialog';
 import { TableEmptyRows } from 'src/sections/manager-service/table-empty-rows';
 import { ServiceTableRow } from 'src/sections/manager-service/service-table-row';
 import { ServiceTableHead } from 'src/sections/manager-service/service-table-head';
 import { ServiceTableToolbar } from 'src/sections/manager-service/service-table-toolbar';
+
 import styleApi from '../../../api/styleApi';
 import salonApi from '../../../api/salonApi';
 import { uploadImage } from '../../../api/apis';

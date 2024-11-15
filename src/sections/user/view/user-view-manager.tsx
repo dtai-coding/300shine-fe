@@ -22,8 +22,8 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import userApi from '../../../api/userApi';
-import salonApi from '../../../api/salonApi';
 import { UserDialog } from '../UserDialog';
+import salonApi from '../../../api/salonApi';
 import { TableNoData } from '../table-no-data';
 import { uploadImage } from '../../../api/apis';
 import { UserTableRow } from '../user-table-row';

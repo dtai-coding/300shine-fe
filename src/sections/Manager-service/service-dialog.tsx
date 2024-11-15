@@ -1,3 +1,5 @@
+import type {
+  SelectChangeEvent} from '@mui/material';
 import type { ServiceActionProps } from 'src/model/request/service';
 
 import React, { useState, useEffect } from 'react';
@@ -13,8 +15,7 @@ import {
   DialogTitle,
   FormControl,
   DialogActions,
-  DialogContent,
-  SelectChangeEvent,
+  DialogContent
 } from '@mui/material';
 
 import FileUploadButton from 'src/components/FileUploadButton';
