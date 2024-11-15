@@ -1,23 +1,22 @@
 import type { ServiceItemProps } from 'src/model/response/service';
+
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTheme } from '@mui/material';
-import { useAuthStore } from 'src/stores';
 
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 
+import { useAuthStore } from 'src/stores';
 import serviceApi from 'src/api/serviceApi';
 import { HomeContent } from 'src/layouts/home';
 
 import { Iconify } from 'src/components/iconify';
 
 import { ProductItem } from '../product-item';
-import { ProductSort } from '../product-sort';
-import { ProductFilters } from '../product-filters';
 
 import type { FiltersProps } from '../product-filters';
 
@@ -115,7 +114,7 @@ export function ProductsView() {
   const handleRedirect = () => {
     const logined = auth.accessToken;
     if (logined) {
-      navigate('/appointment');
+      navigate('/appointment',{ replace: true });
     } else {
       navigate('/sign-in');
     }
