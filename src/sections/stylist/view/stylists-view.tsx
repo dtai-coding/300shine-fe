@@ -1,13 +1,17 @@
+import type { StylistItemProps } from 'src/model/response/stylist';
+
 import { useNavigate } from 'react-router-dom';
 import { useRef, useState, useEffect, useCallback } from 'react';
+
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
+
 import stylistApi from 'src/api/stylistApi';
 import { HomeContent } from 'src/layouts/home';
+
 import { SelectStylistItem } from 'src/sections/select-stylist/select-stylist-item';
-import { StylistItemProps } from 'src/model/response/stylist';
 
 export function StylistsView() {
   const [stylists, setStylists] = useState<StylistItemProps[]>([]);

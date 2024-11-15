@@ -1,23 +1,14 @@
+import React, { useState, useEffect } from 'react';
+
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-import React, { useEffect, useState } from 'react';
-
-import { _tasks, _posts, _timeline } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard';
 
 import userApi from 'src/api/userApi';
-import stylistApi from 'src/api/stylistApi';
 import appointmentApi from 'src/api/appointment';
+import { DashboardContent } from 'src/layouts/dashboard';
 
-import { AnalyticsNews } from '../analytics-news';
-import { AnalyticsTasks } from '../analytics-tasks';
-import { AnalyticsCurrentVisits } from '../analytics-current-visits';
-import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
-import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
-import { AnalyticsCurrentSubject } from '../analytics-current-subject';
-import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
 interface AppointmentDetail {
   appointmentId: number;
@@ -118,7 +109,7 @@ export function OverviewAnalyticsView() {
       response.data.forEach((appointment: Appointment) => {
         appointment.appointmentDetails.forEach((detail) => {
           const month = new Date(detail.returnDate).toLocaleString('default', { month: 'long' }); // Get month name
-          const price = detail.price;
+          const {price} = detail;
 
           // Accumulate the income for the corresponding month
           monthlyIncome[month] += price;
