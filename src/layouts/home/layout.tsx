@@ -37,10 +37,14 @@ export function HomeLayout({ sx, children, header }: HomeLayoutProps) {
 
   const HandleAppointmentClick = () => {
     const logined = auth.accessToken;
+
     if (logined) {
       navigate('/appointment-history');
     }
-    navigate('/sign-in',{ replace: true });
+    else{
+      navigate('/sign-in');
+    }
+   
   };
   const { auth } = useAuthStore();
 
