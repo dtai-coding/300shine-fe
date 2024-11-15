@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 
+import { useAuthStore } from 'src/stores/auth/auth.store';
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
@@ -21,6 +22,7 @@ export type UserTableRowProps = {
   onSelectRow: () => void;
   onEditUser: (user: UserProps) => void;
   onDeleteUser: (userId: number) => void;
+  availableStyles: { styleId: number; styleName: string }[];
 };
 
 export function UserTableRow({
@@ -29,8 +31,10 @@ export function UserTableRow({
   onSelectRow,
   onEditUser,
   onDeleteUser,
+  availableStyles,
 }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+  const { auth } = useAuthStore();
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
@@ -51,6 +55,16 @@ export function UserTableRow({
     }
     return '-';
   };
+
+  // const getServiceStyles = () => {
+  //   const styles = row.styleId
+  //     .map((style) => {
+  //       const matchedStyle = availableStyles.find((s) => s.styleId === style.styleId);
+  //       return matchedStyle ? matchedStyle.styleName : 'Unknown Style';
+  //     })
+  //     .join(', '); // Join names with commas
+  //   return styles || 'No Style';
+  // };
 
   return (
     <>
@@ -87,11 +101,14 @@ export function UserTableRow({
         <TableCell>{getDisplayValue(row.commission)}</TableCell>
         <TableCell>{getDisplayValue(row.salary)}</TableCell>
         <TableCell>{getDisplayValue(row.salaryPerDay)}</TableCell>
-        <TableCell align="right">
-          <IconButton onClick={handleOpenPopover}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        </TableCell>
+
+        {row.roleName !== 'Customer' && (
+          <TableCell align="right">
+            <IconButton onClick={handleOpenPopover}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </TableCell>
+        )}
       </TableRow>
 
       <Popover
